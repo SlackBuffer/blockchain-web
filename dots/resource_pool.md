@@ -1,1 +1,2 @@
-- [ ] 交前端项目初始化模板，推到 github
+- [区块链和 HyperLedger 微讲堂系列](http://list.youku.com/albumlist/show?id=49106065)
+- [深蓝居 Fabric（cnblogs）](http://www.cnblogs.com/studyzy/default.html?page=2)
