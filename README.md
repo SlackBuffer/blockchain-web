@@ -1,0 +1,2 @@
+- `git remote add origin https://github.com/SlackBuffer/blockchain-web.git`
+- `git push -u origin master`
