@@ -1,0 +1,68 @@
+# 纯 React
+- 数据放组件里
+- 每个 Counter 组件记录自己的当前计数，父组件也有一个状态记录所有 Counter 计数总和，对这种写法缺乏限制，这样的写法会出现数据重复的问题
+- 数据重复就存在保持数据一致的问题，以及出现不一致时究竟以谁为准
+- 把数据源放到组件之外形成全局状态，让各个组件和全局状态保持一致
+- 若组件多层嵌套，顶层组件向底层子组件传输局很困难，中间组件即使不需要该状态，也不得不参与传递
+- 每个组件维护驱动自身渲染的状态数据
+# Flux
+- Flux 用于管理数据流转
+- **单向数据流**
+- 是 MVC 的替代品
+- 理想 MVC
+    - M：管理数据 + 大部分业务逻辑
+    - V：渲染用户界面，应避免设计业务逻辑
+    - C：根据用户输入去调用 M 对应的逻辑
+        - 用户向 View 发送指令（DOM 事件），View 接受指令，传递给 C，C 完成业务逻辑，要求 M 改变状态
+        - 用户也可以直接向 Controller 发送指令（改变 URL 触发 `hashChange` 事件）
+    - M 把产生的数据结果交回 C，由 C 去引发 V 新的渲染
+        - C 调用 M 方法，M 方法在 C 里执行渲染回调（用返回值多好）
+    - 即为了让数据可控，C 应该是中心：V 要传消息给 M 要通过 C，M 要更新 V 也要通过 C
+- 现实 MVC
+    - 浏览器的端的 MVC 框架，存在用户的交互处理，完成界面渲染后，M 和 C 依然留存与浏览器中，开发者处于便捷的考虑往往会让留存的 V 和 M 直接对话
+    - > 服务器端的 MVC 框架，往往每个请求在 C-M-V 之间走一圈，就将结果返回给浏览器，此次请求生命周期的 C-M-V 就可以回收销毁，是严格意义的单向数据流
+- Flux
+    - Dispatcher：把 action 分发给多个注册了的 store
+    - Store：存储应用状态；接受 Dispatcher 派发的动作，根据动作决定如何更新数据
+        - Store 状态发生变化时会通知应用其他部分作出必要响应，用消息的方式建立 Store 和 View 的联系
+        - Store 是 `EventEmitter` 的实例
+            - `emit` 方法：广播一个特定事件
+            - `on` 方法：挂一个 EventEmitter 对象特定事件的处理函数
+            - `removeListener` 方法：删除挂在 EventEmitter 对象特定事件上的处理函数
+    - Action：普通 JS 对象，代表一个动作的纯数据，类似 DOM 中的 event 但不自带方法，是纯粹的数据
+        - 必须有一个 `type` 字段，表示 Action 对象的类型
+        - 定义 Action 通常需要两个文件
+            1. 一个定义 action 类型
+            2. 一个定义 action 的构造函数（action creator）
+            - Store 会根据 Action 类型做不同的操作，因此存在单独导入 Action 类型的需要
+        - action 用于驱动 Dispatcher
+    - View
+- Flux 类比 MVC
+    - Dispatcher - Controller
+    - Store - Model
+    - View - View
+- Flux 里，新增功能不需要在 Dispatcher 上增加新函数，只需增加一种新的 Action 类型，Dispatcher 的对外接口不需改变
+- MVC 框架中，增加一个功能往往要在 Controller 里增加一个函数
+- 相较于纯 React 写法，子组件数据来源是 Store，不再是父组件
+- flux 计数器流程
+    - 初次渲染
+        - 每个 Counter 组件的数据通过 CounterStore 的对外接口获得
+        - 注册好 Counter 组件的两个点击操作的事件处理器
+            1. +：
+            2. -：
+    - 动作触发渲染
+        - 生成 +action，并通过 dispatcher 派发出去
+        - Store 监听每个 action，根据 action 种类确定处理逻辑，完成对数据的更新操作
+        - Store 更新操作完成后，将消息广播出去
+        - 组件的生命周期函数订阅了 Store 的更新事件，事件处理函数执行 `setState()`，完成页面渲染
+- Flux 架构下组件只扮演 View 的角色，组件仍拥有状态，但只是 Store 组件的一个映射，被动根据 Store 状态来渲染
+- Flux 中，改变界面必须通过改变 Store 状态， 改变状态必须通过派发 action
+    - Store 只有 get 方法，没有 set 方法，不可能直接去修改其内部状态，只能由 View 派发 action
+- Flux 缺点
+    - Flux 架构里，若两个 Store 之间有逻辑依赖关系，就必须用 Dispatcher 的 `waitFor()` 函数，使得不同 store 之间产生了依赖
+        - 利用 `register()` 函数返回的 token 标识
+    - 难以进行服务器端渲染
+    - Store 封装了数据和处理数据的逻辑，难热加载（如动态替换一个 Store 的逻辑）
+        - > Store 在某个状态下抛错，希望在不毁掉状态的情况下替换 Store 逻辑
+        - > 生产环境下根据用户属性动态加载不同模块，无需重新加载页面，希望在不修改应用状态的前提下重新加载应用逻辑
+- Flux 中 state 由 store 管理；Redux 把 state 的管理交给 Redux 框架本身，reducer 只管如何更新 state 而无需关系 state 如何存储
