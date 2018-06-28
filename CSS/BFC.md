@@ -1,0 +1,4 @@
+- [w3-block_formatting_context](https://www.w3.org/TR/CSS2/visuren.html#normal-flow)
+- [mdn](https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Block_formatting_context)
+- **块级元素的**格式上下文
+- [visual formatting model](https://www.w3.org/TR/CSS2/visuren.html)

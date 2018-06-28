@@ -1,0 +1,1 @@
+- [guide](https://css-tricks.com/centering-css-complete-guide/)

@@ -1,0 +1,35 @@
+- 比元素小的背景图片会在水平和垂直方向上重复出现，直至填满整个背景空间
+    - 以元素左上角为起点，沿水平和垂直方向重复出现，最终填满整个背景区域
+    - 要改变默认的水平和垂直重复效果，可以修改 `background-repeat` 属性
+    - 要改变背景图片的起点，可以修改 `background-position` 属性
+    - [`background-repete`](demo/stylin3_code_files/chap3_code_files/background-repete.html)
+- [`background-position` 属性同时设定元素和图片的原点](demo/stylin3_code_files/chap3_code_files/background-position.html)
+    - 设定背景位置可以使用三种值：关键字、百分比、绝对或相对单位的数值
+    - 原点决定了元素和图片中某一点的水平和垂直坐标
+    - 默认情况下 `background-position` 的原点位于左上角，即元素的左上角和图片的左上角对齐，随后图片向各个方向的重复都是以左上角为起点
+    - 5 个关键字值 `top`、`left`、`bottom`、`right` 和 `center` 中的任意两个组合起来（顺序没影响）作为该属性的值
+        - 只给 `background-position` 设定一个关键字值，则另一个也会取相同的值
+    - 使用数值（如 40% 30%）时第一个值表示水平位置，第二个值表示垂直位置。只设定一个值，则将其用来设定水平位置，垂直位置会被设为 `center`
+    - 使用关键字和百分比值时，设定的值同时应用于元素和图片。如 `33% 33%`，图片水平 33% 的位置与元素水平 33% 的位置对齐，垂直方向也一样； `center center` 把图片的中心点定位在了元素的中心点
+    - 用像素设定时图片的左上角会被放在距离元素左上角指定位置的地方
+    - 负值可以把图片的左上角定位到元素外部，从而元素中只能看到部分图片；设定足够大的正值也可以把图片的右下角推到元素的外部
+- [`background-size`](demo/stylin3_code_files/chap3_code_files/background-size.html)
+    - `cover`：拉大图片使其完全填满背景区，保持宽高比（背景区显示的图片可能不完全）
+    - `contain`：缩放图片使其适应背景区，保持宽高比
+    - `50%`：缩放图片使其填充背景区的一半（背景区显示的图片可能不完全）
+    - `100px 50px`
+- `background-attachment` 属性控制滚动元素内的背景图片是否随元素滚动而移动
+    - 默认值是 `scroll`，即背景图片随元素移动
+    - 改为 `fixed`，背景图片不随元素滚动而移动
+        - > `background-attachment:fixed` 最常用于给 `body` 元素中心位置添加淡色水印，使水印不随页面滚动而移动
+- 简写背景属性
+    - `body {background:url(images/watermark.png) center #fff no-repeat contain fixed;} `
+    - 声明中少写了哪个属性的值（如没写 `no-repeat`）就会使用相应属性的默认值（`repeat`）
+- `background-clip`，`background-origin`，`background-break`，多背景图片
+- 背景渐变
+    - 分[线性渐变](demo/stylin3_code_files/chap3_code_files/线性渐变.html)和放射性渐变
+    - 线性渐变从元素的一端延伸到另一端，放射性渐变则从元素内一点向四周发散
+    - [渐变点](demo/stylin3_code_files/chap3_code_files/渐变点.html)就是渐变方向上的点，可以在这些点上设定颜色和不透明度。通过设定下一个渐变点的颜色值，就可以控制渐变的效果。可以添加任意多个渐变点。渐变点的位置一般使用整个渐变宽度的百分比来表示
+        - 开始和结束位置若没有声明， 则默认为 0% 和 100%
+        - 如果不是使用百分比或其他值声明渐变点的位置，则（三色情况）颜色会均匀分布于整个渐变，其实际位置是 0%、50%和 100%。
+    - [放射性渐变](demo/stylin3_code_files/chap3_code_files/放射性渐变.html)的属性是函数，可以接受参数指定形状、位置、尺寸、颜色和不透明度
