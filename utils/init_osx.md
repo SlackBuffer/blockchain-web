@@ -1,4 +1,6 @@
 - [git](https://git-scm.com/)
+    - `git config --local --list`, `--system`, `--global`
+    - `git config --local user.name sb`, `user.email`
 - [vscode](https://code.visualstudio.com/)
     - launching from the cli: ⇧⌘P - shell command
 - [ohmyzsh](https://ohmyz.sh/)
