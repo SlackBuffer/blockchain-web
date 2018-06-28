@@ -1,0 +1,19 @@
+- [git](https://git-scm.com/)
+- [vscode](https://code.visualstudio.com/)
+    - launching from the cli: ⇧⌘P - shell command
+- [ohmyzsh](https://ohmyz.sh/)
+- [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md)
+- [iTerm](https://iterm2.com/)
+- [golang](https://golang.org/)
+- [go](https://golang.org/dl/)
+    - [test installation](https://golang.org/doc/install)
+    - [Setting `GOPATH`](https://github.com/golang/go/wiki/SettingGOPATH)
+- [docker](https://store.docker.com/editions/community/docker-ce-desktop-mac)
+    - `docker --version`, `docker run hello-world`, `docker-compose -v`
+- [Homebrew](https://brew.sh/)
+    - `brew -v`
+- [npm](https://www.npmjs.com/get-npm)
+    - `node -v`, `npm -v`
+    - [ ] nodejs version manger: [NVM](https://github.com/creationix/nvm)
+- [yarn](https://yarnpkg.com/en/docs/install#mac-stable)
+    - `yarn -v`
