@@ -1,0 +1,28 @@
+{
+  "records": [
+    {
+      "id": "2",
+      "date": "date 2",
+      "title": "title 2",
+      "amount": -43
+    },
+    {
+      "id": "3",
+      "date": "date 3",
+      "title": "title 3",
+      "amount": 70
+    },
+    {
+      "id": "4",
+      "date": "date 4",
+      "title": "title 4",
+      "amount": 55
+    },
+    {
+      "id": "6",
+      "date": "2018",
+      "title": "title 4",
+      "amount": 44
+    }
+  ]
+}
