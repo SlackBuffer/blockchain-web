@@ -1,2 +1,4 @@
     - Setting Sync 插件
-        - personal access token: 4d813280e8a69c32bfd59e06d52a2bd2285d7825
+        - GitHub Token: 9bbc57a012efe52f9c06fee496906f1ff1fe100d
+        - GitHub Gist: a1d0f687aa89bc4543003c93496aa7db
+        - GitHub Gist Type: Secret
