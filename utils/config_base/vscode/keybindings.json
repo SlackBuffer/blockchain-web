@@ -1,0 +1,21 @@
+// 将键绑定放入此文件中以覆盖默认值
+[
+    {
+        "key": "alt+tab",
+        "command": "workbench.action.terminal.focusNext", // 切换到下一个终端 
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+k",
+        "command": "workbench.action.terminal.kill",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "shift+alt+z",
+        "command": "editor.action.toggleWordWrap"
+    },
+    {
+        "key": "alt+z",
+        "command": "-editor.action.toggleWordWrap"
+    },
+]

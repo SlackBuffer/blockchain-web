@@ -1,0 +1,2 @@
+    - Setting Sync 插件
+        - personal access token: 4d813280e8a69c32bfd59e06d52a2bd2285d7825

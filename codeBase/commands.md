@@ -8,8 +8,10 @@
 - 版本
     - `go version`
 - `go env`
+# npm
+    - > [docs](https://docs.npmjs.com/)
 # common
-- 安装源码
+- 源码安装
 
     ```
     ./configure
