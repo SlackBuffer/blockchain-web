@@ -1,0 +1,1 @@
+- 拷贝 `create-react-app` 创建的模板时，若有 node_modules 目录，要先删除，再重新 `npm install`，再 `npm start`，以免报错
