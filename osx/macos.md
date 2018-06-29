@@ -3,6 +3,8 @@
 - 12345678abcd -->
 - 触发角: 设置触发角时，按住 Command、Option、Control 或 Shift 键中的任意组合，可以额外追加触发条件。
 - 更改计算机名: 共享
+- 按住 option 点击 wifi 图标查看更多网络相关信息
+- Finder 里 shift + command + g：前往文件夹
 - fn + f11: 显示桌面
 - command + m: 最小化
 - option + 最大化小绿球
@@ -39,7 +41,7 @@
 - Option ⌥
 - Control ⌃
 - Caps Lock ⇪
-    - 如果您使用的是 Windows PC 专用键盘，请用 Alt 键代替 Option 键，用 Windows 标志键代替 Command。
+    - 如果您使用的是 Windows PC 专用键盘，请用 Alt 键代替 Option 键，用 Windows 标志键代替 Command
 ---
 - 查看 python 版本：`python`
 - 查 ip：`ifconfig` (en0 - inet)

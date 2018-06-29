@@ -10,6 +10,11 @@
 - `go env`
 # npm
     - > [docs](https://docs.npmjs.com/)
+# vscode
+- cmd+b: 开关侧边栏（非 md 文件）
+- cmd+p: 查找文件
+# terminal
+- zsh: ctrl+u，ctrl+w，ctrl+k
 # common
 - 源码安装
 
