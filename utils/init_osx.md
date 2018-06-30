@@ -3,6 +3,7 @@
     - `git config --local user.name sb`, `user.email`
 - [vscode](https://code.visualstudio.com/)
     - launching from the cli: ⇧⌘P - shell command
+    - [FiraCode](https://github.com/tonsky/FiraCode)
 - [ohmyzsh](https://ohmyz.sh/)
 - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md)
 - [iTerm](https://iterm2.com/)

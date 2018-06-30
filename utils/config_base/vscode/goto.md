@@ -1,4 +1,7 @@
-    - Setting Sync 插件
+- Setting Sync 插件
+    - sb
         - GitHub Token: 9bbc57a012efe52f9c06fee496906f1ff1fe100d
         - GitHub Gist: a1d0f687aa89bc4543003c93496aa7db
         - GitHub Gist Type: Secret
+    - jane
+        - ddece8b8f0f03aaf7d8eeb6ece2a93f4eed30419

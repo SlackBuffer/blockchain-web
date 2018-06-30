@@ -1,5 +1,9 @@
 # 搭建 Fabric 1.0 环境
 - > http://www.cnblogs.com/studyzy/p/7437157.html
+- `mkdir -p ~/go/src/github.com/hyperledger` 
+- `cd ~/go/src/github.com/hyperledger` 
+- `git clone https://github.com/hyperledger/fabric.git`
+- `git checkout v1.0.0`
 - `cd ~/go/src/github.com/hyperledger/fabric/examples/e2e_cli/`
 - `source download-dockerimages.sh -c x86_64-1.0.0 -f x86_64-1.0.0` 下载 Fabric Docker 1.0.0 镜像
 - `./network_setup.sh up`
