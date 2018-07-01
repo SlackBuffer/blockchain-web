@@ -59,3 +59,10 @@
 # 环境变量
 - .env.development.local
   - > https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables
+# 坑
+- 以下 POST 请求会有诡异问题
+
+  ```js
+  export const newRecord = (id, body) => 
+    axios.post(`${api}/api/v1/records`, body);
+  ```

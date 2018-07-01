@@ -47,8 +47,8 @@ class Records extends Component {
       isLoaded: true,
       error: null,
       records: [
-        ...this.state.records,
-        record
+        record,
+        ...this.state.records
       ]
     });
   }

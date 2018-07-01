@@ -6,7 +6,7 @@ export const getAllRecords = () => {
   return axios.get(`${api}/api/v1/records`);
 }
 
-export const newRecord = (id, body) => 
+export const newRecord = body => 
   axios.post(`${api}/api/v1/records`, body);
 
 export const updateRecord = (id, body) => 
