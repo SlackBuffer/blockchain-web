@@ -23,7 +23,13 @@
   ```
 
 - 新增数据的 id 不在前端创建，前端将数据发送至后端，后端生成 id，将数据和 id 一并返回
-  - 本例前端创建数据后直接更新页面，并未发起第二次请求
+  - 本例前端创建新记录后直接更新页面，并未发起第二次请求
+  - 添加成功后返回的 promise 的 `then()` 的数据就是新增的条目
+- GET, POST, PUT
+- `refs`
+- toggle 状态的方法用取反 `!` 有利于复用
+- `reduce` 对象数组的处理
+- bootstrap
 # 模拟数据
 - [mock API](https://www.mockapi.io/)
   - `curl http://5af71a21c222a90014dbda4f.mockapi.io/api/v1/records`
@@ -52,4 +58,4 @@
 - axios
 # 环境变量
 - .env.development.local
-- > https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables
+  - > https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables

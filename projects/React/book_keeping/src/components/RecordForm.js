@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import * as RecordsAPI from '../utils/RecordsAPI';
+
 export default class RecordForm extends Component {
   constructor(props) {
     super(props);
@@ -26,9 +28,30 @@ export default class RecordForm extends Component {
     return this.state.date && this.state.title && this.state.amount
   }
 
+  handleSubmit(event) {
+    event.preventDefault();
+    const formData = { 
+      ...this.state,
+      amount: Number.parseInt(this.state.amount, 10)
+    };
+    RecordsAPI.newRecord(formData).then(
+      response => {
+        console.log(response);
+        this.props.handleNewRecord(response.data);
+        this.setState({
+          date: "",
+          title: "",
+          amount: ""
+        });
+      }
+    ).catch(
+      error => console.log(error)
+    );
+  }
+
   render() {
     return (
-      <form className="form-inline mb-3">
+      <form className="form-inline mb-3" onSubmit={this.handleSubmit.bind(this)}>
         <div className="form- mr-1">
           <input type="date" className="form-control" onChange={this.handleChange.bind(this)} placeholder="Date" name="date" value={this.state.date} />
         </div>

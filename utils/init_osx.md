@@ -20,3 +20,4 @@
     - [ ] nodejs version manger: [NVM](https://github.com/creationix/nvm)
 - [yarn](https://yarnpkg.com/en/docs/install#mac-stable)
     - `yarn -v`
+- [VLC](https://www.videolan.org/vlc/)
