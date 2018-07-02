@@ -42,6 +42,7 @@
 - Control ⌃
 - Caps Lock ⇪
     - 如果您使用的是 Windows PC 专用键盘，请用 Alt 键代替 Option 键，用 Windows 标志键代替 Command
+- 修改文件默认打开方式：右击-显示简介-打开方式
 ---
 - 查看 python 版本：`python`
 - 查 ip：`ifconfig` (en0 - inet)
