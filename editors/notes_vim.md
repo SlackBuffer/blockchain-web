@@ -2,3 +2,4 @@
     - `a`: input commit message
     - `esc`
     - `:wq`: save and exit vim
+    - `:qa!`
