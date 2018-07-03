@@ -5,3 +5,6 @@
         - GitHub Gist Type: Secret
     - jane
         - ddece8b8f0f03aaf7d8eeb6ece2a93f4eed30419
+    - 2018-07-03
+        - GitHub Token: 9b7cd166d7541c61c3f4468e924d7fb5017f8072
+        - GitHub Gist: 4371f9982af6ff72693dced74dedc992
