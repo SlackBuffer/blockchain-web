@@ -1,0 +1,15 @@
+- Color map
+    - muted - gray
+    - primary - blue
+    - success - green
+    - info - light blue
+    - warning - yellow
+    - danger - red
+    - white - white
+    - inverse - black
+    - secondary - gray (for buttons)
+- `bg-`, `text-`
+- Spacing: `{property}{sides}-{size}`
+    - property: m, p
+    - sides: t, b, l, r, x (both left and right), y
+    - size: 0 - 5

@@ -82,91 +82,95 @@
         <!--########################START HERE#########################-->
         
         <!-- LIST GROUP -->
-        <ul>
-            <li>My List Item One</li>
-            <li>My List Item Two</li>
-            <li>My List Item Three</li>
-            <li>My List Item Four</li>
-            <li>My List Item Five</li>
+        <ul class="list-group">
+            <li class="list-group-item">My List Item One</li>
+            <li class="list-group-item">My List Item Two</li>
+            <li class="list-group-item">My List Item Three</li>
+            <li class="list-group-item">My List Item Four</li>
+            <li class="list-group-item">My List Item Five</li>
         </ul>
 
         <br><br>
 
         <!-- LIST GROUP WITH LINKS -->
-        <ul>
-            <a href="#">My List Item One</a>
-            <a href="#">My List Item Two</a>
-            <a href="#">My List Item Three</a>
-            <a href="#">My List Item Four</a>
-            <a href="#">My List Item Five</a>
+        <ul class="list-group">
+            <a class="list-group-item list-group-item-action" href="#">My List Item One</a>
+            <a class="list-group-item list-group-item-action active" href="#">My List Item Two</a>
+            <a class="list-group-item list-group-item-action" href="#">My List Item Three</a>
+            <a class="list-group-item list-group-item-action" href="#">My List Item Four</a>
+            <a class="list-group-item list-group-item-action" href="#">My List Item Five</a>
         </ul>
 
         <br><br>
 
         <!-- CONTEXTUAL CLASSES -->
-        <ul>
-            <li>My List Item One</li>
-            <li>My List Item Two</li>
-            <li>My List Item Three</li>
-            <li>My List Item Four</li>
-            <li>My List Item Five</li>
+        <ul class="list-group">
+            <li class="list-group-item">My List Item One</li>
+            <li class="list-group-item list-group-item-success">My List Item Two</li>
+            <li class="list-group-item list-group-item-info">My List Item Three</li>
+            <li class="list-group-item list-group-item-warning">My List Item Four</li>
+            <li class="list-group-item list-group-item-danger">My List Item Five</li>
         </ul>
 
         <br><br>
 
         <!-- LIST GROUP WITH BADGES -->
-        <ul>
-            <li>My List Item One</li>
-            <li>My List Item Two <span>23</span></li>
-            <li>My List Item Three <span>43</span></li>
-            <li>My List Item Four</li>
-            <li>My List Item Five</li>
+        <ul class="list-group">
+            <li class="list-group-item">My List Item One</li>
+            <li class="list-group-item justify-content-between">My List Item Two <span 
+                class="badge badge-default badge-pill">23</span></li>
+            <li class="list-group-item">My List Item Three <span>43</span></li>
+            <li class="list-group-item">My List Item Four</li>
+            <li class="list-group-item">My List Item Five</li>
         </ul>
 
         <br><br>
 
         <!-- CUSTOM CONTENT -->
-        <div>
-            <a href="#">
-                <div>
-                <h5>My Post One</h5>
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action
+                flex-column align-items-start active" href="#">
+                <div class="d-flex w-100 just-content-between">
+                <h5 class="mb-1">My Post One</h5>
                 <small>3 days ago</small>
                 </div>
-                <p>Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
                 <small>By Brad Traversy</small>
             </a>
-            <a href="#">
-                <div>
-                <h5>My Post Two</h5>
+            <a class="list-group-item list-group-item-action
+                flex-column align-items-start" href="#">
+                <div class="d-flex w-100 just-content-between">
+                <h5 class="mb-1">My Post Two</h5>
                 <small>3 days ago</small>
                 </div>
-                <p>Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
                 <small>By Brad Traversy</small>
             </a>
-            <a href="#">
-                <div>
-                <h5>My Post Three</h5>
+            <a class="list-group-item list-group-item-action
+                flex-column align-items-start" href="#">
+                <div class="d-flex w-100 just-content-between">
+                <h5 class="mb-1">My Post Three</h5>
                 <small>3 days ago</small>
                 </div>
-                <p>Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
                 <small>By Brad Traversy</small>
-            </a>
+            </a> 
         </div>
 
         <br><br>
 
         <!-- BREADCRUMB -->
-        <ol>
-            <li>Home</li>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Home</li>
         </ol>
-        <ol>
-            <li><a href="#">Home</a></li>
-            <li>Users</li>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item "><a href="#">Home</a></li>
+            <li class="breadcrumb-item ">Users</li>
         </ol>
-        <ol>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Users</a></li>
-            <li>Brad</li>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item "><a href="#">Home</a></li>
+            <li class="breadcrumb-item "><a href="#">Users</a></li>
+            <li class="breadcrumb-item ">Brad</li>
         </ol>
 
     </div><!-- ./container -->

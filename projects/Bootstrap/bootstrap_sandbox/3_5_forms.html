@@ -83,101 +83,101 @@
 
         <!-- FORM -->
         <form>
-            <div>
+            <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" placeholder="Enter name">
+                <input class="form-control form-control-sm" type="text" id="name" placeholder="Enter name">
             </div>
-            <div>
+            <div class="form-group">
                 <label for="email">Email address</label>
-                <input type="email" id="email" placeholder="Enter email">
-                <small>Your email will not be shared with anyone</small>
+                <input class="form-control form-control-lg" type="email" id="email" placeholder="Enter email">
+                <small class="form-text text-muted">Your email will not be shared with anyone</small>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Password" readonly>
+                <input class="form-control" type="password" id="password" placeholder="Password" readonly>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="gender">Gender</label>
-                <select id="gender">
+                <select class="form-control" id="gender">
                 <option>Male</option>
                 <option>Female</option>
                 </select>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="message">Message</label>
-                <textarea id="message" rows="3"></textarea>
+                <textarea class="form-control" id="message" rows="3"></textarea>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="file">File input</label>
-                <input type="file" id="file">
-                <small id="fileHelp">Max 3mb size</small>
+                <input class="form-group-file" type="file" id="file">
+                <small class="form-text text-muted" id="fileHelp">Max 3mb size</small>
             </div>
 
-            <fieldset>
+            <fieldset class="form-group">
                 <legend>What are you using this service for?</legend>
-                <div>
-                <label>
-                    <input type="radio" value="option1" checked>
-                    Personal
-                </label>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="option1" checked>
+                        Personal
+                    </label>
                 </div>
                 <div class="form-check">
-                <label>
-                    <input type="radio" value="option2">
-                    Commercial Use
-                </label>
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="option2">
+                        Commercial Use
+                    </label>
                 </div>
-                <div>
-                <label>
-                    <input type="radio" value="option3" disabled>
-                   Testing
-                </label>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="option3" disabled>
+                    Testing
+                    </label>
                 </div>
             </fieldset>
-            <div>
-                <label>
-                <input type="checkbox">
+            <div class="form-check">
+                <label class="form-check-label">
+                <input class="form-check-input" type="checkbox">
                     Sign up for newsletter
                 </label>
             </div>
-            <button type="submit">Submit</button>
+            <button class="btn btn-primary" type="submit">Submit</button>
         </form>
 
         <br><br>
 
         <!-- INLINE FORM -->
-        <form>
-            <input type="text" id="username" placeholder="Enter username">
-            <input type="text" id="password" placeholder="Password">
-            <div>
-                <label>
-                    <input type="checkbox"> Remember me
+        <form class="form-inline">
+            <input class="form-control mr-2" type="text" id="username" placeholder="Enter username">
+            <input class="form-control mr-2" type="text" id="password" placeholder="Password">
+            <div class="form-check">
+                <label class="form-check-label mr-2">
+                    <input class="form-check-input" type="checkbox"> Remember me
                 </label>
             </div>
 
-            <button type="submit">Submit</button>
+            <button class="btn btn-secondary" type="submit">Submit</button>
         </form>
 
         <br><br>
 
         <!-- VALIDATION -->
-        <div>
+        <div class="form-group has-success">
             <label for="username">Username</label>
-            <input type="text" id="username">
-            <div>Username available</div>
-            <small>Must be at least 8 characters</small>
+            <input class="form-control form-control-success" type="text" id="username">
+            <div class="form-control-feedback">Username available</div>
+            <small class="form-text text-muted">Must be at least 8 characters</small>
         </div>
-        <div>
+        <div class="form-group has-warning">
             <label for="password">Password</label>
-            <input type="text" id="password">
-            <div>That password is not safe</div>
-            <small>Please use a strong password</small>
+            <input class="form-control form-control-warning" type="text" id="password">
+            <div class="form-control-feedback">That password is not safe</div>
+            <small class="form-text text-muted">Please use a strong password</small>
         </div>
-        <div>
+        <div class="form-group has-danger">
             <label for="password2">Confirm Password</label>
-            <input type="text" id="password2">
-            <div>Password does not match</div>
-            <small>Must match the first password</small>
+            <input class="form-control form-control-danger" type="text" id="password2">
+            <div class="form-control-feedback">Password does not match</div>
+            <small class="form-text text-muted">Must match the first password</small>
         </div>
 
     </div><!-- ./container -->
