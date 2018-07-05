@@ -1,5 +1,3 @@
-export const fetchGames = () => {
-  return {
-    type:'/api/games'
-  }
-};
+export const fetchGames = () => ({
+  type: '/api/games'
+});
