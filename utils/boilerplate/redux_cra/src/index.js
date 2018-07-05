@@ -18,14 +18,12 @@ let store;
 if (process.env.NODE_ENV === 'development') {
   store = createStore(
     rootReducer,
-    composeWithDevTools(
-      applyMiddleware(logger, sagaMiddleware)
-    )
+    composeWithDevTools(applyMiddleware(logger, sagaMiddleware))
   );
   if (module.hot) {
-    module.hot.accept('./reducers', ()=> {
-      store.replaceReducer(rootReducer)
-    })
+    module.hot.accept('./reducers', () => {
+      store.replaceReducer(rootReducer);
+    });
   }
 } else {
   store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
@@ -34,21 +32,21 @@ if (process.env.NODE_ENV === 'development') {
 sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
-  <Provider store={ store }>
+  <Provider store={store}>
     <App />
-  </Provider>, 
+  </Provider>,
   document.getElementById('root')
 );
 
 if (module.hot) {
   module.hot.accept('./components/App', () => {
     ReactDOM.render(
-      <Provider store={ store }>
+      <Provider store={store}>
         <App />
       </Provider>,
       document.getElementById('root')
     );
-  })
+  });
 }
 
 // registerServiceWorker();
