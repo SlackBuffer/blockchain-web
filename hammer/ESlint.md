@@ -1,0 +1,2 @@
+- https://georgespake.com/blog/eslint/
+- https://stackoverflow.com/questions/37682705/avoid-no-shadow-eslint-error-with-mapdispatchtoprops
