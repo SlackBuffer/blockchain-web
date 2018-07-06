@@ -12,7 +12,7 @@
 - dispatch
     1. 不传 mapDispachToProps 用 `this.props.dispatch()` 调用
     1. `connect(mapDispatchToProps)`
-    2. `bindActionsCreators`
+    2. `bindActionCreators`
         - actions 很多时用这种写法可以简化
     3. `connect(null, { increment, decrement })(App)` 这样用
 - 中间件
