@@ -9,7 +9,7 @@
 </head>
 <body>
   <header>
-    <h1 class="display-3 text-center my-4">Tooltips</h1>
+    <h1 class="display-3 text-center my-4">Collapse & Accordion</h1>
     <div class="container">
       <div class="row">
         <div class="col-md-3">
@@ -81,10 +81,58 @@
   <div class="container">
     <!--########################START HERE#########################-->
 
-    <!-- TOOLTIPS -->
+    <!-- BUTTON WITH COLLAPSE -->
+    <button data-target="#collapse-btn-1" data-toggle="collapse" class="btn btn-primary d-block mb-4">
+        Read More
+    </button>
+    <div class="collapse" id="collapse-btn-1">
+        <div class="card">
+            <div class="card-block">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi expedita, rerum adipisci esse in autem ad? Aut natus at a sapiente explicabo libero distinctio dicta, vero similique, laborum nobis cupiditate.
+            </div>
+        </div>
+    </div>
 
 
-    <!-- TOOLTIPS WITH HTML -->
+    <!-- ACCORDION -->
+    <div role="tablist" id="accordion">
+        <div class="card">
+            <div class="card-header" role="tab" id="heading1">
+                <h5><a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    Collapse One
+                </a></h5>
+            </div>
+            <div id="collapse1" class="collapse show">
+                <div class="card-block">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad eligendi architecto error corporis facilis ab vero sapiente beatae iste aliquam aut a, illo vitae dicta officia nostrum, odio sed nihil magni. A quibusdam iure id adipisci fugit tempora repellat. Cumque cupiditate non amet hic temporibus deleniti architecto libero, dolores voluptatem.
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="heading2">
+                <h5><a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                    Collapse Two
+                </a></h5>
+            </div>
+            <div id="collapse2" class="collapse">
+                <div class="card-block">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad eligendi architecto error corporis facilis ab vero sapiente beatae iste aliquam aut a, illo vitae dicta officia nostrum, odio sed nihil magni. A quibusdam iure id adipisci fugit tempora repellat. Cumque cupiditate non amet hic temporibus deleniti architecto libero, dolores voluptatem.
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="heading3">
+                <h5><a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                    Collapse Three
+                </a></h5>
+            </div>
+            <div id="collapse3" class="collapse">
+                <div class="card-block">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad eligendi architecto error corporis facilis ab vero sapiente beatae iste aliquam aut a, illo vitae dicta officia nostrum, odio sed nihil magni. A quibusdam iure id adipisci fugit tempora repellat. Cumque cupiditate non amet hic temporibus deleniti architecto libero, dolores voluptatem.
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
 
   <div style="margin-top:500px;"></div>

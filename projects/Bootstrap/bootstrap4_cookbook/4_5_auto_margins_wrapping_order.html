@@ -6,10 +6,20 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   <title>Bootstrap Sandbox</title>
+  <style>
+        .row-hl{
+            background:#f4f4f4;
+            height:150px;
+        }
+
+        .item-hl{
+            border:1px solid #333;
+        }
+    </style>
 </head>
 <body>
   <header>
-    <h1 class="display-3 text-center my-4">Collapse & Accordion</h1>
+    <h1 class="display-3 text-center my-4">Auto Margins & Wrapping</h1>
     <div class="container">
       <div class="row">
         <div class="col-md-3">
@@ -81,10 +91,93 @@
   <div class="container">
     <!--########################START HERE#########################-->
 
-    <!-- BUTTON WITH COLLAPSE -->
+    <!-- MR-AUTO -->
+    <div class="d-flex row-hl">
+        <div class="mr-auto p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+    </div>
+
+    <br><br>
+
+    <!-- ML-AUTO -->
+    <div class="d-flex row-hl">
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="ml-auto p-2 item-hl">Flex item</div>
+    </div>
+
+    <br><br>
+
+    <!-- MB-AUTO -->
+    <div class="d-flex flex-column row-hl">
+        <div class="mb-auto p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+    </div>
+
+    <br><br>
+
+    <!-- MT-AUTO -->
+    <div class="d-flex flex-column row-hl">
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="mt-auto p-2 item-hl">Flex item</div>
+    </div>
+
+    <br><br>
+
+    <!-- NO WRAP -->
+    <div class="d-flex flex-nowrap row-hl">
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+        <div class="p-2 item-hl">Flex item</div>
+
+    </div>
+
+    <br><br>
+
+    <!-- WRAP -->
+    <div class="d-flex flex-wrap row-hl">
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+      <div class="p-2 item-hl">Flex item</div>
+    </div>
+
+    <br><br>
+
+    <!-- ORDERING -->
+    <div class="d-flex row-hl">
+        <div class=" flex-last p-2 item-hl">Flex item 1</div>
+        <div class="p-2 item-hl">Flex item 2</div>
+        <div class="flex-first p-2 item-hl">Flex item 3</div>
+    </div>
 
 
-    <!-- ACCORDION -->
   </div>
 
   <div style="margin-top:500px;"></div>
