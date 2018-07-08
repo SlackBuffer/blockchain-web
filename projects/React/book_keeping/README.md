@@ -1,3 +1,4 @@
+- 显示/编辑之间切换：用 `isEditting` 状态标记，`true` 时显示的是输入表单；`false` 时显示的是 `<tr>` 等
 - 控制 button 是否为 disabled
 
   ```js
