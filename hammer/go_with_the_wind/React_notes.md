@@ -140,7 +140,7 @@
 
         ```
         # .env
-        REACT_APP_DECORATORS=true
+        REACT_APP_DECORATORS=true   # 处理 @ 装饰器的
 
         # configureStore.js
         if (process.env.NODE_ENV === 'production') {
@@ -149,6 +149,8 @@
           module.exports = require('./configureStore.dev');
         }
         ```
+
+        - `NODE_ENV`  是内置的环境变量，运行 `yarn build` 值是 production，运行 `yarn start` 是 development
 
 - `create-react-app` 可以设置环境变量
     - 配置环境变量后要重启服务
