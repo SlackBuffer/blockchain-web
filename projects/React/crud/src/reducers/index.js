@@ -2,16 +2,6 @@ import { combineReducers } from 'redux';
 
 import games from './games';
 
-const rootReducer = combineReducers({
+export default combineReducers({
   games
 });
-
-export default rootReducer;
-
-/* 
-{
-  counter: counter,
-  user: user,
-  ...
-} 
-*/

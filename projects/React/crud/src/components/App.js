@@ -1,6 +1,13 @@
-import React from 'react';
-import './App.css';
+import React, { Component } from 'react';
 
-const App = () => <div>Home</div>;
+class App extends Component {
+  render() {
+    return (
+      <div>
+        Home
+      </div>
+    );
+  }
+}
 
 export default App;

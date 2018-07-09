@@ -1,9 +1,6 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "babel": {
-    "presets": ["env"]
-  },
   "description": "",
   "main": "server.js",
   "scripts": {
@@ -14,11 +11,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3"
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "mongodb": "^3.0.5"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "nodemon": "^1.17.5"
+    "babel-preset-env": "^1.6.1",
+    "nodemon": "^1.17.2"
   }
 }
