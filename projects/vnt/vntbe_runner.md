@@ -2,6 +2,8 @@ docker run --name candybox -p 5432:5432 -v ~/db/postgresql/data:/var/lib/postgre
 
 docker run --name candybox -p 5432:5432 -e POSTGRES_PASSWORD=yunphant2018 -e POSTGRES_USER=yunphant -e POSTGRES_DB=candybox -d postgres
 
+docker exec -it candybox bash
+
 docker run --name testmysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=hofungkoeng -e MYSQL_USER=hofungkkoeng -e MYSQL_PASSWORD=hofungkoeng -e MYSQL_DATABASE=test -d mysql
 docker exec -it testmysql bash 
 mysql -uroot -p
