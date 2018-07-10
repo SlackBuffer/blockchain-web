@@ -8,7 +8,8 @@
 - 版本
     - `go version`
 - `go env`
-# npm
+# npm & yarn
+- `yarn add react@next react-dom@next` 升级 react
     - > [docs](https://docs.npmjs.com/)
 # vscode
 - cmd+b: 开关侧边栏（非 md 文件）
