@@ -1,0 +1,26 @@
+- HOC
+    - HOC 返回的新组件可以理解成父组件，给传入的子组件传 props
+- 带 `#` 的地址
+    - `import { HashRouter as Router } from 'react-router-dom`
+- url 参数传递
+    - Contact.js
+- 点击跳转
+    - About.js
+    - `push`
+- 无状态组件用 `PureComponent`
+    - `class App extends PureComponent`
+- 把并列的组件包起来而不引入 `<div>`（HOC.js）
+    - 用 `<Fragment>`
+    - 用高阶组件
+    - 用数组（要为每个组件加 key）
+- 父组件一步传值给深层嵌套组件
+    - 用 context
+- https://github.com/renatorib/react-powerplug
+- defaultProps 两种写法
+    1. `App.defaultProps = { name: 'hofungkoeng' }`，可用于无状态组件
+    2. `static defaultProps = { name: 'hofungkoeng' }`，要用于 class 的写法
+- propTypes 不一定要加 isRequired
+- Render props
+    - 嵌套太深 props 来自哪个高阶组件就不清晰
+    - 父组件传入 `this.props.render` 方法，该方法返回一个被包裹组件，并嵌入了父组件传过去的参数
+    - https://cdb.reacttraining.com/use-a-render-prop-50de598f11ce
