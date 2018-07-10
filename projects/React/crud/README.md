@@ -8,6 +8,7 @@
   - 共用新增的表单；加对应 item 的 id 作为 url 参数；生命周期函数里加判断，若带 id 参数，就去数据库请求数据，填充输入框
 - `mapStateToProps(state, props)` 接两个参数的写法
 - `componentWillReceiveProps`：`this.props.game` 该开始没有值，通过异步得到值，接受新的 props 值时得到
+- Redirect 跳转（GameFormPage）
 # be
 - [nodemon](https://github.com/remy/nodemon/)
   - 文件改变自动重启服务器
