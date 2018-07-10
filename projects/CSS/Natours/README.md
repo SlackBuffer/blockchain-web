@@ -1,0 +1,2 @@
+- clip-path code
+    - http://bennettfeely.com/clippy/
