@@ -123,9 +123,13 @@
 # 命令
 
 ```SQL
+docker exec -it candybox bash   # 进入数据库容器
+psql -U postgres candybox       # 进入指定数据库
 psql -U postgres tysql
+
 \d              # show databases
 \dt             # show data tables
+\d users        # 查看指定表
 
 CREATE DATABASE new_database;
 SELECT prod_id, prod_name, prod_price FROM Products;    -- 检索多列
