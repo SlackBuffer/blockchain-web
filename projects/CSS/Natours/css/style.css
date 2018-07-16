@@ -7,14 +7,17 @@ Dark green: #28b485
 
 */
 
-* {
+*,
+*::after,
+*::before {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: inherit;
 }
 
 html {
-    font-size: 10px;
+    /* font-size: 10px; 这样写用户修改浏览器的默认字体大小将失效，不好*/
+    font-size: 62.5%;
 }
 
 /* font 相关的都放 body 里，利用到继承的特性 */
@@ -25,6 +28,7 @@ body {
     line-height: 1.7;
     color: rgb(119, 119, 119);
     padding: 3rem;  /* 不继承 */
+    box-sizing: border-box;
 }
 
 .header {
@@ -34,22 +38,27 @@ body {
     background-size: cover;  /* 铺满 viewport 下它的 container */    
     background-position: top;   /* 无论 viewport 如何缩放，图片顶部永远保持在它的 container 顶部，不会被裁剪*/ 
     position: relative;
-
+    
     clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%)    /* 逆时针，n 个坐标 */
 }
 
-.logo-box {
+.header__logo-box {
     /* 相对于 .header */
     position: absolute;
     top: 4rem;
     left: 4rem;
 }
 
-.logo {
+.header__logo {
     height: 3.5rem;   /* 设置高度后宽度浏览器会自行计算宽度；设置宽度同理会自行计算高度 */
 }
 
-.text-box {
+.header__logo:hover {
+    animation: moveInRight 1s ease-out;
+    animation-delay: .5s;
+}
+
+.header__text-box {
     /* 相对于 .header */
     position: absolute;
     /* 相对于最近的非 normal 父元素定位 */
@@ -69,7 +78,7 @@ body {
     margin-bottom: 6rem;
 }
 
-.heading-primary-main {
+.heading-primary--main {
     display: block;
     font-size: 6rem;
     font-weight: 400;
@@ -84,18 +93,13 @@ body {
     */
 }
 
-.heading-primary-sub {
+.heading-primary--sub {
     display: block;
     font-size: 2rem;
     font-weight: 700;
     letter-spacing: 1.75rem;
 
     animation: moveInRight 1s ease-out;
-}
-
-.logo:hover {
-    animation: moveInRight 1s ease-out;
-    animation-delay: .5s;
 }
 
 @keyframes moveInLeft {
@@ -161,7 +165,7 @@ body {
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.2);
 }
 
-.btn-white {
+.btn--white {
     background-color: #fff;
     color: #777;
 }
@@ -184,7 +188,7 @@ body {
     transition: all .4s;
 }
 
-.btn-white::after {
+.btn--white::after {
     background-color: white;
 }
 
@@ -206,7 +210,7 @@ body {
     }
 }
 
-.btn-animated {
+.btn--animated {
     animation: moveInBottom .5s ease-out .75s;
     /* 在动画触发前应用 0% 的样式 */
     animation-fill-mode: backwards;
