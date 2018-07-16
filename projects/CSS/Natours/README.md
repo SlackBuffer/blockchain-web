@@ -1,4 +1,5 @@
-- clip-path code generator
+- [ ] `a:link`, `btn:link`
+- > clip-path code generator
     - http://bennettfeely.com/clippy/
 ---
 - architect mindset
@@ -76,3 +77,11 @@
         - 非零的 `opacity` 值，transform，filter 等其他属性也会创建新的 stacking context
     5. Other elements in the render tree (siblings, parents)
     6. Viewport size, dimensions of images, etc.
+# SASS
+- 两种 SASS 语法：SCSS 写法更类似 CSS；SASS 用缩进
+- demo
+    - https://codepen.io/slackbuffer/pen/ZjWQga?editors=1100
+        1. float, clear-fix
+        2. 嵌套（包括伪类）
+        3. 变量
+        4. 内置方法：`darken`, `lighten`
