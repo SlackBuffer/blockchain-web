@@ -6,14 +6,13 @@
   background-image: linear-gradient(to bottom, $color-login-bg-start, $color-login-bg-end);
   position: relative;
 
-  .login-header {
+  .login-for__header {
       width: 450px;
       margin: 0 auto;
       text-align: center;
-      // margin-top: calc(50% - 435px / 2 - 40px - 79px);
-
-
-      &__logo {
+      
+      img {
+        // margin-top: calc(50vh - (435px / 2) - 40px - 79px);
         width: 193px;
       }
   }
@@ -21,6 +20,7 @@
   .login-form {
     width: 450px;
     height: 435px;
+    padding-top: 40px;
     background-color: $color-login-form-bg;
     position: absolute;
     top: 50%;

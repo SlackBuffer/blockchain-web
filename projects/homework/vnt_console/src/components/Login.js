@@ -8,10 +8,10 @@ class Login extends Component {
   render() {
     return (
       <div className="login-container">
-        <div className="login-header">
-          <img className="login-header__logo" src={require('../assets/img/login-logo.png')} alt="" />
-        </div>
         <div className="login-form">
+          <div className="login-form__header">
+            <img src={require('../assets/img/login-logo.png')} alt="" />
+          </div>
 
         </div>
         <div className="login-footer">
