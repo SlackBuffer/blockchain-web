@@ -1,0 +1,29 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 62.5%;
+}
+
+body {
+  font-family: "Microsoft YaHei", "微软雅黑", "PingFangSC-Regular", sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+
+  // color:
+  // background-size: cover;
+  // background-repeat: no-repeat;
+
+  min-height: 100vh;
+}
+
+// COLORS
+$color-login-bg-start: #313c4b;
+$color-login-bg-end: #3c4756;
+$color-login-form-bg: #fff;
