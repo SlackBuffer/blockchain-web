@@ -1,0 +1,57 @@
+.btn {
+    &:link,
+    &:visited {
+        text-transform: uppercase;
+        text-decoration: none;
+        padding: 1.5rem 4rem;
+        display: inline-block;
+        border-radius: 10rem;
+        /* 为要发生 transition 的属性添加参数 */
+        transition: all .2s;
+        position: relative;
+    }
+    &:hover {
+        transform: translateY(-3px);
+        /* x offset y offset blur color */
+        box-shadow: 0 1rem 2rem rgba($color-black, .2);
+
+        /* button 在 hover 状态下才出现的伪元素 */
+        &::after {
+            transform: scaleX(1.4) scaleY(1.6);
+            opacity: 0;
+        }
+    }
+    &:active {
+        transform: translateY(-1px);
+        box-shadow: 0 .5rem 1rem rgba($color-black, .2);
+    }
+    &--white {
+        background-color: $color-white;
+        color: $color-grey-dark;
+
+        &::after {
+            background-color: white;
+        }
+    }
+    /* 添加一个和已有 button 完全一样的伪元素 */
+    /* 伪元素的 content 必须要写，即使为空，否则不会显示 */
+    &::after {
+        content: "";
+        display: inline-block;
+        /* ::after button 被当做是真实 button 的 child，所以大小是相对于真实 button */
+        height: 100%;
+        width: 100%;
+        border-radius: 10rem;
+        /* 相对于真实 button 的初始状态 */
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        transition: all .4s;
+    }
+    &--animated {
+        animation: moveInBottom .5s ease-out .75s;
+        /* 在动画触发前应用 0% 的样式 */
+        animation-fill-mode: backwards;
+    }
+}

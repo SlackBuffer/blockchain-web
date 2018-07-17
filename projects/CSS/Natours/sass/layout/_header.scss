@@ -1,0 +1,36 @@
+.header {
+    height: 95vh;
+    /* 渐变在前，背景图片在后 */
+    background-image: linear-gradient(to right bottom, rgba($color-primary-light, 0.8), rgba($color-primary-dark, 0.8)), url('../img/hero.jpg');
+    background-size: cover;
+    /* 铺满 viewport 下它的 container */
+    background-position: top;
+    /* 无论 viewport 如何缩放，图片顶部永远保持在它的 container 顶部，不会被裁剪*/
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
+    /* 逆时针，n 个坐标 */
+    &__logo-box {
+        /* 相对于 .header */
+        position: absolute;
+        top: 4rem;
+        left: 4rem;
+    }
+    &__logo {
+        height: 3.5rem;
+        /* 设置高度后宽度浏览器会自行计算宽度；设置宽度同理会自行计算高度 */
+        &:hover {
+            animation: moveInRight 1s ease-out;
+            animation-delay: .5s;
+        }
+    }
+    &__text-box {
+        /* 相对于 .header */
+        position: absolute;
+        /* 相对于最近的非 normal 父元素定位 */
+        top: 40%;
+        left: 50%;
+        /* 相对于元素自身定位 */
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+}

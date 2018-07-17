@@ -1,0 +1,19 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    /* font-size: 10px; 这样写用户修改浏览器的默认字体大小将失效，不好*/
+    font-size: 62.5%;
+}
+
+/* font 相关的都放 body 里，利用到继承的特性 */
+
+body {
+    /* 不继承 */
+    box-sizing: border-box;
+}
