@@ -9,5 +9,5 @@
         - GitHub Token: 9b7cd166d7541c61c3f4468e924d7fb5017f8072
         - GitHub Gist: 4371f9982af6ff72693dced74dedc992
     - 2018-07-17
-        - GitHub Token: f95f6ad6c57cd21a7cc22d3a97d02b819c3756b0
-        - GitHub Gist: 0c1cb7d3eeaac9a3afcbaa284c3450e3
+        - GitHub Token: 2cbfc88a83392abf3209d80b12e1fa6e62098834
+        - GitHub Gist: 6f164dc65d559a75bf0991d28a3229ac
