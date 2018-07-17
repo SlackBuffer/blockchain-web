@@ -1,0 +1,8 @@
+@mixin clearfix {
+    &::after {
+        // content 必须指定，否则伪元素不会生效；设为空是因为不需要显示在界面上
+        content: "";
+        display: table;
+        clear: both;
+    }
+}

@@ -77,6 +77,13 @@
         - 非零的 `opacity` 值，transform，filter 等其他属性也会创建新的 stacking context
     5. Other elements in the render tree (siblings, parents)
     6. Viewport size, dimensions of images, etc.
+- responsive design principles
+    1. fluid grids and layouts
+        - user `%` rather than `px` for all layout-related lengths
+        - layout types: float, flexbox, css grid
+    2. flexible/responsive images
+    3. media queries
+# Float
 # SASS
 - 两种 SASS 语法：SCSS 写法更类似 CSS；SASS 用缩进
 - demo
