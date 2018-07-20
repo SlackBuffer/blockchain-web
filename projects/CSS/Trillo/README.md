@@ -1,6 +1,8 @@
 - svg icons
     - https://iconmoon.io
 - css custom property
+- `fill: currentColor`
+- http://cubic-bezier.com/
 # flexbox
 - 无需知道盒子尺寸
 - 适用于一维布局
