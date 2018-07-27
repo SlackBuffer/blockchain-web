@@ -1,3 +1,4 @@
+- 图片默认 inline，不设成 block 下方会有小间隙 
 - svg icons
     - https://iconmoon.io
 - css custom property
