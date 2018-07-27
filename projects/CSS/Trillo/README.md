@@ -1,3 +1,12 @@
+- z-index 只在设定了 position 后才有效
+- select
+
+    ```css
+    .paragraph:not(:last-of-type) {
+        margin-bottom: 2rem;
+    }
+    ```
+
 - 图片默认 inline，不设成 block 下方会有小间隙 
 - svg icons
     - https://iconmoon.io
