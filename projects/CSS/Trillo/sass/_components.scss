@@ -1,7 +1,7 @@
 // LOGO
 .logo {
     height: 3.25rem;
-    margin-left: 2rem; 
+    margin-left: 2rem;
 }
 
 // SEARCH
@@ -41,10 +41,10 @@
         }
     }
 
-    &__input:focus + &__button {
+    &__input:focus+&__button {
         background-color: var(--color-grey-light-3);
     }
-  
+
     &__button {
         /*  */
         border: none;
@@ -75,8 +75,8 @@
     display: flex;
     align-items: center;
 
-    & > * {
-        padding: 0 2rem; 
+    &>* {
+        padding: 0 2rem;
         cursor: pointer;
         height: 100%;
 
@@ -84,7 +84,7 @@
         align-items: center;
     }
 
-    & > *:hover {
+    &>*:hover {
         background-color: var(--color-grey-light-2);
     }
 
@@ -101,14 +101,14 @@
     &__notification {
         font-size: .8rem;
         height: 1.75rem;
-        width: 1.75rem; 
+        width: 1.75rem;
         border-radius: 50%;
         background-color: var(--color-primary);
-        color: #fff; 
+        color: #fff;
 
         position: absolute;
         top: 1.5rem;
-        right: 1.1rem; 
+        right: 1.1rem;
 
         display: flex;
         align-items: center;
@@ -146,11 +146,10 @@
         height: 100%;
         width: 3px;
         background-color: var(--color-primary);
-        transform: scaleY(0);
-        // transform-origin: center;   default value
+        transform: scaleY(0); // transform-origin: center;   default value
         transition: transform .2s,
-                    width .4s cubic-bezier(1,0,0,1) .2s,
-                    background-color .1s;
+        width .4s cubic-bezier(1, 0, 0, 1) .2s,
+        background-color .1s;
     }
 
     &__item:hover::before,
@@ -200,8 +199,7 @@
     justify-content: space-between;
 
     &__photo {
-        width: 100%;
-        // 图片默认 inline，不设成 block 下方会有小间隙
+        width: 100%; // 图片默认 inline，不设成 block 下方会有小间隙
         display: block;
     }
 }
@@ -210,7 +208,7 @@
 .overview {
     display: flex;
     align-items: center;
-    border-bottom: var(--line); 
+    border-bottom: var(--line);
 
     &__heading {
         font-size: 2.25rem;
@@ -223,7 +221,7 @@
     &__stars {
         // flexbox trick !!!
         margin-right: auto;
-        display: flex;  // 清除 star svg 下的小间隙
+        display: flex; // 清除 star svg 下的小间隙
     }
 
     &__icon-star,
@@ -265,7 +263,7 @@
     &__rating-count {
         font-size: .8rem;
         text-transform: uppercase;
-    }  
+    }
 
 }
 
@@ -274,7 +272,7 @@
     border: none;
     color: var(--color-primary);
     font-size: inherit;
-    border-bottom: 1px solid currentColor;  // 和 text 颜色一样
+    border-bottom: 1px solid currentColor; // 和 text 颜色一样
     padding-bottom: 2px;
     display: inline-block;
     background-color: transparent;
@@ -304,7 +302,7 @@
 @keyframes pulsate {
     0% {
         transform: scale(1);
-        box-shadow: none; 
+        box-shadow: none;
     }
 
     50% {
@@ -313,7 +311,7 @@
     }
     100% {
         transform: scale(1);
-        box-shadow: none; 
+        box-shadow: none;
     }
 }
 
@@ -329,7 +327,7 @@
     padding: 3rem 0;
     border-top: var(--line);
     border-bottom: var(--line);
-    
+
     display: flex;
     flex-wrap: wrap;
 
@@ -343,16 +341,12 @@
         display: inline-block;
         height: 1rem;
         width: 1rem;
-        margin-right: .7rem;
-
-        // feature query
+        margin-right: .7rem; // feature query
         // older browsers
-/*         background-image: url(../img/chevron-thin-right.svg);
+        /*         background-image: url(../img/chevron-thin-right.svg);
         background-size: cover; */
-
         // new browsers - masks
-        background-color: var(--color-primary);
-        // mask 元素下的 background 才看得到
+        background-color: var(--color-primary); // mask 元素下的 background 才看得到
         -webkit-mask-image: url(../img/chevron-thin-right.svg);
         -webkit-mask-size: cover;
         mask-image: url(../img/chevron-thin-right.svg);
@@ -372,9 +366,7 @@
         margin-right: auto;
     }
 
-    &__friends {
-
-    }
+    &__friends {}
 
     &__photo {
         box-sizing: content-box;
@@ -390,7 +382,6 @@
 }
 
 // REVIEWS
-
 .review {
     background-color: #fff;
     box-shadow: var(--shadow-light);
@@ -439,9 +430,7 @@
         color: var(--color-primary);
         font-size: 2.2rem;
         font-weight: 300;
-    }
-
-    // ::before creates a pseudo-element that is the first child of the selected element
+    } // ::before creates a pseudo-element that is the first child of the selected element
     &::before {
         content: "\201C";
         position: absolute;
@@ -452,5 +441,70 @@
         font-family: sans-serif;
         line-height: 1;
         z-index: 1；
+    }
+}
+
+// CALL TO ACTION
+.cta {
+    text-align: center;
+    padding: 3.5rem 0;
+
+    &__book-now {
+        font-size: 2rem;
+        font-weight: 300;
+        text-transform: uppercase;
+        margin-bottom: 2.5rem;
+    }
+}
+
+// BUTTON
+.btn {
+    font-size: 1.5rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    border-radius: 100px;
+    border: none;
+    background-image: linear-gradient(to right, var(--color-primary-light), var(--color-primary-dark));
+    color: #fff;
+
+    position: relative;
+
+    overflow: hidden;
+    cursor: pointer;
+
+    & > * {
+        display: inline-block;
+        height: 100%;
+        width: 100%;
+        transition: all .2s;
+    }
+
+    &__visible {
+        padding: 2rem 7.5rem;
+    }
+
+    &__invisible {
+        position: absolute;
+        padding: 2rem 0;
+        left: 0;
+        top: -100%; // 上移元素本身的高度
+    }
+
+    &:hover {
+        background-image: linear-gradient(to left, var(--color-primary-light), var(--color-primary-dark));
+
+    }
+
+    &:hover &__visible {
+        transform: translateY(100%);    // 下移元素本身的高度
+    }
+
+    &:hover &__invisible {
+        top: 0;
+    }
+
+    &:focus {
+        outline: none;
+        animation: pulsate 1s infinite;
     }
 }
