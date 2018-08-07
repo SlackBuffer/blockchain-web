@@ -24,6 +24,8 @@ https://www.udemy.com/hyperledger-fabric-composer-first-practical-blockchain/
 https://www.udemy.com/hyperledger/
 https://www.udemy.com/blockchain-and-bitcoin-fundamentals/
 
+Javascript: Understanding the Weird Parts: https://www.0daydown.com/07/389175.html
+
 linux
     bash
     vim
