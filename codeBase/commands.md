@@ -59,3 +59,36 @@
     # 让配置文件生效
     sudo nginx -s reload
     ``` 
+
+- https
+
+    ```bash
+    # Generating a Certificate Signing Request (CSR) in Ubuntu 16.04
+    # https://www.liquidweb.com/kb/generating-certificate-signing-request-csr-ubuntu-16-04/
+    openssl req -new -newkey rsa:2048 -nodes -keyout hofungkoeng.com.key -out hofungkoeng.com.csr
+    cat hofungkoeng.com.csr
+
+    # 随风
+    # https://www.rails365.net/articles/shi-yong-acme-sh-an-zhuang-let-s-encrypt-ti-gong-mian-fei-ssl-zheng-shu
+    wget -O -  https://get.acme.sh | sh
+    source ~/.bashrc
+    acme.sh --issue -d nodejsblog.hofungkoeng.com -w /home/slackbuffer/nodejs-blog/public
+
+    acme.sh --installcert -d nodejsblog.hofungkoeng.com \
+               --keypath       /home/slackbuffer/ssl/nodejsblog.hofungkoeng.com.key  \
+               --fullchainpath /home/slackbuffer/ssl/nodejsblog.hofungkoeng.com.key.pem \
+               --reloadcmd     "sudo nginx -s reload"
+
+    openssl dhparam -out /home/slackbuffer/ssl/nodejsblog.hofungkoeng.com.dhparam.pem 2048
+
+    ssl_certificate         /home/slackbuffer/ssl/nodejsblog.hofungkoeng.com.key.pem;
+    ssl_certificate_key     /home/slackbuffer/ssl/nodejsblog.hofungkoeng.com.key;
+    ssl_dhparam             /home/slackbuffer/ssl/nodejsblog.hofungkoeng.com.dhparam.pem;
+
+    server {
+        listen 80;
+        server_name nodejsblog.hofungkoeng.com;
+        return 301 https://nodejsblog.hofungkoeng.com$request_uri;
+    }
+    vim /etc/nginx/nginx.conf
+    ```
