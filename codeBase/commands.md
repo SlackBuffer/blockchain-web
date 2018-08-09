@@ -58,6 +58,8 @@
 
     # 让配置文件生效
     sudo nginx -s reload
+
+    # https://medium.com/@utkarsh_verma/configure-nginx-as-a-web-server-and-reverse-proxy-for-nodejs-application-on-aws-ubuntu-16-04-server-872922e21d38
     ``` 
 
 - https
