@@ -10,6 +10,7 @@
         1. Block number
         1. Nonce
         1. Data
+            - 数据部分可以放智能合约，满足合约规定条件才会生成区块
         1. Previous block hash
             - 前后区块之间相互链接，形成区块链
             - 创世块的 previous block number 是 64 个 0（十六进制的数字）
@@ -19,4 +20,9 @@
     - 挖矿
         - 当前区块的 hash 要满足一定条件，如前三位为 0
         - 通过枚举 Nonce 的值反复计算 hash 直至满足该条件，此时表示挖矿成功
-    - [ ] 不可篡改的原因
+    - 不可篡改的原因
+        - 某一区块的任何数据发生改动，会使它以后的每个区块的 previous hash 都发生变化而需重新计算自身 hash
+        - 矿工开始挖某一区块到完成挖矿期间，会有更多的新区块产生
+        - [ ] 其它矿工、节点、全网承认某一区块的依据
+- `watch -n 0.1 'docker ps'`
+- https://hyperledger.github.io/composer/latest/
