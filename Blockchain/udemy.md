@@ -74,12 +74,41 @@
             - key 的标识是 key name 加上 chaincode name
         - 默认 levelDB，可插拔，可用 couchDB 支持复杂的 queries，在 peer 的配置文件里配置
     - ledger is manager on the peer
-- Membership service provider
 - Member 
     - legally independent entities
+    - members can manage identities within their organization
+        - 由 MSP 实现
+        - member 可以创建新的参与者证书；可以为 infrastructure components 创建证书
+        - 去除了唯一的中心化 CA
+- Membership service provider
+    - member 用自己的证书创建新的可以参与网络的 identities
 - identites 由 x.509 证书管理
-    - 证书颁给每个参与者，参与者发起交易
-
+    - 参与者的身份创建后，证书颁发给参与者
+    - 参与者发起的交易，都会用证书的私钥对交易进行签名，网络上的其它节点可以通过参与者的公钥去验证交易
+    - fabric 网络上的每个 infrastructure 都必须要有效的证书
+        - 证书会颁发给所有的参与者，infrastructure components，members
+    - certificates issued & revoked by Certification Authority (CA)
+- 节点
+    - communication entities of the blockchain
+    - 节点需要有效的证书才能在网络上进行通信
+    - 参与者通过 app 连接节点来和网络交互
+    - 参与者的身份和节点的身份不同 
+        - 参与者发起的交易，都会用参与者证书的私钥对交易进行签名
+        - 网络利用节点证书来验证节点是否可信
+    - Fabric 有 3 类节点
+        1. client
+            - app 用 client 节点来发起交易
+        1. peers
+            - 保持账本数据在网络上保持同步
+        1. orderers
+            - communication backbone
+            - 负责交易的分发 
+    - > Ethereum 和 Bitcoin 上的所有节点都是相同的
+- channel
+    - 使得成员可以参与多个 hyperledger blockchain network
+    - 每个网络上的交易都相互隔离
+    - peers 连接到 channel 上
+    - 每个 channel 有各自独立的账本
 
 
 
