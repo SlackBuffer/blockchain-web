@@ -4,6 +4,7 @@
     - `docker-compose --version`
 - `docker logs contanierName`
 - `docker ps`, `docker ps -a`  <!-- contanier -->
+- `docker image rm`
 # go
 - 版本
     - `go version`
@@ -26,11 +27,7 @@
     make install
     ```
 
-# deploy
-- mac install telnet: `brew install telnet`
-- 查看进程：`ps -ef | grep node`
-- 查看 mongodb 是否启动 `telnet localhost 27017`
-- 查看服务是否已起在本地 5000 端口：`curl http://localhost:5000`
+# Ubuntu
 - Ubunbu 16.04
 
     ```bash
@@ -41,10 +38,49 @@
 
     # 生成本地机器的公私钥 (/home/slackbuffer/.ssh 目录下)
     ssh-keygen
+
     # 复制公钥到远程机器
+    # vi ~/.ssh/id_rsa.pub
     ssh-copy-id slackbuffer@IP_ADDRESS
+
+    # 查看内核、发型版本
+    lsb_release -a
+    # 查看内存
+    free -m
+    # 查看硬盘
+    df -hl
+
+    lsof -i:portNumber
+    kill pid
     ```
 
+- zsh, on-my-zsh, agnoster, zsh-autosuggestions
+
+    ```bash
+    # zsh, on-my-zsh https://gist.github.com/tsabat/1498393
+    apt-get install zsh
+    apt-get install git-core
+    wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
+    chsh -s `which zsh`
+    sudo shutdown -r 0
+
+    # https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md
+
+    # agnoster on-my-zsh theme
+    # https://github.com/agnoster/agnoster-zsh-theme
+    # https://github.com/powerline/fonts
+    # https://github.com/robbyrussell/oh-my-zsh/issues/1906#issuecomment-275733922
+
+    # 无法 chsh -s `which zsh` 可直接在命令行输入 zsh
+    # 或在 ~/.bashrc 里第一行添加 exec zsh，每次启动 bash 自动启动 zsh
+    ```
+
+## deploy
+- mac install telnet: `brew install telnet`
+- 查看进程：`ps -ef | grep node`
+- 查看 mongodb 是否启动 `telnet localhost 27017`
+- 查看服务是否已起在本地 5000 端口：`curl http://localhost:5000`
+- `scp -r build ubuntu@192.168.9.21:/home/ubuntu/go/src/vnt-console/backend/static` 传文件
 - pm2 用于管理 nodejs 生产环境进程
 - Nginx
 
@@ -94,3 +130,4 @@
     }
     vim /etc/nginx/nginx.conf
     ```
+    
