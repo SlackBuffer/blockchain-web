@@ -40,7 +40,8 @@
     ssh-keygen
 
     # 复制公钥到远程机器
-    # vi ~/.ssh/id_rsa.pub
+    # vi ~/.ssh/id_rsa.pub          # copy
+    # vi ~/.ssh/authorized_keys     # paste
     ssh-copy-id slackbuffer@IP_ADDRESS
 
     # 查看内核、发型版本
@@ -61,7 +62,7 @@
     apt-get install zsh
     apt-get install git-core
     wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
-    chsh -s `which zsh`
+    sudo chsh -s `which zsh`
     sudo shutdown -r 0
 
     # https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md
@@ -72,7 +73,9 @@
     # https://github.com/robbyrussell/oh-my-zsh/issues/1906#issuecomment-275733922
 
     # 无法 chsh -s `which zsh` 可直接在命令行输入 zsh
-    # 或在 ~/.bashrc 里第一行添加 exec zsh，每次启动 bash 自动启动 zsh
+    #### 或在 ~/.bashrc 里第一行添加 exec zsh，每次启动 bash 自动启动 zsh
+    #### 加 exec zsh 会使 scp 失败
+    #### https://superuser.com/questions/395356/scp-doesnt-work-but-ssh-does
     ```
 
 ## deploy

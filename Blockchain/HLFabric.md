@@ -14,6 +14,9 @@
     ```
 
 - 安装 Docker
+    - 配置加速镜像
+        - http://guide.daocloud.io/dcs/daocloud-9153151.html
+    - > https://help.aliyun.com/document_detail/60742.html?spm=a2c4g.11186623.6.544.3fMVyy
     - > https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04
 - 安装 Docker-Compose
     - > https://github.com/docker/compose/releases
@@ -38,6 +41,8 @@
 - 启动 Fabric 网络进行 Chaincode 测试
 
     ```bash
+    # base/peer-base.yaml
+    # - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=e2e_cli_default
     ./network_setup.sh up
 
     # channel: mychannel
@@ -328,3 +333,18 @@
     - 或 `export CGO_LDFLAGS_ALLOW=".*"`
         - > https://forum.golangbridge.org/t/invalid-flag-in-cgo-ldflags/10020
         - > https://github.com/golang/go/wiki/InvalidFlag
+- `failed to get default registry endpoint from daemon (Got permission denied while trying to connect to the Docker daemon socket`
+    - https://stackoverflow.com/questions/46202475/permission-denied-while-trying-to-connect-to-the-docker-daemon-socket
+    - https://askubuntu.com/questions/747778/docker-warning-config-json-permission-denied
+    - https://techoverflow.net/2017/03/01/solving-docker-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket/
+
+- > https://github.com/tonycai/The-Journal-of-Blockchain/wiki/How-to-install-Hyperledger-Fabric-on-ubuntu-16.04
+
+docker rm $(docker ps -aq) -f
+./cryptogen generate --config=./crypto-config.yaml
+
+vim generateArtifacts.sh
+vim network_setup.sh
+
+go build -tags nopkcs11
+go build -tags nopkcs11 main.go
