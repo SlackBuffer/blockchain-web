@@ -51,3 +51,8 @@
 - toggle 显式隐藏文件：`command + shift + .`
 - finder 下使用 `command + shift + g` 可以前往包括隐藏目录在内的任何目录
 - 关于本机-系统报告-软件-偏好设置面板-安全性与隐私- 64 位
+---
+- autojump
+    - > https://github.com/wting/autojump
+    - > https://segmentfault.com/a/1190000011277135
+    - > https://qiita.com/sokada/items/2bdd14b7478c09af2e21

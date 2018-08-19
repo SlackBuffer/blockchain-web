@@ -5,6 +5,8 @@
 - `docker logs contanierName`
 - `docker ps`, `docker ps -a`  <!-- contanier -->
 - `docker image rm`
+- `docker run -it ubuntu:16.04 /bin/bash`
+- `docker exec -it 0caaedfba92e bash`
 # go
 - 版本
     - `go version`
@@ -13,10 +15,13 @@
 - `yarn add react@next react-dom@next` 升级 react
     - > [docs](https://docs.npmjs.com/)
 # vscode
-- cmd+b: 开关侧边栏（非 md 文件）
+- cmd+b: 开关侧边栏（非 `.md` 文件）
 - cmd+p: 查找文件
 # terminal
-- zsh: ctrl+u，ctrl+w，ctrl+k
+- `zsh`, `bash`, `echo $SHELL`
+- zsh
+    - ctrl+u
+    - ctrl+w，ctrl+k
 # common
 - 源码安装
 
@@ -55,22 +60,36 @@
     kill pid
     ```
 
-- zsh, on-my-zsh, agnoster, zsh-autosuggestions
+- zsh, on-my-zsh, agnoster, zsh-autosuggestions, autojump
 
     ```bash
     # zsh, on-my-zsh https://gist.github.com/tsabat/1498393
     apt-get install zsh
     apt-get install git-core
     wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
-    sudo chsh -s `which zsh`
+
+    chsh -s `which zsh`
+    #### chsh: PAM: Authentication failure
+    #### sudo vim /etc/passwd/
+    #### ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/zsh
+
     sudo shutdown -r 0
 
+    # zsh-autosuggestions
     # https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md
 
     # agnoster on-my-zsh theme
     # https://github.com/agnoster/agnoster-zsh-theme
     # https://github.com/powerline/fonts
     # https://github.com/robbyrussell/oh-my-zsh/issues/1906#issuecomment-275733922
+
+    # autojump
+    sudo apt-get update
+    sudo apt-get install autojump
+    # /usr/share/doc/autojump/README.Debian 是配置说明
+    # .zshrc 最后一行加 `. /usr/share/autojump/autojump.sh`
+    # source ~/.zshrc
+    # https://blog.csdn.net/shengzhu1/article/details/54590158
 
     # 无法 chsh -s `which zsh` 可直接在命令行输入 zsh
     #### 或在 ~/.bashrc 里第一行添加 exec zsh，每次启动 bash 自动启动 zsh
