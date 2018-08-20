@@ -40,6 +40,7 @@ export default class Home extends Component {
       homeLink: event.target.value
     });
     this.props.changeLink(event.target.value);
+    console.log('~~~~' + this.state.homeLink);  // 此时 setState 尚未生效，要等 setState 所在的函数执行完毕才生效
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -52,6 +53,7 @@ export default class Home extends Component {
   }
 
   render() {
+    console.log('render');
     return (
       <div className="container">
         <div className="row">
