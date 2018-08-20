@@ -150,14 +150,14 @@
 
     // 正确写法
     this.setState((preState, props) => ({
-        counter: preState.quantity + 1;
+        counter: preState.quantity + 1
     }));
     // preState 是当前最新状态（本次组件状态修改后生效的状态）的前一个状态，即本次组件修改前的状态
     // props 是当前最新的 props
     ```
 
     - [ ] 何时会合并
-    - [ ] 如何强制更新
+    - [ ] ***如何强制更新***
 - 不要依赖当前的 `state` 计算下一个 `state`，依赖的 `this.state` 不能保证是最新
 - 同样不能依赖当前 `props` 计算下一个状态，`props` 的更新也是异步的
 - `state` 是**合并**的过程，只需传入发生改变的字段
