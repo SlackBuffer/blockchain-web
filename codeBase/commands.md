@@ -100,7 +100,14 @@
 ## deploy
 - mac install telnet: `brew install telnet`
 - 查看进程：`ps -ef | grep node`
-- 查看 mongodb 是否启动 `telnet localhost 27017`
+- mongodb  
+  
+    ```bash
+    telnet localhost 27017
+    sudo systemctl start mongod
+    ```
+
+- telnet localhost 27017```
 - 查看服务是否已起在本地 5000 端口：`curl http://localhost:5000`
 - `scp -r build ubuntu@192.168.9.21:/home/ubuntu/go/src/vnt-console/backend/static` 传文件
 - pm2 用于管理 nodejs 生产环境进程
