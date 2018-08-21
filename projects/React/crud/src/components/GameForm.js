@@ -54,7 +54,7 @@ class GameForm extends Component {
   render() {
     const form = (
       <form className={ classnames('ui', 'form', { loading: this.state.loading }) } onSubmit={ this.handleSubmit }>
-        <h1>Add new game</h1>
+        <h1>Add new photo</h1>
 
         { !!this.state.errors.global && <div className="ui negative message">{ this.state.errors.global }</div> }
 

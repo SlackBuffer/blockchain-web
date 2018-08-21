@@ -27,7 +27,7 @@ ReactDOM.render(
         <div className="ui three item menu">
           <NavLink exact activeClassName="active" className="item" to="/">Home</NavLink>
           <NavLink exact activeClassName="active" className="item" to="/games">Games</NavLink>
-          <NavLink activeClassName="active" className="item" to="/games/new">Add New Game</NavLink>
+          <NavLink activeClassName="active" className="item" to="/games/new">Add New Photo</NavLink>
         </div>
         <Route exact path="/" component={ App } />
         <Route exact path="/games" component={ GamesPage } />

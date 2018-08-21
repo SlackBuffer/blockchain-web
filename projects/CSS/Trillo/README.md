@@ -58,3 +58,16 @@
 - flex: 0 1 auto | `<int>` `<int>` `<int>`
 # emmet
 - `.container>.item*5`
+# Deploy
+
+```bash
+cd /etc/nginx/conf.d
+sudo vi flexboxdemo.conf
+
+server {
+    listen 80;
+    server_name flexboxdemo.hofungkoeng.com;
+    root /home/slackbuffer/Trillo;
+    index index.html;
+}
+```

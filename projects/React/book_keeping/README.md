@@ -67,3 +67,60 @@
   export const newRecord = (id, body) => 
     axios.post(`${api}/api/v1/records`, body);
   ```
+
+# Deploy
+
+```bash
+
+
+sudo nginx -s reload    # 让配置文件生效
+sudo nginx -s quit      # 退出
+sudo nginx              # 运行
+vi /etc/nginx/nginx.conf
+##
+# Virtual Host Configs
+##
+## include /etc/nginx/conf.d/*.conf;
+## include /etc/nginx/sites-enabled/*;
+cd /etc/nginx/conf.d
+sudo vi book_keeping.conf
+
+#### book_keeping.conf
+# https://showzeng.itscoder.com/nginx/2016/10/03/use-nginx-to-deploy-static-pages-easily.html
+server {
+    listen 80;
+    server_name bookkeeping.hofungkoeng.com;
+    root /home/slackbuffer/book_keeping/build;
+    index index.html;
+}
+
+# 申请证书
+# https://www.rails365.net/articles/shi-yong-acme-sh-an-zhuang-let-s-encrypt-ti-gong-mian-fei-ssl-zheng-shu
+wget -O -  https://get.acme.sh | sh # 下载申请、管理证书工具
+# 申请证书
+acme.sh --issue -d bookkeeping.hofungkoeng.com -w /home/slackbuffer/book_keeping/build
+# 安装证书
+acme.sh --installcert -d bookkeeping.hofungkoeng.com \
+               --keypath       /home/slackbuffer/ssl/bookkeeping.hofungkoeng.com.key  \
+               --fullchainpath /home/slackbuffer/ssl/bookkeeping.hofungkoeng.com.key.pem \
+               --reloadcmd     "sudo nginx -s reload"
+
+openssl dhparam -out /home/slackbuffer/ssl/bookkeeping.hofungkoeng.com.dhparam.pem 2048
+
+#### book_keeping.conf
+server {
+    listen 443 ssl;
+    ssl_certificate         /home/slackbuffer/ssl/bookkeeping.hofungkoeng.com.key.pem;
+    ssl_certificate_key     /home/slackbuffer/ssl/bookkeeping.hofungkoeng.com.key;
+    ssl_dhparam             /home/slackbuffer/ssl/bookkeeping.hofungkoeng.com.dhparam.pem;
+    server_name bookkeeping.hofungkoeng.com;
+    root /home/slackbuffer/book_keeping/build;
+    index index.html;
+}
+
+server {
+    listen 80;
+    server_name bookkeeping.hofungkoeng.com;
+    return 301 https://bookkeeping.hofungkoeng.com$request_uri;
+}
+```

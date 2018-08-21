@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 const app = express();
 app.use(bodyParser.json());
 const dbUrl = "mongodb://localhost";
+const path = require('path');
 
 const validate = (data) => {
   let errors = {};
@@ -74,6 +75,10 @@ mongodb.MongoClient.connect(dbUrl, (err, client) => {
     } else {
       res.status(400).json({ errors });
     }
+  });
+
+  app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname + '/build/index.html'));
   });
 
   app.use((req, res) => {

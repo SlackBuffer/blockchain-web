@@ -49,3 +49,10 @@
   2. `use crud`
   3. `db.games.find({})`
     -> `db.games.find({}).pretty()`
+
+# Deploy
+
+```bash
+pm2 start --interpreter babel-node backend/server.js
+
+```
