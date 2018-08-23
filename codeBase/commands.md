@@ -14,6 +14,7 @@
 # npm & yarn
 - `yarn add react@next react-dom@next` 升级 react
     - > [docs](https://docs.npmjs.com/)
+- `yarn config set registry 'https://registry.npm.taobao.org'`
 # vscode
 - cmd+b: 开关侧边栏（非 `.md` 文件）
 - cmd+p: 查找文件
