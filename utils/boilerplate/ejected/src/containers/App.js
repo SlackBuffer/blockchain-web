@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import './App.css';
+import 'styles/App.scss';
 
 class App extends Component {
   increment = () => {
