@@ -28,9 +28,9 @@ class App extends Component {
     return (
       <div className="App">
         current count: {count}<br />
-        <Button onClick={this.increment}>+</Button><br />
-        <Button onClick={this.decrement}>-</Button><br />
-        <Button onClick={this.asyncDecrement}>async +</Button><br />
+        <Button type="primary" onClick={this.increment}>+</Button><br />
+        <Button type="ghost" onClick={this.decrement}>-</Button><br />
+        <Button type="dashed" onClick={this.asyncDecrement}>async +</Button><br />
       </div>
     );
   }
