@@ -1,8 +1,8 @@
-import { effects } from 'redux-sirius';
+import { effects } from 'redux-sirius'
 
-const delay = duration => new Promise(resolve => setTimeout(resolve, duration));
+const delay = duration => new Promise(resolve => setTimeout(resolve, duration))
 
-const { put } = effects;
+const { put } = effects
 
 export default {
   state: 0,
@@ -11,9 +11,9 @@ export default {
     decrement: state => state - 1
   },
   effects: ({takeEvery}) => ({
-    asyncDecrement: takeEvery(function* (){
-      yield delay(2000);
-      yield put({ type: 'count/decrement' });
+    asyncDecrement: takeEvery(function * () {
+      yield delay(2000)
+      yield put({ type: 'count/decrement' })
     })
   })
 }
