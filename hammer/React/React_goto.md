@@ -87,8 +87,35 @@
 - `ref` 值是一个函数，接受当前元素作为参数
 
     ```jsx
-    <input type="text' ref={ input => this.input = input}>
+    <input type="text' ref={ input => this.input = input }>
+
+    // DOM 元素上使用 ref
+    // input 自动获取焦点
+    class AutoFocusTextInput extends React.Component {
+        componentDidMount() { this.textInput.focus() }
+        render() {
+            return (
+                <div><input type="text" ref={input => this.textInput=  input} /></div>
+            );
+        }
+    }
+    // 组件上使用 ref（此时 ref 的回调函数接收的参数是组件的实例）
+    // 在组件外部操作组件（父组件操作子组件）
+
+    // 父组件访问子组件的 DOM 节点
+    // 子组件 DOM 元素定义 ref，值是父组件传过来的回调函数
+    function Children(props) {
+        return <div><input ref={props.inputRef} /></div>;
+    }
+    class Parent extends React.Component {
+        render() {
+            return <Children inputRef={el => this.inputElement = el} />
+        }
+    }
     ```
+
+    - 只能为类组件定义 `ref` 属性，不能为函数组件定义 `ref` 属性
+        - 函数组件内部可以使用 `ref` 来引用其它 DOM 元素或组件
 
 - 创建 `context` 的方式
     - 在提供 `context` 的组件中，新增一个 `getChildContext` 方法，返回 `context` 对象；在该组件的 `childContextTypes` 属性上定义 `context` 对象的里要传递的属性的类型信息
