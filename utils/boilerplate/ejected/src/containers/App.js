@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Button } from 'antd';
 
 import 'styles/App.scss';
 
@@ -27,9 +28,9 @@ class App extends Component {
     return (
       <div className="App">
         current count: {count}<br />
-        <button onClick={this.increment}>+</button><br />
-        <button onClick={this.decrement}>-</button><br />
-        <button onClick={this.asyncDecrement}>async +</button><br />
+        <Button onClick={this.increment}>+</Button><br />
+        <Button onClick={this.decrement}>-</Button><br />
+        <Button onClick={this.asyncDecrement}>async +</Button><br />
       </div>
     );
   }

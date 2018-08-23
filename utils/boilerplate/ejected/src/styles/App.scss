@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 .App {
   text-align: center;
 }
@@ -28,6 +30,7 @@
 }
 
 .logo {
+  @import '~antd/dist/antd.css';
   fill: blue;
   width: 10%;
 }
