@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
+import PropTypes from 'prop-types';
 
 import 'styles/App.scss';
 
@@ -19,8 +20,13 @@ class App extends Component {
 
   asyncDecrement = () => {
     this.props.dispatch({
-      type: 'count/asyncDecrement'
+      type: "count/asyncDecrement"
     })
+  }
+
+  static propTypes = {
+    count: PropTypes.number.isRequired,
+    dispatch: PropTypes.func.isRequired
   }
 
   render() {

@@ -16,6 +16,7 @@
     ```
 
     - > https://georgespake.com/blog/eslint/
+    - > https://www.robinwieruch.de/react-eslint-webpack-babel/#eslintBabel
     - https://alligator.io/react/linting-react/
     - https://stackoverflow.com/questions/50672331/failed-to-compile-create-react-app-due-to-lint-warnings-after-ejecting
 - [ ] react-router
