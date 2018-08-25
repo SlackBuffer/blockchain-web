@@ -10,8 +10,8 @@ export default {
     increment: state => state + 1,
     decrement: state => state - 1
   },
-  effects: ({takeEvery}) => ({
-    asyncDecrement: takeEvery(function * () {
+  effects: ({ takeEvery }) => ({
+    asyncDecrement: takeEvery(function*() {
       yield delay(2000)
       yield put({ type: 'count/decrement' })
     })
