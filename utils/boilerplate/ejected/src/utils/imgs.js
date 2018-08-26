@@ -1,5 +1,5 @@
-// import logo from 'assets/images/logo.svg';
+import eslint from '@images/eslint.png'
 
 export default {
-  // logo
+  eslint
 }

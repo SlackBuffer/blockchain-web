@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
 import PropTypes from 'prop-types'
+import imgs from 'utils/imgs'
 
 import 'styles/App.scss'
 
@@ -44,11 +45,10 @@ class App extends Component {
         </Button>
         <br />
         <Button type="dashed" onClick={this.asyncDecrement}>
-          async +
+          async -
         </Button>
         <br />
-        <div>abc</div>
-        <div>123</div>
+        <img src={imgs.eslint} alt="" />
       </div>
     )
   }

@@ -8,10 +8,10 @@
   - 省略环境变量前缀：注释 `config/env.js` Line 65
   - [ ] hmr
   - [ ] scss 组织，css modules
-- [ ] 分片
-- [ ] editorconfig
+- [ ] 分片, react-router
+- editorconfig
   - dva
-- [ ] eslint: standard, airbnb-base
+- eslint
 
   ```
   yarn add eslint --dev
@@ -22,8 +22,6 @@
   - > https://www.robinwieruch.de/react-eslint-webpack-babel/#eslintBabel
   - https://alligator.io/react/linting-react/
   - https://stackoverflow.com/questions/50672331/failed-to-compile-create-react-app-due-to-lint-warnings-after-ejecting
-
-- [ ] react-router
 - antd (rejected) 按需加载
 
   ```bash
