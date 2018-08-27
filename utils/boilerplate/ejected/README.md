@@ -11,8 +11,10 @@
     - css 热加载：页面不刷新
       - 默认自带
   - [ ] scss 组织，css modules
-- [ ] 分片, react-router-dom
+- js 分片
+- react-router-dom
 - [ ] axios
+- [ ] 引入所有 models
 - editorconfig
   - dva
 - eslint
