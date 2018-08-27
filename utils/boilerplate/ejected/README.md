@@ -1,14 +1,18 @@
 # Init Process
-
 - eject
   - sass: https://medium.com/front-end-hacking/how-to-add-sass-or-scss-to-create-react-app-c303dae4b5bc
   - `resolve`
     - `NODE_PATH=src` in `.env`
     - or https://medium.com/@kkomaz/another-solution-to-absolute-path-setup-in-create-react-app-cccb38d8eea8
   - 省略环境变量前缀：注释 `config/env.js` Line 65
-  - [ ] hmr
+  - 模块 hmr，css hmr
+    - 模块 hmr：页面不刷新
+      - > https://github.com/gaearon/react-hot-loader#migrating-from-create-react-app
+    - css 热加载：页面不刷新
+      - 默认自带
   - [ ] scss 组织，css modules
-- [ ] 分片, react-router
+- [ ] 分片, react-router-dom
+- [ ] axios
 - editorconfig
   - dva
 - eslint
