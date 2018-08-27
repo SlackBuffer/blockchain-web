@@ -7,6 +7,12 @@ import imgs from 'utils/imgs'
 import 'styles/App.scss'
 
 class App extends Component {
+  componentDidMount() {
+    this.props.dispatch({
+      type: 'request/userInfo'
+    })
+  }
+
   increment = () => {
     this.props.dispatch({
       type: 'count/increment'
@@ -26,12 +32,20 @@ class App extends Component {
   }
 
   static propTypes = {
-    count: PropTypes.number.isRequired,
+    count: PropTypes.shape({
+      count: PropTypes.number.isRequired
+    }).isRequired,
+    request: PropTypes.shape({
+      isLoading: PropTypes.bool.isRequired,
+      userName: PropTypes.string,
+      userEmail: PropTypes.string
+    }),
     dispatch: PropTypes.func.isRequired
   }
 
   render() {
-    const { count } = this.props
+    const { isLoading, userName, userEmail } = this.props.request
+    const { count } = this.props.count
     return (
       <div className="App">
         current count: {count}
@@ -48,14 +62,17 @@ class App extends Component {
           async -
         </Button>
         <br />
+        <h2>{isLoading && 'Loading...'}</h2>
+        <h2>{userName && userName}</h2>
+        <h2>{userEmail && userEmail}</h2>
         <img src={imgs.eslint} alt="" />
       </div>
     )
   }
 }
 
-const mapStateToProps = ({ count }) => {
-  return { count }
+const mapStateToProps = ({ count, request }) => {
+  return { count, request }
 }
 
 export default connect(mapStateToProps)(App)

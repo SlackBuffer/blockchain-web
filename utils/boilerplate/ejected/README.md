@@ -13,8 +13,9 @@
   - [ ] scss 组织，css modules
 - js 分片
 - react-router-dom
-- [ ] axios
-- [ ] 引入所有 models
+- axios
+  - [ ] 错误处理
+- 引入所有 models
 - editorconfig
   - dva
 - eslint

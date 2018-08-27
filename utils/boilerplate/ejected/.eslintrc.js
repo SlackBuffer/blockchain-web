@@ -1,7 +1,8 @@
 module.exports = {
   env: {
     browser: true,
-    es6: true
+    es6: true,
+    node: true
   },
   parser: "babel-eslint", // fix Parsing error: Unexpected token =
   parserOptions: {
@@ -35,14 +36,14 @@ module.exports = {
         "prettier"
     ],
     "extends": [
-        "eslint:recommended", 
+        "eslint:recommended",
         "plugin:react/recommended"
     ],
     "rules": {
         'prettier/prettier': [
             'error',
             {
-              singleQuote: true, 
+              singleQuote: true,
               trailingComma: 'all'
             },
           ],

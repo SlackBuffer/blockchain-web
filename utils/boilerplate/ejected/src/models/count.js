@@ -5,13 +5,19 @@ const delay = duration => new Promise(resolve => setTimeout(resolve, duration))
 const { put } = effects
 
 export default {
-  state: 0,
-  reducers: {
-    increment: state => state + 1,
-    decrement: state => state - 1
+  state: {
+    count: 0
   },
-  effects: ({ takeEvery }) => ({
-    asyncDecrement: takeEvery(function*() {
+  reducers: {
+    increment: state => ({
+      count: state.count + 1
+    }),
+    decrement: state => ({
+      count: state.count - 1
+    })
+  },
+  effects: ({ takeLatest }) => ({
+    asyncDecrement: takeLatest(function*() {
       yield delay(2000)
       yield put({ type: 'count/decrement' })
     })

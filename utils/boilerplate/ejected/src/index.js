@@ -11,9 +11,11 @@ import {
 import createHistory from 'history/createBrowserHistory'
 // import registerServiceWorker from 'registerServiceWorker'
 
-import Routers from 'containers/Routes'
+import Router from 'containers/Routes'
 import 'styles/index.scss'
-import count from 'models/count'
+/* import count from 'models/count'
+import request from 'models/request' */
+import rootModal from 'models'
 
 const history = createHistory()
 const routerMiddleware = RouterMiddleware(history)
@@ -24,14 +26,14 @@ let store
 if (mode == 'development') {
   store = new Sirius({
     models: {
-      count
+      ...rootModal
     },
     middlewares: [logger, routerMiddleware]
   }).store()
 } else {
   store = new Sirius({
     models: {
-      count
+      ...rootModal
     },
     middlewares: [routerMiddleware]
   }).store()
@@ -40,7 +42,7 @@ if (mode == 'development') {
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <Routers />
+      <Router />
     </ConnectedRouter>
   </Provider>,
   document.getElementById('root')
