@@ -23,6 +23,10 @@
 - zsh
     - ctrl+u
     - ctrl+w，ctrl+k
+- `vi ~/.oh-my-zsh/plugins/git/git.plugin.zsh`
+    - >  https://github.com/robbyrussell/oh-my-zsh#custom-plugins-and-themes
+# git
+- `git --no-pager log`
 # common
 - 源码安装
 

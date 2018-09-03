@@ -238,7 +238,7 @@
         - 有哪些分支；这些分支指向哪些提交等等
         - 用 `git branch --all`
         - 存在 .git/refs/remotes，只看到一个 HEAD 文件是由于 git 做了优化
-- `git push` 推送本地更新（`git push origin masster`）
+- `git push` 推送本地更新（`git push origin master`）
 
     ```bash
     # 查看本地和远端 master 分支的指向
