@@ -15,3 +15,6 @@
     5. You can enforce use of a single CSS module per ReactElement (`allowMultiple` option)
 - 实现
     - `react-css-modules` extends `render` method of the target component. It will use the value of `styleName` to look for CSS Modules in the associated styles object and will append the matching unique CSS class names to the `ReactElement className` property value.
+- https://blog.pusher.com/css-modules-react/
+- `modules: true` turn on css modules mode
+- `sourceMap: true` turn on map (even for scss)
