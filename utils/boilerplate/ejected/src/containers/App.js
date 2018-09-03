@@ -4,7 +4,7 @@ import { Button } from 'antd'
 import PropTypes from 'prop-types'
 import imgs from 'utils/imgs'
 
-import 'styles/App.scss'
+import styles from 'styles/App.scss'
 
 class App extends Component {
   componentDidMount() {
@@ -47,7 +47,7 @@ class App extends Component {
     const { isLoading, userName, userEmail } = this.props.request
     const { count } = this.props.count
     return (
-      <div className="App">
+      <div className={styles.App}>
         current count: {count}
         <br />
         <Button type="primary" onClick={this.increment}>
@@ -63,7 +63,7 @@ class App extends Component {
         </Button>
         <br />
         <h2>{isLoading && 'Loading...'}</h2>
-        <h2>{userName && userName}</h2>
+        <h2 className={styles['head-test']}>{userName && userName}</h2>
         <h2>{userEmail && userEmail}</h2>
         <img src={imgs.eslint} alt="" />
       </div>

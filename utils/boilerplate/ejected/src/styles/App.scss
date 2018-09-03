@@ -2,6 +2,9 @@
 
 .App {
   text-align: center;
+  .head-test {
+    color: yellow;
+  }
 }
 
 .App-logo {
@@ -34,7 +37,6 @@
 }
 
 .logo {
-  @import "~antd/dist/antd.css";
   fill: blue;
   width: 10%;
 }
