@@ -28,6 +28,7 @@
 # git
 - `git --no-pager log`
 - `git stash push --include-untracked -m "stash for babel-plugin-react-css-modules"`
+- `git stash push -- routes/HelpPage.js styles/_helppage.scss -m "some message"`
 # common
 - 源码安装
 
