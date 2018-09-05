@@ -301,7 +301,7 @@
     peer chaincode invoke -o orderer.example.com:7050  --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C mychannel -n mycc -c '{"Args":["invoke","a","b","20"]}'
     ```
 
-- 统一区块链、同一 channel 的其它节点查询交易
+- 同一区块链、同一 channel 的其它节点查询交易
 
     ```bash
     # 为 peer0.org2 安装链码
