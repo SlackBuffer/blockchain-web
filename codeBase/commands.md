@@ -27,8 +27,19 @@
     - >  https://github.com/robbyrussell/oh-my-zsh#custom-plugins-and-themes
 # git
 - `git --no-pager log`
-- `git stash push --include-untracked -m "stash for babel-plugin-react-css-modules"`
-- `git stash push -- routes/HelpPage.js styles/_helppage.scss -m "some message"`
+- stash
+    - `git stash push --include-untracked -m "stash for babel-plugin-react-css-modules"`
+    - `git stash push -- routes/HelpPage.js styles/_helppage.scss -m "some message"`
+- branch
+
+    ```bash
+    git branch feature-login
+    git checkout feature-login
+    git push --set-upstream origin feature-login
+
+    git branch -d feature-login
+    ```
+
 # common
 - 源码安装
 
