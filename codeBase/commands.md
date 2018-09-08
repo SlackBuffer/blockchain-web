@@ -30,6 +30,7 @@
 - stash
     - `git stash push --include-untracked -m "stash for babel-plugin-react-css-modules"`
     - `git stash push -- routes/HelpPage.js styles/_helppage.scss -m "some message"`
+    - `git stash apply stash@{0}`
 - branch
 
     ```bash
