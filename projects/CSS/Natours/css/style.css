@@ -1,189 +1,285 @@
 @charset "UTF-8";
+
 @keyframes moveInLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-10rem); }
-  /* 60% {
+    0% {
+        opacity: 0;
+        transform: translateX(-10rem);
+    }
+
+    /* 60% {
         transform: translateX(10px) rotate(180deg);
     } */
-  80% {
-    transform: translateX(1rem); }
-  100% {
-    opacity: 1;
-    transform: translateX(0); } }
+    80% {
+        transform: translateX(1rem);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
 @keyframes moveInRight {
-  0% {
-    opacity: 0;
-    transform: translateX(10rem); }
-  80% {
-    transform: translateX(-1rem); }
-  100% {
-    opacity: 1;
-    transform: translateX(0); } }
+    0% {
+        opacity: 0;
+        transform: translateX(10rem);
+    }
+
+    80% {
+        transform: translateX(-1rem);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
 @keyframes moveInBottom {
-  0% {
-    opacity: 0;
-    transform: translateY(3rem); }
-  100% {
-    opacity: 1;
-    transform: translateX(0); } }
+    0% {
+        opacity: 0;
+        transform: translateY(3rem);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 
 *,
 *::after,
 *::before {
-  margin: 0;
-  padding: 0;
-  box-sizing: inherit; }
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
 
 html {
-  /* font-size: 10px; 这样写用户修改浏览器的默认字体大小将失效，不好*/
-  font-size: 62.5%; }
+    /* font-size: 10px; 这样写用户修改浏览器的默认字体大小将失效，不好*/
+    font-size: 62.5%;
+}
+
+body {
+    /* 不继承 */
+    box-sizing: border-box;
+}
 
 /* font 相关的都放 body 里，利用到继承的特性 */
 body {
-  /* 不继承 */
-  box-sizing: border-box; }
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    /* font-size: 16px; */
+    line-height: 1.7;
+    color: #777;
+    padding: 3rem;
+}
 
-body {
-  font-family: "Lato", sans-serif;
-  font-weight: 400;
-  /* font-size: 16px; */
-  line-height: 1.7;
-  color: #777777;
-  padding: 3rem; }
+.row {
+    max-width: 114rem;
+    background-color: #eee;
+    margin: 0 auto;
+}
+
+.row:not(:last-child) {
+    margin-bottom: 8rem;
+}
+
+.row::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.row [class^="col-"] {
+    background-color: orangered;
+    float: left;
+}
+
+.row [class^="col-"]:not(:last-child) {
+    margin-right: 6rem;
+}
+
+.row .col-1-of-2 {
+    width: calc((100% - 6rem) / 2);
+}
+
+.row .col-1-of-3 {
+    width: calc((100% - 2 * 6rem) / 3);
+}
+
+.row .col-2-of-3 {
+    width: calc(2 * ((100% - 2 * 6rem) / 3) + 6rem);
+}
+
+.row .col-1-of-4 {
+    width: calc((100% - 3 * 6rem) / 4);
+}
+
+.row .col-2-of-4 {
+    width: calc(2 * ((100% - 3 * 6rem) / 4) + 6rem);
+}
+
+.row .col-3-of-4 {
+    width: calc(3 * ((100% - 3 * 6rem) / 4) + 2 * 6rem);
+}
+
+
+
+
+.header {
+    height: 95vh;
+    /* 渐变在前，背景图片在后 */
+    background-image: linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8)), url("../img/hero.jpg");
+
+
+    /* 铺满 viewport 下它的 container */
+    background-size: cover;
+
+    /* 无论 viewport 如何缩放，图片顶部永远保持在它的 container 顶部，不会被裁剪*/
+    background-position: top;
+
+    position: relative;
+
+    /* 逆时针，n 个坐标 */
+    clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
+}
+
+.header__logo-box {
+    /* 相对于 .header */
+    position: absolute;
+    top: 4rem;
+    left: 4rem;
+}
+
+.header__logo {
+    /* 设置高度后宽度浏览器会自行计算宽度；设置宽度同理会自行计算高度 */
+    height: 3.5rem;
+}
+
+.header__logo:hover {
+    animation: moveInRight 1s ease-out;
+    animation-delay: .5s;
+}
+
+.header__text-box {
+    /* 相对于 .header */
+    position: absolute;
+
+    /* 相对于最近的非 normal 父元素定位 */
+    top: 40%;
+    left: 50%;
+
+    /* 相对于元素自身定位 */
+    transform: translate(-50%, -50%);
+
+    /* 把 inline 的 button 居中 */
+    text-align: center;
+}
 
 .heading-primary {
-  color: #fff;
-  text-transform: uppercase;
-  /* 清两个标题画完成后的抖动（上移） */
-  backface-visibility: hidden;
-  margin-bottom: 6rem; }
-  .heading-primary--main {
+    color: #fff;
+    text-transform: uppercase;
+
+    /* 清两个标题画完成后的抖动（上移） */
+    backface-visibility: hidden;
+
+    margin-bottom: 6rem;
+}
+
+.heading-primary--main {
     display: block;
     font-size: 6rem;
     font-weight: 400;
     letter-spacing: 3.5rem;
+
     animation-name: moveInLeft;
     animation-duration: 1s;
     animation-timing-function: ease-out;
     /* 
-        animation-delay: 3s; 
-        animation-iteration-count: 3;
-        */ }
-  .heading-primary--sub {
+  animation-delay: 3s; 
+  animation-iteration-count: 3;
+  */
+}
+
+.heading-primary--sub {
     display: block;
     font-size: 2rem;
     font-weight: 700;
     letter-spacing: 1.75rem;
-    animation: moveInRight 1s ease-out; }
 
-.btn {
-  /* 添加一个和已有 button 完全一样的伪元素 */
-  /* 伪元素的 content 必须要写，即使为空，否则不会显示 */ }
-  .btn:link, .btn:visited {
+    animation: moveInRight 1s ease-out;
+}
+
+/* The :link CSS pseudo-class represents an element that has not yet been visited. It matches every unvisited <a>, <area>, or <link> element that has an href attribute */
+/* transition proprety needs to be on the initial property */
+
+.btn:link,
+.btn:visited {
     text-transform: uppercase;
     text-decoration: none;
     padding: 1.5rem 4rem;
     display: inline-block;
     border-radius: 10rem;
+
     /* 为要发生 transition 的属性添加参数 */
+    /* transition 要放在 initial state 上 */
     transition: all .2s;
-    position: relative; }
-  .btn:hover {
+
+    position: relative;
+}
+
+.btn:hover {
     transform: translateY(-3px);
     /* x offset y offset blur color */
     box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
-    /* button 在 hover 状态下才出现的伪元素 */ }
-    .btn:hover::after {
-      transform: scaleX(1.4) scaleY(1.6);
-      opacity: 0; }
-  .btn:active {
+}
+
+.btn:active {
     transform: translateY(-1px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2); }
-  .btn--white {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}
+
+.btn--white {
     background-color: #fff;
-    color: #777; }
-    .btn--white::after {
-      background-color: white; }
-  .btn::after {
+    color: #777;
+}
+
+/* 添加一个和已有 button 完全一样的伪元素，放到已有 button 的后面
+hover 时伪元素从镇元素后面出来 */
+/* 伪元素的 content 必须要写，即使为空，否则不会显示 */
+.btn::after {
     content: "";
     display: inline-block;
+
     /* ::after button 被当做是真实 button 的 child，所以大小是相对于真实 button */
     height: 100%;
     width: 100%;
     border-radius: 10rem;
-    /* 相对于真实 button 的初始状态 */
+
+    /* 使其相对于真实 button 的初始状态定位 */
     position: absolute;
     top: 0;
     left: 0;
     z-index: -1;
-    transition: all .4s; }
-  .btn--animated {
+
+    transition: all .4s;
+}
+
+.btn--white::after {
+    background-color: white;
+}
+
+/* button 在 hover 状态下才出现的伪元素 */
+.btn:hover::after {
+    transform: scaleX(1.4) scaleY(1.6);
+    /* 变透明 */
+    opacity: 0;
+}
+
+.btn--animated {
     animation: moveInBottom .5s ease-out .75s;
     /* 在动画触发前应用 0% 的样式 */
-    animation-fill-mode: backwards; }
-
-.row {
-  max-width: 114rem;
-  background-color: #eee;
-  margin: 0 auto; }
-  .row:not(:last-child) {
-    margin-bottom: 8rem; }
-  .row::after {
-    content: "";
-    display: table;
-    clear: both; }
-  .row [class^="col-"] {
-    background-color: orangered;
-    float: left; }
-    .row [class^="col-"]:not(:last-child) {
-      margin-right: 6rem; }
-  .row .col-1-of-2 {
-    width: calc((100% - 6rem) / 2); }
-  .row .col-1-of-3 {
-    width: calc((100% - 2 * 6rem) / 3); }
-  .row .col-2-of-3 {
-    width: calc( 2 * ((100% - 2 * 6rem) / 3) + 6rem); }
-  .row .col-1-of-4 {
-    width: calc((100% - 3 * 6rem) / 4); }
-  .row .col-2-of-4 {
-    width: calc(2 * ((100% - 3 * 6rem) / 4) + 6rem); }
-  .row .col-3-of-4 {
-    width: calc(3 * ((100% - 3 * 6rem) / 4) + 2 * 6rem); }
-
-.header {
-  height: 95vh;
-  /* 渐变在前，背景图片在后 */
-  background-image: linear-gradient(to right bottom, rgba(126, 213, 111, 0.8), rgba(40, 180, 133, 0.8)), url("../img/hero.jpg");
-  background-size: cover;
-  /* 铺满 viewport 下它的 container */
-  background-position: top;
-  /* 无论 viewport 如何缩放，图片顶部永远保持在它的 container 顶部，不会被裁剪*/
-  position: relative;
-  clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
-  /* 逆时针，n 个坐标 */ }
-  .header__logo-box {
-    /* 相对于 .header */
-    position: absolute;
-    top: 4rem;
-    left: 4rem; }
-  .header__logo {
-    height: 3.5rem;
-    /* 设置高度后宽度浏览器会自行计算宽度；设置宽度同理会自行计算高度 */ }
-    .header__logo:hover {
-      animation: moveInRight 1s ease-out;
-      animation-delay: .5s; }
-  .header__text-box {
-    /* 相对于 .header */
-    position: absolute;
-    /* 相对于最近的非 normal 父元素定位 */
-    top: 40%;
-    left: 50%;
-    /* 相对于元素自身定位 */
-    transform: translate(-50%, -50%);
-    text-align: center; }
-
-/* The :link CSS pseudo-class represents an element that has not yet been visited. It matches every unvisited <a>, <area>, or <link> element that has an href attribute */
-/* transition proprety needs to be on the initial property */
+    animation-fill-mode: backwards;
+}

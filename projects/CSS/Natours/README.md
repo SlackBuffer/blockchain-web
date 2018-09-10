@@ -1,5 +1,5 @@
 - [ ] `a:link`, `btn:link`
-- > clip-path code generator
+- > `clip-path` code generator
     - http://bennettfeely.com/clippy/
 ---
 - architect mindset
@@ -36,7 +36,7 @@
     - `!important` 不得已再用
     - 1 个 id 比 1000 个 class 都具体；1 个 class 比 1000 个 element 都具体
     - **依赖具体性而不要依赖顺序**
-- how css values ae processed
+- how css values are processed
     1. declared value (author declarations)
     2. cascaded value (after the cascade)
     3. specified value (defaulting, if there is no cascaded value)
@@ -67,7 +67,7 @@
         2. floats
             - element is removed from normal flow
             - text and inline elements will wrap around floated element
-            - containier will not adjust its height ot the element (use clearfix to fix this)
+            - container will not adjust its height ot the element (use clearfix to fix this)
         3. absolute positioning: `position: absolute`, `position: fixed`
             - element is removed from normal flow
             - use `top`, `bottom`, `left`, `right` to offset the element from its relatively positioned container
@@ -83,6 +83,7 @@
         - layout types: float, flexbox, css grid
     2. flexible/responsive images
     3. media queries
+- `transition` 要放在 initial state 上
 # Float
 # SASS
 - 两种 SASS 语法：SCSS 写法更类似 CSS；SASS 用缩进
