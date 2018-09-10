@@ -68,11 +68,11 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx}": [
+    "src/**/*.{js,jsx}": [
       "eslint --fix",
       "git add"
     ],
-    "*.{scss,css}": [
+    "src/**/*.{scss,css}": [
       "prettier --write",
       "git add"
     ]
