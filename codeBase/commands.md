@@ -3,7 +3,7 @@
     - `docker --version`
     - `docker-compose --version`
 - `docker logs contanierName`
-- `docker ps`, `docker ps -a`  <!-- contanier -->
+- `docker ps`, `docker ps -a`  <!-- container -->
 - `docker image rm`
 - `docker run -it ubuntu:16.04 /bin/bash`
 - `docker exec -it 0caaedfba92e bash`
