@@ -75,6 +75,8 @@
         - redundant when variable type is the same as that of the initial value
         - necessary when they are not of the same type
     - Functions and other package-level entities may be declared **in any order**
+    - (`const`, `var`) declarations may appear at package level(so the names are visible throughout the package) or within a function(so the names are visible only within that function)
+- The value of a constant must be a number, string, or boolean
 ## Command-Line Arguments
 - Command-line arguments are available to a program in a variable named `Args` that is part of the `os` package
 - The first element of `os.Args`, `os.Args[0]` is the name of the command itself
@@ -163,7 +165,72 @@
             counts[input.Text()]++
         }
     }
+
+    // dup3
+    func main() {
+	counts := make(map[string]int)
+	for _, filename := range os.Args[1:] {
+		data, err := ioutil.ReadFile(filename)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "dup3: %v\n", err)
+			continue
+        }
+        // `ReadFile` returns a byte slice that must be converted into a string so it can be split by `strings.split`
+		for _, line := range strings.Split(string(data), "\n") {
+			counts[line]++
+		}
+        }
+        for line, n := range counts {
+            if n > 1 {
+                fmt.Printf("%d\t%s\n", n, line)
+            }
+        }
+    }
     ```
 
     - `Sacnner` reads input and breaks it into lines or words
     - When the end of the input is reached, `Close` closes the file and releases any resources
+    - When a map is passed into a function, the function receives **a copy of the reference**, so any change the called function makes to the underlying data structure will be visible through the caller's map reference too
+- [] lissajous
+
+    ```go
+    var palette = []color.Color{color.White, color.Black}
+
+    const (
+        whiteIndex = 0 // first color in palette
+        blackIndex = 1 // next color in palette
+    )
+    func main() {
+        lissajous(os.Stdout)
+    }
+    func lissajous(out io.Writer) {
+        const (
+            cycles  = 5
+            res     = 0.001
+            size    = 100
+            nframes = 64
+            delay   = 8
+        )
+        // generates a random number between 0 and 3
+        freq := rand.Float64() * 3.0
+        anim := gif.GIF{LoopCount: nframes}
+        phase := 0.0
+        // each outer loop producing a single frame of the animation
+        for i := 0; i < nframes; i++ {
+            rect := image.Rect(0, 0, 2*size+1, 2*size+1)
+            // all pixels are initially set to the palette's zero value (the zeroth color in the palette), which is white - [ ] later
+            img := image.NewPaletted(rect, palette)
+            for t := 0.0; t < cycles*2*math.Pi; t += res {
+                x := math.Sin(t)
+                y := math.Sin(t*freq + phase)
+                img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5), blackIndex)
+            }
+            phase += 0.1
+            anim.Delay = append(anim.Delay, delay)
+            anim.Image = append(anim.Image, img)
+        }
+        gif.EncodeAll(out, &anim)
+    }
+    ```
+
+    - `[]color.Color{}` (slice) and `gif.GIF{...}` (struct) are **composite literals**
