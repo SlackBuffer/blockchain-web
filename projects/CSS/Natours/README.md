@@ -10,9 +10,15 @@
     3. web performance
         - less HTTP requests, less code, compress code, use a CSS preprocessor, less images, compress images
 - clean, modular, reusable, ready for growth
+- think-build-architect mindset
+    1. think about the layout of webpage before writing code
+    2. build layout in HTML and CSS with a consistent structure from naming classes
+    3. create a logical architecture for CSS with files and folders
 - BEM
-    - block: standalone component that is meaningful on its own
+    - block: standalone component that is meaningful on its own, can be reused anywhere in the project
+        - block can be nested
     - element: part of a block that has no standalone meaning
+        - 如特定尺寸、位置的图片的 class
     - modifier: a flag to specify a different version of a block or an element
 - cascade and specificity
     - importance > specificity > source order
@@ -51,7 +57,7 @@
     - **font-based**
         1. em **(font)**：相对于**父元素的** font-size
         2. em **(lengths)**：相对于**自身**的 font-size
-        3. rem：相对于 root font-size
+        3. rem：相对于 root font-size, **1rem is exactly the root font size**
 - In each element on the page, each and every CSS property must have a value, even if neither the developer nor the browser do specify it (in that case, there's no cascaded value)
     - CSS engine asks if there's a **cascaded value**
         1. yes: specified value === cascaded value
@@ -81,9 +87,9 @@
     3. Positioning scheme: floats and positioning
         1. normal flow: 分 default 和 `position: relative`
         2. floats
-            - element is removed from normal flow
+            - element is removed from normal flow and shifted to the left or right as far as possible, util it touches the edge of its containing box, or another floated element
             - text and inline elements will wrap around floated element
-            - container will not adjust its height ot the element (use clearfix to fix this)
+            - container will not adjust its height to the element (use clearfix to fix this)
         3. absolute positioning: `position: absolute`, `position: fixed`
             - element is removed from normal flow
             - use `top`, `bottom`, `left`, `right` to offset the element from its relatively positioned container
@@ -99,7 +105,7 @@
         - layout types: float, flexbox, css grid
     2. flexible/responsive images
     3. media queries
-- `transition` 要放在 initial state 上
+- **`transition` 要放在 initial state 上**
 # Float
 # SASS
 - 两种 SASS 语法：SCSS 写法更类似 CSS；SASS 用缩进
