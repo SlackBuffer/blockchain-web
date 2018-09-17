@@ -1,5 +1,5 @@
-# Git is not what you think
-- git 核心是 persistent map；比此高一层来说，是 stupid content tracter，像一个 versioned file system
+# 1. Git is not what you think
+- git 核心是 persistent map；比此高一层来说，是 stupid content tracker，像一个 versioned file system
 ## Map
 - Core: a persistent map, a table with keys and values
     - key 是 SHA1
@@ -105,7 +105,7 @@
     2. trees (the equivalent of directories)
     3. commits
     4. annotated tags
-# Branches
+# 2. Branches
 - git 仓库是一堆相互连接的 git 对象
 ## 分支
 - branches 存放在 `refs` 和 `refs/heads` 里
@@ -190,7 +190,7 @@
 - 想要写新代码、功能时并测试时，可以 detach HEAD，做实验
     - 若想保留实验的内容，可以将实验部分做一次提交，并为其创建一个分支
     - 否则就不要为其创建分支，等待 git 执行垃圾回收
-# Rebase
+# 3. Rebase
 - 在 spaghetti 分支上执行 `git rebase master`
     - git 去找最近的既在 master 上又在 spaghetti 上的 commit，该 commit 被称为 spaghetti 的 base
     - git 将 spaghetti 上 base 以后的 commit 分离
@@ -212,7 +212,7 @@
 - 不确定的时候，用 merge
 ## Tags
 - `git log -1`
-- lightweigh tag
+- lightweight tag
     - `git tag dinner` 为当前 commit 打 tag
     - 只打一个标签，没有其它相关信息
 
@@ -226,7 +226,7 @@
 
 - tags 和 分支类似，区别是分支会随着提交移动，tag 永远留在同一个对象上
     - 在 master 分支上有一个新提交后，master 分支会移动并指向该新的提交，而 tag 停在原地
-# Distributed
+# 4. Distributed
 - `git clone`
     - 在本地创建一个新目录；拷贝 .git 目录到该目录；git 检出 master 目录，用 .git 里的内容重建工作区
 - 在 git 仓库中 `nano .git/config`
@@ -254,7 +254,7 @@
     - 别人的 GitHub 项目我们不能 push，fork 后可以 push 到自己的 GitHub 账户，再从自己的 GitHub 账户可从到本地进行开发
     - 此时 github 知道自己的 GitHub 仓库和别人的 GitHub 之间的关系，但 git 不知道
     - 若需要跟踪别人仓库的更新，则需要手动填写另外一个 remote，通常命名为 upstream，指向别人的 GitHub 仓库
-    - 这样别人的仓库有更新会有提示，可以 pull 下来，解决冲突，写代码，提交到 origin，pull requeset
+    - 这样别人的仓库有更新会有提示，可以 pull 下来，解决冲突，写代码，提交到 origin，pull request
         - > https://www.zhihu.com/question/28676261
 - [x] 本地分支不手动 push 的话不会同步到 GitHub 仓库
     - `git push origin develop` 手动推送 develop 分支 
