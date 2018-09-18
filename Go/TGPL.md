@@ -8,7 +8,7 @@
 - [book's source code](http://gopl.io)
 - fetch source code 
     - `go get gopl.io/ch1/helloworld`
-- Structure
+- Go's structure
     - Go code is organized into packages 
         - a package consists of one or more `.go` source files in a single directory that define what the package does
         - each source file begins with a `package` declaration that states which package the file belongs to, followed by a list of other packages that it imports
@@ -57,6 +57,13 @@
         - the value may be of any type
     - provides constant-time operations to store, retrieve or test for an item in the set
     - the order of map iteration is **random**
+- ***goroutine***
+    - A goroutine a concurrent function execution
+    - The function `main` runs in a goroutine and  the `go` statement creates additional goroutines
+    - When one goroutine attempts a send or receive on a channel, it blocks util another goroutine attempts the corresponding receive or send operation, at which point the value is transferred and both goroutines proceed
+        - [ ] channel blocks, right?
+- *channel*
+    - A communication mechanism that allows one goroutine to pass values of a **specified type** to another goroutine
 - `fmt.printf`
     - `%v`: any value in natural format
     - By convention, formatting functions whose names end in `f` use the formatting rules of `fmt.Printf`, whereas those whose names ends in `ln` follow `Println`, formatting their arguments as if by `%v`, followed by a newline
@@ -234,3 +241,73 @@
     ```
 
     - `[]color.Color{}` (slice) and `gif.GIF{...}` (struct) are **composite literals**
+- concurrent fetch
+    
+    ```go
+    func main() {
+	    start := time.Now()
+        ch := make(chan string)
+        for _, url := range os.Args[1:] {
+            go fetch(url, ch) // start a goroutine
+        }
+        for range os.Args[1:] {
+            fmt.Println(<-ch) // receive from channel ch
+        }
+        fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
+    }
+    func fetch(url string, ch chan<- string) {
+        start := time.Now()
+        resp, err := http.Get(url)
+        if err != nil {
+            ch <- fmt.Sprint(err)
+            return
+        }
+        // io.Copy function reads the body of the response and discards it by writing to ioutil.Discard output stream
+        nbytes, err := io.Copy(ioutil.Discard, resp.Body)
+        resp.Body.Close()
+        if err != nil {
+            ch <- fmt.Sprintf("while reading %s: %v", url, err)
+            return
+        }
+        secs := time.Since(start).Seconds()
+        ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
+    }
+    ```
+
+    - Having one `main` do all the printing ensures that output from each goroutine is processed as a unit (blocked), with no danger of interleaving if two goroutine finishes at the same time
+- server
+
+    ```go
+    // server 1
+    func main() {
+        http.HandleFunc("/", handler)
+        log.Fatal(http.ListenAndServe("localhost:8000", nil))
+    }
+    // a request is represented as a struct of type `http.Request`
+    func handler(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintf(w, " URL.Path = %q\n", r.URL.Path)
+    }
+
+    // server 2
+    func main() {
+        // a request for /count invokes counter and all others invoke handler
+        http.HandleFunc("/", handler)
+        http.HandleFunc("/count", counter) // excluding /count requests themselves
+        log.Fatal(http.ListenAndServe("localhost:8000", nil))
+    }
+    func handler(w http.ResponseWriter, r *http.Request) {
+        mu.Lock()
+        count++
+        mu.Unlock()
+        fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
+    }
+    func counter(w http.ResponseWriter, r *http.Request) {
+        mu.Lock()
+        fmt.Fprintf(w, "Count %d\n", count)
+        mu.Unlock()
+    }
+    ```
+
+    - Behind the scenes, server2 runs the handler for each incoming request in a separate goroutine so it can serve multiple requests simultaneously
+        - If 2 concurrent request try to update `count` at the same time, it might not be incremented consistently (race condition)
+        - must ensure at most one goroutine accesses the variable at a time

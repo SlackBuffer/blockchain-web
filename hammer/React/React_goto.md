@@ -298,7 +298,8 @@
     const MyComponentWithPersistentData = withPersistentData('data')(MyComponent)
 
     const ConnectedComponentA = connect(mapStateToProps, mapDispatchToProps)(ComponentA)
-    // 拆分
+
+    /* 拆分 */
     // connect 和 enhance 都是函数
     const enhance = connect(mapStateToProps, mapDispatchToProps)
     // enhance 也是一个高阶组件
@@ -306,10 +307,10 @@
     ```
 
 - `f(g(h(WrappedComponent)))`
-    - 最内层的高阶组件 `h` 可以有多个参数，但其它高阶组件只能接收一个参数，这样才能保证内层的函数返回值匹配外层函数的参数数量（1 个）
+    - 最内层的高阶组件 `h` 可以有**多个参数**，但其它高阶组件只能接收一个参数，这样才能保证内层的函数返回值匹配外层函数的参数数量（1 个）
 
     ```jsx
-    // withLog() 的执行结果是高阶组件
+    // withLog() 的执行结果是高阶组件；connect(mapStateToProps) 执行结果是一个高阶组件
     const ConnectedComponentA = connect(mapStateToProps)(withLog()(ComponentA))
     ```
 
@@ -322,8 +323,21 @@
         if (funcs.length === 1) { return funcs[0] }
         return funcs.reduce((a, b) => (...args) => a(b(args)))
     }
-    const enhance = compose(connect(mapStateToProps), withLog())
+
+    const enhance0 = compose()
+    const hocCA0 = enhance0(MyComponentA)    // 未增强组件
+    const enhance1 = compose(connect(mapStateToProps))
+    const hocCA1 = enhance1(MyComponentA) = connect(mapStateToProps)(MyComponentA)
+    const enhance2 = compose(connect(mapStateToProps), withLog())
+    const hocCA2 = enhance2(MyComponentA)
+
+    compose(a, b, c)
+    /* reduce */
+    // after round 1
+    ((...args) => a(b(args)), c)    // c(args) becomes the first functions's args (...args)
+    // after round 2
+    (...args) => a(b(c(args)))
     ```
 
     - `compose` 把高阶组件的嵌套写法打平
-    - `compose(f, g, h) 等价于 `(...args) => f(g(h(...args)))
+    - `compose(f, g, h)` 等价于 `(...args) => f(g(h(args)))`
