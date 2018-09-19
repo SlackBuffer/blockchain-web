@@ -1,30 +1,32 @@
 <!-- The Go Programming Language -->
-# Tutorial
-- communicating sequential process (CSP)
-    - a program is a parallel composition of processes that have no shared state; the processes communicate and synchronize using channels
+# 1. Tutorial
 - > [Go Blog](https://blog.golang.org)
 - > [Go Playground](https://play.golang.org)
-- > [standard library](https://golang.org/pkg)
-- [book's source code](http://gopl.io)
-- fetch source code 
+- > [Standard library](https://golang.org/pkg)
+- > [Book's source code](http://gopl.io)
+- > Fetch source code 
     - `go get gopl.io/ch1/helloworld`
-- Go's structure
+- Communicating Sequential Process (CSP)
+    - A program is a parallel composition of processes that have no shared state; the processes communicate and synchronize using channels
+- Packages
     - Go code is organized into packages 
-        - a package consists of one or more `.go` source files in a single directory that define what the package does
-        - each source file begins with a `package` declaration that states which package the file belongs to, followed by a list of other packages that it imports
-            - the `import` declarations must follow the `package` declaration
-            - the list form of `import` declaration is conventionally used
-        - package `main` defines a standalone executable program, not a library
-    - By convention, we describe each package in a comment immediately preceding its package declaration
-    - function `main` is where execution of the program begins
+    - A package consists of one or more `.go` source files in a single directory that define what the package does
+    - Each source file begins with a `package` declaration that states which package the file belongs to, followed by a list of other packages that it imports
+        - The `import` declarations must follow the `package` declaration
+        - The list form of `import` declaration is conventionally used
+    - Package `main` defines a standalone executable program, not a library
+    - By convention, we describe each package in a comment immediately preceding its package declaration  
 - Semicolons
     - Go does not require semicolons at the end of statements or declarations, except where two or more appear on the same line
-    - newlines following certain tokens are converted into semicolons
+    - Newlines following certain tokens are converted into semicolons
 - Code formatting
     - The `gofmt` tool rewrites code into the standard format, and the `go` tool's `fmt` subcommand applies `gofmt` to all the files in the specified package, or the ones in the current directory by default
         - `gofmt` tool sorts the package names into alphabetical order
     - `goimports` manages the insertion and removal of import declarations as needed
         - > `go get golang.org/x/tools/cmd/goimports`
+- Comments
+    - Comments do not nest
+- The value of a constant must be a number, string, or boolean
 - If a variable is not explicitly initialized, it's implicitly initialized to the *zero value* of its type
 - ***zero vale***
     - numeric type: 0
@@ -33,6 +35,34 @@
     - postfix only
     - `i++` is a statement, not an expression
         - so `j = i++` is illegal
+- `if`
+    - Go allows a simple statement such as a local variable to precede the `if` condition
+        - `if err := r.ParseForm(); err != nil {...}` reduces the scope of variable `err`
+- `switch`
+    - Cases are evaluated from top to bottom, so the first matching one is executed
+    -  The **optional** default case matches if none of the other cases does; it may be placed anywhere
+    - Cases do not fall through by default (`fallthrough` statement overrides the behavior)
+    - A `switch` does not need an operand; it can just list the cases, each of which is a boolean expression. This form is called a *tagless switch*; it's equivalent to `switch true`
+
+    ```go
+    switch coinFlip() {
+        case "heads":
+            heads++
+        case "tails":
+            tails++
+        default: 
+            fmt.Println("landed on edge!")
+    }
+    func Signum(x int) int {
+        switch {
+            case x > 0:
+                return +1
+            default: return 0
+            case x < 0:
+                return -1
+        }
+    }
+    ```
 - `for` loop
 
     ```go
@@ -49,14 +79,44 @@
     }
     ```
 
-    - any of the 3 parts can be omitted
-    - the optional initialization **statement** is executed before the loop starts
+    - Any of the 3 parts can be omitted
+    - The optional initialization **statement** is executed before the loop starts
+- A `for`, `if` or `switch` may include an optional simple statement - a short variable declaration, an increment or assignment statement, or a function call - that can be used to set a value before it's tested
+- `break`, `continue`, `goto`
+    - A `break` causes control to resume at the next statement after the innermost `for`, `switch`, `select` statement
+    - Statements may be labeled so that `break` and `continue` can refer to them
+    - `goto` statement is intended for machine-generated code
 - `map`
-    - holds a set of **`key/value`** pairs
-        - the key may be of any type whose value can be compared with `==` (string being the most common example)
-        - the value may be of any type
-    - provides constant-time operations to store, retrieve or test for an item in the set
-    - the order of map iteration is **random**
+    - A map holds a set of **`key/value`** pairs
+        - The key may be of any type whose value can be compared with `==` (string being the most common example)
+        - The value may be of any type
+    - A map provides constant-time operations to store, retrieve or test for an item in the set
+    - The order of map iteration is **random**
+- **Named types**
+    
+    ```go
+    type Point struct {
+        X, Y int
+    }
+    var p Point
+    ```
+
+- Function
+    - Function `main` is where execution of the program begins 
+    - It's a good style to write a comment before the declaration of each function to specify its behavior
+- Function literal
+    - An anonymous function defined at its point of use
+    - `http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {...})`
+- Methods
+    - A method is a function associated with a named type
+    - Methods may be attached to any named type
+- **Interfaces**
+    - Interfaces are abstract types that let us treat different concrete types in the same way based on **what methods they have**, not how they are represented or implemented 
+- Pointers
+    - Pointers are values that contain the address of a variable
+    - `&` yields the address of a variable
+    - `*` retrieves the variable that the pointer refers to
+    - There's no pointer arithmetic
 - ***goroutine***
     - A goroutine a concurrent function execution
     - The function `main` runs in a goroutine and  the `go` statement creates additional goroutines
@@ -69,8 +129,8 @@
     - By convention, formatting functions whose names end in `f` use the formatting rules of `fmt.Printf`, whereas those whose names ends in `ln` follow `Println`, formatting their arguments as if by `%v`, followed by a newline
 - ***blank identifier***
     - `_`
-    - may be used whenever syntax requires a variable name but program logic does not
-- declare a string variable
+    - It may be used whenever syntax requires a variable name but program logic does not
+- Declare a string variable
     1. `s := ""`
         - can be used only within a function, not for package-level variables
     2. `var s string`
@@ -82,14 +142,17 @@
         - redundant when variable type is the same as that of the initial value
         - necessary when they are not of the same type
     - Functions and other package-level entities may be declared **in any order**
-    - (`const`, `var`) declarations may appear at package level(so the names are visible throughout the package) or within a function(so the names are visible only within that function)
-- The value of a constant must be a number, string, or boolean
-## Command-Line Arguments
-- Command-line arguments are available to a program in a variable named `Args` that is part of the `os` package
-- The first element of `os.Args`, `os.Args[0]` is the name of the command itself
-    - `os.Args[1:len(os.Args)]`, `os.Args[1:]`
-    - > `s[m:n]` yields a slice that refers to elements `m` through `n-1`
-        - if `m` or `n` is omitted, it defaults to 0 or `len(s)` respectively
+    - (`const`, `var`) Declarations may appear at package level(so the names are visible throughout the package) or within a function(so the names are visible only within that function)
+- Documentation
+    - `godoc -http=:8080`
+    - `go doc strconv.Atoi`
+- Command-Line Arguments
+    - Command-line arguments are available to a program in a variable named `Args` that is part of the `os` package
+    - The first element of `os.Args`, `os.Args[0]` is the name of the command itself
+        - `os.Args[1:len(os.Args)]`, `os.Args[1:]`
+        - > `s[m:n]` yields a slice that refers to elements `m` through `n-1`
+            - If `m` or `n` is omitted, it defaults to 0 or `len(s)` respectively
+## Demos
 - echo
 
     ```go
@@ -198,7 +261,7 @@
     - `Sacnner` reads input and breaks it into lines or words
     - When the end of the input is reached, `Close` closes the file and releases any resources
     - When a map is passed into a function, the function receives **a copy of the reference**, so any change the called function makes to the underlying data structure will be visible through the caller's map reference too
-- [] lissajous
+- [ ] lissajous
 
     ```go
     var palette = []color.Color{color.White, color.Black}
@@ -310,4 +373,24 @@
 
     - Behind the scenes, server2 runs the handler for each incoming request in a separate goroutine so it can serve multiple requests simultaneously
         - If 2 concurrent request try to update `count` at the same time, it might not be incremented consistently (race condition)
-        - must ensure at most one goroutine accesses the variable at a time
+        - Must ensure at most one goroutine accesses the variable at a time
+# Program structure
+- Variables store value. Simple expressions are combined into larger ones with operation like addition and subtraction. Basic types are collected into aggregates like arrays and structs. Expressions are used in statements whose execution order is determined by control-flow statements like `if` and `for`. Statements are grouped into functions for isolation and reuse. Functions are gathered into source files and packages
+## Names
+- The name of Go functions, variables, constants, types, statement labels, and packages follow a simple rule: a name begin with a letter (that is, anything that Unicode deems a letter) or an underscore and may have any number of additional letters, digits, and underscores
+- Go has 2 keywords. They cannot be used as names
+    - `break`, `case`, `chan`, `const`, `continue`, `default`, `defer`, `else`, `fallthrough`, `for`, `func`, `go`, `goto`, `if`, `import`, `interface`, `map`, `package`, `range`, `return`, `select`, `struct`, `switch`, `type`, `var`
+- Go has about a dozen ***predeclared names*** like `int` and `true` for built-in constants, types, and functions
+    - These names are not reserved, there're a handful of places where redeclaring one of them makes sense
+- Scope
+    - An entity declared within a function i local to that function. An entity declared outside a function is visible in all files of the package to which it belongs
+- Visibility
+    - The case of the first letter of a name determines its visibility across package boundaries
+    - A name beginning with an upper-case letter is exported. That means it's visible and accessible outside of its own package and may be referred to by other parts of the program
+- Package names are always in lower case
+- There' no limit on name length
+    - Go programs lean toward short names, especially for local variables with small scopes
+    - Generally, the larger the scope of a name, the longer and more meaningful it should be
+- Use "camel case"
+- The letters of acronyms and initialisms are always rendered **in the same case**
+    - `htmlEacape`, `HTMLEscape`
