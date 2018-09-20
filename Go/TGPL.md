@@ -28,9 +28,6 @@
     - Comments do not nest
 - The value of a constant must be a number, string, or boolean
 - If a variable is not explicitly initialized, it's implicitly initialized to the *zero value* of its type
-- ***zero vale***
-    - numeric type: 0
-    - string: `""`
 - `++`, `--`
     - postfix only
     - `i++` is a statement, not an expression
@@ -43,7 +40,7 @@
     -  The **optional** default case matches if none of the other cases does; it may be placed anywhere
     - Cases do not fall through by default (`fallthrough` statement overrides the behavior)
     - A `switch` does not need an operand; it can just list the cases, each of which is a boolean expression. This form is called a *tagless switch*; it's equivalent to `switch true`
-
+<!-- 
     ```go
     switch coinFlip() {
         case "heads":
@@ -62,25 +59,24 @@
                 return -1
         }
     }
-    ```
+    ``` 
+ -->
 - `for` loop
-
+    - Any of the 3 parts can be omitted
+    - The optional initialization **statement** is executed before the loop starts
+<!-- 
     ```go
     for initialization; condition; post {
         // zero or more statements
     }
-
     // while loop
     for condition {
     }
-
     // infinite loop
     for {
     }
-    ```
+    ``` -->
 
-    - Any of the 3 parts can be omitted
-    - The optional initialization **statement** is executed before the loop starts
 - A `for`, `if` or `switch` may include an optional simple statement - a short variable declaration, an increment or assignment statement, or a function call - that can be used to set a value before it's tested
 - `break`, `continue`, `goto`
     - A `break` causes control to resume at the next statement after the innermost `for`, `switch`, `select` statement
@@ -130,19 +126,6 @@
 - ***blank identifier***
     - `_`
     - It may be used whenever syntax requires a variable name but program logic does not
-- Declare a string variable
-    1. `s := ""`
-        - can be used only within a function, not for package-level variables
-    2. `var s string`
-        - relies on default initialization to the zero value
-    3. `var s = ""`
-        - rarely used except when declaring multiple variables
-    4. `var s string = ""`
-        - explicit about the variable's type
-        - redundant when variable type is the same as that of the initial value
-        - necessary when they are not of the same type
-    - Functions and other package-level entities may be declared **in any order**
-    - (`const`, `var`) Declarations may appear at package level(so the names are visible throughout the package) or within a function(so the names are visible only within that function)
 - Documentation
     - `godoc -http=:8080`
     - `go doc strconv.Atoi`
@@ -154,7 +137,7 @@
             - If `m` or `n` is omitted, it defaults to 0 or `len(s)` respectively
 ## Demos
 - echo
-
+<!-- 
     ```go
     // echo1
     func main() {
@@ -182,9 +165,12 @@
         fmt.Println(strings.Join(os.Arg[1:], " "))
     }
     ```
-
+ -->
 - dup
-
+    - `Sacnner` reads input and breaks it into lines or words
+    - When the end of the input is reached, `Close` closes the file and releases any resources
+    - When a map is passed into a function, the function receives **a copy of the reference**, so any change the called function makes to the underlying data structure will be visible through the caller's map reference too
+<!-- 
     ```go
     // dup1
     func main() {
@@ -256,13 +242,11 @@
             }
         }
     }
-    ```
-
-    - `Sacnner` reads input and breaks it into lines or words
-    - When the end of the input is reached, `Close` closes the file and releases any resources
-    - When a map is passed into a function, the function receives **a copy of the reference**, so any change the called function makes to the underlying data structure will be visible through the caller's map reference too
-- [ ] lissajous
-
+    ``` 
+-->
+- [ ] lissajous    
+    - `[]color.Color{}` (slice) and `gif.GIF{...}` (struct) are **composite literals**
+<!-- 
     ```go
     var palette = []color.Color{color.White, color.Black}
 
@@ -301,11 +285,11 @@
         }
         gif.EncodeAll(out, &anim)
     }
-    ```
-
-    - `[]color.Color{}` (slice) and `gif.GIF{...}` (struct) are **composite literals**
+    ``` 
+-->
 - concurrent fetch
-    
+    - Having one `main` do all the printing ensures that output from each goroutine is processed as a unit (blocked), with no danger of interleaving if two goroutine finishes at the same time
+<!--     
     ```go
     func main() {
 	    start := time.Now()
@@ -335,11 +319,13 @@
         secs := time.Since(start).Seconds()
         ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
     }
-    ```
-
-    - Having one `main` do all the printing ensures that output from each goroutine is processed as a unit (blocked), with no danger of interleaving if two goroutine finishes at the same time
+    ``` 
+-->
 - server
-
+    - Behind the scenes, server2 runs the handler for each incoming request in a separate goroutine so it can serve multiple requests simultaneously
+        - If 2 concurrent request try to update `count` at the same time, it might not be incremented consistently (race condition)
+        - Must ensure at most one goroutine accesses the variable at a time
+<!-- 
     ```go
     // server 1
     func main() {
@@ -369,11 +355,8 @@
         fmt.Fprintf(w, "Count %d\n", count)
         mu.Unlock()
     }
-    ```
-
-    - Behind the scenes, server2 runs the handler for each incoming request in a separate goroutine so it can serve multiple requests simultaneously
-        - If 2 concurrent request try to update `count` at the same time, it might not be incremented consistently (race condition)
-        - Must ensure at most one goroutine accesses the variable at a time
+    ``` 
+-->
 # Program structure
 - Variables store value. Simple expressions are combined into larger ones with operation like addition and subtraction. Basic types are collected into aggregates like arrays and structs. Expressions are used in statements whose execution order is determined by control-flow statements like `if` and `for`. Statements are grouped into functions for isolation and reuse. Functions are gathered into source files and packages
 ## Names
@@ -383,9 +366,9 @@
 - Go has about a dozen ***predeclared names*** like `int` and `true` for built-in constants, types, and functions
     - These names are not reserved, there're a handful of places where redeclaring one of them makes sense
 - Scope
-    - An entity declared within a function i local to that function. An entity declared outside a function is visible in all files of the package to which it belongs
+    - An entity declared within a function is local to that function. An entity declared outside a function is visible in **all files of the package** to which it belongs
 - Visibility
-    - The case of the first letter of a name determines its visibility across package boundaries
+    - The case of the first letter of a name determines its visibility ***across package boundaries***
     - A name beginning with an upper-case letter is exported. That means it's visible and accessible outside of its own package and may be referred to by other parts of the program
 - Package names are always in lower case
 - There' no limit on name length
@@ -394,3 +377,67 @@
 - Use "camel case"
 - The letters of acronyms and initialisms are always rendered **in the same case**
     - `htmlEacape`, `HTMLEscape`
+## Declarations
+- A declaration names a program entity and specifies some or all of its property
+- 4 major kinds of declarations: `var`, `const`, `type`, `func`
+-- Functions and other package-level entities may be declared **in any order**
+- (`const`, `var`) Declarations may appear at package level(so the names are visible throughout the package) or within a function(so the names are visible only within that function)
+## Variables
+- A variable is a piece of storage containing a value
+- A var declaration creates a variable of a particular type, attaches a name to it, and sets its initial value
+    - `var name type = expresssion`
+    - Either the `type` or the `= expression` can be omitted, but not both
+        1. If the expression is omitted, the initial value is the *zero value* for its type
+- Initializers may be literal values or arbitrary expressions
+    - Package-level variables are initialized **before `main` begins**
+    - Local variables are initialized as their declarations are encountered during function execution
+- It's possible to declare and optionally initialize a set of variables in a single declaration
+- A set of variables can also be initialized by calling a function that returns multiple values
+
+    ```go
+    var i, j, k int // int int int
+    var b, f, s = true, 2.3, "four" // bool, float64, string
+    var f, err = os.Open(name)  // returns a file and an error
+    ```
+
+- A `var` declaration tends to be reserved for local variables that need an explicit type that differs from that of the initializer expression - [ ], or for when the variable will be assigned a value later and its initial value is unimportant
+- ***zero vale***
+    - numeric type: 0
+    - string: `""`
+    - boolean: `false`
+    - interfaces, reference types(slice, pointer, map, channel, function): `nil`
+    - aggregate type (array, struct): zero value of all of its elements or fields
+### Short Variable Declarations
+- `name := expression`
+    - Used within a function only, not for package-level variables
+    - The type of `name` is determined by the type of `expression`
+    - Used to declare and initialize the majority of local variables
+- **`:=` is a declaration, `=` is an assignment**
+- `i, j := 0, 1`
+    - Declarations with multiple initializer expressions should be used only when they help readability (such as for short and natural groupings like initialization part of a `for` loop)
+    - > tuple assignment: `i, j = j, i` swaps values of `i` and `j`
+- `f, err := os.Open(name)`
+- A short variable declaration **must declare at least one new variable**
+    - If some of variables in a short variable declaration were already declared **in the same lexical block**, then,  for those variables, the short variable declaration acts like an **assignment**
+    - A short variable declaration acts like an assignment only to variables that were already in the same lexical scope; declarations in an outer block are ignored
+- Declare a string variable
+    1. `s := ""`
+        - can be used only within a function, not for package-level variables
+    2. `var s string`
+        - relies on default initialization to the zero value
+    3. `var s = ""`
+        - rarely used except when declaring multiple variables
+    4. `var s string = ""`
+        - explicit about the variable's type
+        - redundant when variable type is the same as that of the initial value
+        - necessary when they are not of the same type
+### Pointers
+- Variables created by declarations are identified by a name, such as `x`, but many variables are identified only by expressions like `x[i]` or `x.f`
+- A pointer value is the address of a variable. A pointer is thus the **location** at which a value is stored
+    - Not every value has an address, but every variable does
+    - With a pointer, we can read or update the value of a variable indirectly, without using or even knowing the name of the variable, if indeed it has a name
+- If a variable is declared `var x int`, the expression `&x` ("address of x") yields a value to an integer variable, that is, a value of type `*int`, which is pronounced "pointer to int"
+    - If this value is called `p`, we say "`p` points to `x`", or equivalently "`p` contains the address of `x`"
+    - The variable to which `p` points is written `*p`. The expression `*p` yields the value of that variable, an `int`
+    - Since `*p` denotes a variable, it may also appear on the left-hand side of an assignment, in which case the assignment updates the variable
+- Each component of a variable of aggregate type - a field of a struct or an element of an array - is also a variable and thus also has an address too
