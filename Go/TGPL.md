@@ -28,10 +28,6 @@
     - Comments do not nest
 - The value of a constant must be a number, string, or boolean
 - If a variable is not explicitly initialized, it's implicitly initialized to the *zero value* of its type
-- `++`, `--`
-    - postfix only
-    - `i++` is a statement, not an expression
-        - so `j = i++` is illegal
 - `if`
     - Go allows a simple statement such as a local variable to precede the `if` condition
         - `if err := r.ParseForm(); err != nil {...}` reduces the scope of variable `err`
@@ -121,6 +117,7 @@
 - *channel*
     - A communication mechanism that allows one goroutine to pass values of a **specified type** to another goroutine
 - `fmt.printf`
+    - > p.10
     - `%v`: any value in natural format
     - By convention, formatting functions whose names end in `f` use the formatting rules of `fmt.Printf`, whereas those whose names ends in `ln` follow `Println`, formatting their arguments as if by `%v`, followed by a newline
 - ***blank identifier***
@@ -137,6 +134,7 @@
             - If `m` or `n` is omitted, it defaults to 0 or `len(s)` respectively
 ## Demos
 - echo
+    - `-n` causes `echo` to omit the trailing newline that would normally be printed; `-s sep` causes it to separate the output arguments by the contents of the string `sep` instead of the default single space
 <!-- 
     ```go
     // echo1
@@ -148,7 +146,6 @@
         }
         fmt.Println(s)
     }
-
     // echo2
     func main() {
         s, sep := "", ""
@@ -159,10 +156,27 @@
         }
         fmt.Println(s)
     }
-
     // echo3
     func main() {
         fmt.Println(strings.Join(os.Arg[1:], " "))
+    }
+    // echo4
+    /*  `flag.Bool` creates a new flag variable of type bool. It takes 3 arguments: the name of the flag `"n"`, the variable's default value (`false`), a message that will be printed if the user provides an invalid argument, an invalid flag, or `-h` 
+    ** or `-help`
+    ** `flag.String` takes name, a default value, and a message, and creates a string variable
+    ** the variable `sep` and `n` are pointers to the flag variable
+    ** When the program is run, it must call `flag.Parse` before the flags are used, to update the flag varialbes from their default
+    ** values. - [ ] The non-flag arguments are available from `flags.Args()` as a slice of strings
+    ** If `flag.Parse()` encounters an error, it prints a usage message and calls `os.Exit(2)` to terminate the program
+    */
+    var n = flag.Bool("n", false, "omit trailing newline")
+    var sep = flag.String("s", " ", "separator")
+    func main() {
+        flag.Parse()
+        fmt.Print(strings.Join(flag.Args(), *sep))
+        if !*n {
+            fmt.Println()
+        }
     }
     ```
  -->
@@ -441,3 +455,146 @@
     - The variable to which `p` points is written `*p`. The expression `*p` yields the value of that variable, an `int`
     - Since `*p` denotes a variable, it may also appear on the left-hand side of an assignment, in which case the assignment updates the variable
 - Each component of a variable of aggregate type - a field of a struct or an element of an array - is also a variable and thus also has an address too
+- The zero type of a pointer of any type is `nil`
+    - `var p *int`
+- Pointers are **comparable**
+    - Two pointers are equal if and only if they point to the same variable or both are nil
+    - `p != nil` is `true` if `p` points to a variable
+- It's safe for a function to return the address of a local variable
+    - The local variable will remain in existence even after the call has returned if there's a pointer still refers to it
+    - Each call to `f()` returns a distinct value
+<!-- 
+    ```go
+    func main() {
+        fmt.Println(f() == f())
+    }
+    func f() *int {
+        v := 1
+        return &v
+    }
+    ```
+ -->
+ - Each time we take the address of a variable or copy a pointer, we create new **aliases** or ways to identify the same variable
+    - To find all the statements that access a variable, we have to know all its alias
+    - It's not just pointers that create aliases; aliasing also occurs when we copy values of other reference types like slices, maps, and channels, and even structs, arrays, and interfaces that contains these types
+### the `new` function
+- Another to create a variable is to use the built-in function `new`
+- `new(T)` creates an **unnamed** variable of type `T`, initializes it to the zero value of `T`, and returns its **address**, which is a value of type `*T`
+    - A variable created with `new` is no different from an ordinary local variable whose address is taken, except that there's no need to invent (and declare) a dummy name
+    - Thus the `new` is only a syntactic convenience
+- Each call to `new` returns a distinct variable with a unique address
+    - One exception: two variables whose type carries no information and is therefore of size zero, such as `struct{}` or `[0]int`, may, depending on the implementation, have the same address
+### Lifetime of variables
+- The lifetime of a package-level variable is the entire execution of the program
+- Local variables have dynamic lifetimes: a new instance is created each time the declaration statement is executed, and the variable lives on until it becomes unreachable, at which point its storage may be recycled
+    - Function parameters and results are local variables too; they are created each time their enclosing function is called
+- Garbage collector
+    - Every package-level variable, and every local variable of each currently active function, can potentially be the start or root of a path to the variable in question, following pointers and other kinds of references that ultimately lead to the variable
+    - If no such path exists, the variable has become unreachable, so it can no longer affect the rest of the computation
+- A complier may choose to allocate local variables on the heap or the stack
+    - `x` must be heap-allocated because it's still reachable from the variable `global` after `f` has returned; we say `x` escapes from `f`
+    - It's safe for the complier to allocate `*y` on the stack, even though it was allocated with `new`
+    - Keeping unnecessary pointers to short-lived objects within long-lived objects, especially global variables, will prevent the GC from reclaiming the short-lived objects
+
+    ```go
+    var global *int
+    func f() {
+        var x int
+        x = 1
+        global = &x
+    }
+    func go() {
+        y := new(int)
+        *y = 1
+    }
+    ```
+
+## Assignments
+- The value held by a variable is updated by an assignment statement, which in its simplest form has a variable on the left of the sign `=` sign and an expression on the right
+- `++`, `--`
+    - postfix only
+    - `i++` is a statement, not an expression
+        - Thus `j = i++` is illegal
+- Each of the arithmetic and binary operators has a corresponding assignment operator allowing (`*=`)
+### Tuple assignments
+- All of the right-hand expression are evaluated before any of the variables are updated, making this form most useful when some of the variables appear on both sides of the assignment
+<!-- 
+    ```go
+    // GCD (greatest common divisor)
+    func gcd(x, y int) int {
+        for y != 0 {
+            x, y = y, x%y
+        }
+        return x
+    }
+    // n-th Fibonacci number
+    func fib(n int) int {
+        x, y := 0, 1
+        for i := 0; i < n; i++ {
+            x, y = y, x+y
+        }
+        return x
+    }
+    ``` 
+-->
+- Certain expressions, such as a call to a function with multiple results,produce several values
+    - When such a call is used in an assignment statement, the left-hand side must have as many variables as the function has results
+    - Often, functions use these additional results to indicate some kind of error, either by returning an `error`, or a `bool`, usually called `ok`
+- There're 3 operators that sometimes behave this way too
+    - If a map lookup, type assertion, or channel receive appears in an assignment in which two results are **expected**, each produces an additional boolean result
+<!-- 
+    ```go
+    v, ok = m[key]
+    v, ok = x.(T)
+    v, ok = <-ch
+    ```
+ -->
+- As with variable declarations, we can assign unwanted values to the blank identifier
+### Assignability
+- Assignment statements are an explicit form of assignment
+- Places where assignment occurs implicitly
+    - A function call implicitly assigns the values to the corresponding parameter variables
+    - A `return` statement implicitly assigns the `return` operands to the corresponding result variables
+    - A literal expression for a composite type 
+        - `medals := []string{"gold", "silver", "bronze"}`
+        - The elements of maps and channels, though not ordinary variables, are also subject or implicit assignments
+- An assignments is always legal if the left-hand side (the variable) and the right-hand side (the value) have the same type. More generally, the assignment is legal only if the value is *assignable* to the type of the variable
+- The rule for assignability
+    - For the types we've discussed so far, the types must exactly match
+    - `nil` may be assigned to any variable of interface or reference type
+    - Constants have more flexible rules for assignability that avoid the need for most explicit conversions
+## Type Declarations
+- A `type` declaration defines a new named type that has the same underlying types as an existing type
+    - `type name underlying-type`
+- The named types provides a way to separate different and perhaps incompatible uses of the underlying types so that they can't be mixed unintentionally
+    - Even though `Celsius` and `Fahrenheit` have the same underlying type, they are not the same type, so they cannot be be compared or combined in arithmetic expressions
+    - Distinguishing the types makes it possible to avoid errors like inadvertently combining temperatures in the 2 different scales
+    - An explicit type conversion like `Celsius(t)` or `Fahrenheit(t)` is required to convert from a `float64`. 
+    - `Celsius(t)` and  `Fahrenheit(t)` are conversions, not function calls. They don't change the value or representation in any way, but they make the change of meaning explicit
+<!-- 
+    ```go
+    type Celsius float64
+    type Fahrenheit float64
+    const (
+        AbsoluteZeroC Celsius = -273.15
+        FreezingC     Celsius = 0
+        BoilingC      Celsius = 100
+    )
+    func CToF(c Celsius) Fahrenheit { return Fahrenheit(c*9/5 + 32) }
+    func FToC(f Fahrenheit) Celsius { return Celsius((f - 32) * 5 / 9) }
+    ```
+ -->
+ - For every type `T`, there's a corresponding conversion operation `T(x)` that converts the value `x` to type `T`
+ - A conversion from one type to another type is allowed if **both have the same underlying type**, or if both are **unnamed pointer** types that point to variables of the same underlying type
+    - These conversions change the type but not the representation of the value
+    - If `x` is assignable to `T`, a conversion is permitted but is usually redundant
+- Conversions are allowed between numeric types, and between string and some slice types
+    - These conversions may change the representation of the value
+        - Converting a floating-point number to an integer discards any fractional part
+        - Converting a string to a `[]byte` slice allocates a copy of the string data
+- The underlying type of a named type determines its structure and representation, and also the set of intrinsic operations it supports, which are the same as if the underlying type had been used directly
+- Comparison operators like `==` and `<` can also be used to compare a value of a named type to another of the same type, or to a value of of an unnamed type with the same underlying type
+- Named types also make it possible to define new behaviors for values of the type. These behaviors are expressed as a set of functions associated with the type, called the type's methods
+    - `func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }`
+    - The `Celsius` parameter `c` appears before the function name, associate with the `Celsius` type a method named `String` that returns `c`'s numeric value followed by °C
+## Packages and Files
