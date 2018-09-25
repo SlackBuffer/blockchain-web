@@ -333,11 +333,45 @@
 
     compose(a, b, c)
     /* reduce */
-    // after round 1
-    ((...args) => a(b(args)), c)    // c(args) becomes the first functions's args (...args)
-    // after round 2
-    (...args) => a(b(c(args)))
+    ((...args) => a(b(args)), c).reduce((a, b) => (...args) => a(b(args)))    
+    // c(args) becomes the first functions's args
+    (...args) => a(b(c(args))) ==> c(args) => a(b(c(args))) ===> compose(a, b, c): (...args) => a(b(c(args)))
     ```
 
     - `compose` 把高阶组件的嵌套写法打平
     - `compose(f, g, h)` 等价于 `(...args) => f(g(h(args)))`
+- 属性代理：高阶组件处理通用逻辑，再将相关属性传递给被包装组件
+- 继承方式实现 hoc
+    - 通过继承被包装组件实现逻辑复用
+    - 常用语渲染劫持
+
+    ```jsx
+    function withAuth(WrappedComponent) {
+        return class extends WrappedComponent {
+            render() {
+                // 调用 WrappedComponent 的 render 方法渲染组件
+                if (this.props.loggedIn) { return super.render() }
+                else { return null }
+            }
+        }
+    }
+    ```
+
+    - 继承方式实现的 hoc 对被包装组件有侵入性，当组合多个 hoc 使用时很容易因子类组件忘记通过 `super` 调用父类组件方法二导致逻辑丢失
+## 注意事项
+1. 为在开发调试阶段更好地区分包装了不同组件的高阶组件，需要对高阶组件的现实名称作自定义处理
+    
+    ```jsx
+    function withPersistentData(WrappedComponent) {
+        return class extends Component {
+            static displayName = `HOC(${getDisplayName(WrappedComponent)})`
+        }
+        render() { ... }
+    }
+    function getDisplayName(WrappedComponent) {
+        return WrappedComponent.displayName || WrappedComponent.name || 'Component'
+    }
+    ```
+
+2. 不要在组件的 `render()` 方法中使用 hoc，尽量不要在组件的其他生命周期方法中使用 hoc
+    - 
