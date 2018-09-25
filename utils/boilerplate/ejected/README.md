@@ -10,7 +10,7 @@
       - > https://github.com/gaearon/react-hot-loader#migrating-from-create-react-app
     - css 热加载：页面不刷新
       - 默认自带
-  - [ ] scss 组织，css modules
+  - [x] scss 组织，css modules
 - js 分片
 - react-router-dom
 - axios
