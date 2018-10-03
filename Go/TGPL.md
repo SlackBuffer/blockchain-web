@@ -8,14 +8,6 @@
     - `go get gopl.io/ch1/helloworld`
 - Communicating Sequential Process (CSP)
     - A program is a parallel composition of processes that have no shared state; the processes communicate and synchronize using channels
-- Packages
-    - Go code is organized into packages 
-    - A package consists of one or more `.go` source files in a single directory that define what the package does
-    - Each source file begins with a `package` declaration that states which package the file belongs to, followed by a list of other packages that it imports
-        - The `import` declarations must follow the `package` declaration
-        - The list form of `import` declaration is conventionally used
-    - Package `main` defines a standalone executable program, not a library
-    - By convention, we describe each package in a comment immediately preceding its package declaration  
 - Semicolons
     - Go does not require semicolons at the end of statements or declarations, except where two or more appear on the same line
     - Newlines following certain tokens are converted into semicolons
@@ -597,4 +589,15 @@
 - Named types also make it possible to define new behaviors for values of the type. These behaviors are expressed as a set of functions associated with the type, called the type's methods
     - `func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }`
     - The `Celsius` parameter `c` appears before the function name, associate with the `Celsius` type a method named `String` that returns `c`'s numeric value followed by °C
+    - > Many types declare a `String` method of this form because it controls how values of the type appear when printed as a string by the `fmt` package
 ## Packages and Files
+- The source code for a package resides in one or more `.go` files, usually in a directory whose name ends with the import path
+    - `gopl.io/ch1/helloworld` package are stored in directory `$GOPATH/src/gopl.io/ch1/helloworld`
+- Each package serves as a separate name space for its declarations
+- Packages
+    - A package consists of one or more `.go` source files in a single directory that define what the package does
+    - Each source file begins with a `package` declaration that states which package the file belongs to, followed by a list of other packages that it imports
+        - The `import` declarations must follow the `package` declaration
+        - The list form of `import` declaration is conventionally used
+    - Package `main` defines a standalone executable program, not a library
+    - By convention, we describe each package in a comment immediately preceding its package declaration  
