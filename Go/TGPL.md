@@ -601,3 +601,51 @@
         - The list form of `import` declaration is conventionally used
     - Package `main` defines a standalone executable program, not a library
     - By convention, we describe each package in a comment immediately preceding its package declaration  
+- Package-level names like the types and constants declared in one file of a package are visible to all the other files of the package
+    - Visibility
+- The `doc comment` immediately preceding the package declaration documents the package as a whole. Only one file in each package should have a package doc comment
+    - Extensive doc comments are often placed in a file of their own, conventionally called `doc.go`
+### Imports
+- Within a Go program, every package is identified by a unique string called *import path*
+    - These are the strings that appear in an `import` declaration like `"gopl.io/ch2/tempconv"`
+    - When using the `go` tool, an import path denotes a directory containing one or more Go source files that together make up the package
+- Each package has a package name (the short name but not necessarily unique that appear in its `package` declaration)
+    - By convention, a package's name matches the last segment of its import path
+    - An import declaration may specify an alternative name to avoid conflicts
+### Package Initialization
+- Package initialization begins by initializing package-level variables in the order in which they are declared, except that **dependencies are resolved first**
+
+    ```go
+    var a = b + c   // a initialized third
+    var b = f()     // b initialized second
+    var c = 1       // c initialized first
+    func f() int {return c + 1}
+    ```    
+
+- If the package has multiple `.go` files, they are initialized in the order in which the files are given to the compiler
+    - The `go` tool sorts `.go` files by name before invoking the compiler
+- Each variable declared at package level starts life with the value of its initializer expression, if any
+    - For some variables (like table of data), an initializer expression may not be the simplest way to set its initial value. In that case, the `init` function mechanism may be simpler
+- Any file may contain any number of functions whose declaration is just `func init() { /* ... */ }`
+    - Such `init` function can't be called or referenced, but otherwise they are normal functions
+    - Within each file, `init` functions are automatically executed when the program starts, in the order in which they are declared
+- One package is initialized at a time, in the order of imports in the program, **dependencies first**
+- Initialization proceeds from the **bottom up**; the `main` package is the last to be initialized
+- [ ] population count
+## Scope
+- A declaration associates a name with a program entity, such a function or a variable
+- The scope of a declaration is the part of the source code where a use of the declared name refers to the declaration
+    - The scope of a declaration is a region of the program text; it's a compile-time property
+    - The lifetime of a variable is the range of time during the execution when the variable can be referred to by other parts of the program; it's a run-time property
+- A *syntactic block* is a sequence of statements enclosed in braces like those that surround the body of a function or a loop
+    - A name declared inside a syntactic block is not visible outside that block
+    - The block encloses its declarations and determines their scope
+- *Lexical block*: other groupings of declarations that are not explicitly surrounded by braces
+    - universe block: a lexical block for the entire source code
+    - There's a lexical block for each package; for each file; for each `for`, `if`, and `switch` statement; for each case in a `switch` or `select` statement; for each explicit syntactic block
+- The declarations of built-in types, functions, and constants like `int`, `len`, `true` are in the universe block and can be referred throughout the entire program
+- Declarations outside any functions, that is, at package level, can be referred to from any file in the same package
+- Imported packages are declared at the file level, so they can be referred to from the same file, but not from another file in the same package without another `import`
+- Local declarations can be referred to only from within the same function or perhaps just a part of it
+- The scope of a control-flow label, as used by `break`, `continue`, and `goto` statements, is the entire enclosing function
+- When the compiler encounters a reference to a name, it looks for a declaration, staring with the innermost enclosing lexical block and working up to 
