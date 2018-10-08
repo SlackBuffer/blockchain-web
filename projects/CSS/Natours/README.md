@@ -109,6 +109,12 @@
 # Float
 # SASS
 - 两种 SASS 语法：SCSS 写法更类似 CSS；SASS 用缩进
+- Main SASS features
+    - Variables, nesting, operators, partials and imports
+    - Mixins: to write reusable pieces of CSS code
+    - Functions: similar to mixins, with the difference that they produce a value that can be used
+    - Extends: to make different selectors inherit declarations that are common to all of them
+    - Control directives: for writing complex code using conditional and loops (more for CSS frameworks)
 - demo
     - https://codepen.io/slackbuffer/pen/ZjWQga?editors=1100
         1. float, clear-fix
