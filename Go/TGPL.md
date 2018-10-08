@@ -643,9 +643,54 @@
 - *Lexical block*: other groupings of declarations that are not explicitly surrounded by braces
     - universe block: a lexical block for the entire source code
     - There's a lexical block for each package; for each file; for each `for`, `if`, and `switch` statement; for each case in a `switch` or `select` statement; for each explicit syntactic block
+    -  `for` loops, `if` statements, and `switch` statements create implicit blocks **in addition to their body blocks**
+
+    ```go
+    func main() {
+        x := "hello!"
+        for i := 0; i < len(x); i++ {
+            x := x[i]
+            if x != '!' {
+                x := x + 'A' - 'a'
+                fmt.Printf("%c", x) // "HELLO"
+            }
+        }
+    }
+    // the for loop creates 2 lexical blocks
+    // the explicit block for the loop body, and an implicit
+    // block that additionally encloses the variables
+    // declared by the initialization clause
+    // the scope of a variale declared in the implicit block
+    // is the condition, post-statement(i++), and body of the for statement
+
+    if x := f(); x == 0 {
+        fmt.Println(x)
+    } else if y := g(x); x == y {
+        fmt.Println(x, y)
+    } else {
+        fmt.Println(x, y)
+    }
+    fmt.Println(x, y) // compile error: x and y are not visible here
+    // the second if statement is **nested** within the first, so variables declared within the first 
+    // statement's initializer are visible within the second
+    ```
+
+    - For a `switch` statement, there's a block for the condition and a block for each case body
 - The declarations of built-in types, functions, and constants like `int`, `len`, `true` are in the universe block and can be referred throughout the entire program
 - Declarations outside any functions, that is, at package level, can be referred to from any file in the same package
 - Imported packages are declared at the file level, so they can be referred to from the same file, but not from another file in the same package without another `import`
 - Local declarations can be referred to only from within the same function or perhaps just a part of it
 - The scope of a control-flow label, as used by `break`, `continue`, and `goto` statements, is the entire enclosing function
-- When the compiler encounters a reference to a name, it looks for a declaration, staring with the innermost enclosing lexical block and working up to 
+- When the compiler encounters a reference to a name, it looks for a declaration, staring with the innermost enclosing lexical block and working up to the universe block
+    - If the compiler finds no declaration, it reports an "undeclared name" error
+    - If a name is declared in both an outer block and an inner block, the inner declaration will be found first. In that case, the inner declaration is said to shadow or hide the outer one, making it inaccessible
+    - [ ] At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions
+# Basic Data Types
+- 4 categories
+    1. basic types
+    2. aggregate types
+        - arrays, structs
+    4. reference types
+        - pointers, slices, maps, functions, channels
+    5. interface
+# Integers
