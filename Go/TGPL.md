@@ -685,12 +685,21 @@
     - If the compiler finds no declaration, it reports an "undeclared name" error
     - If a name is declared in both an outer block and an inner block, the inner declaration will be found first. In that case, the inner declaration is said to shadow or hide the outer one, making it inaccessible
     - [ ] At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions
+
+
+- [ ] continue here
 # Basic Data Types
 - 4 categories
     1. basic types
     2. aggregate types
         - arrays, structs
-    4. reference types
+    3. reference types
         - pointers, slices, maps, functions, channels
-    5. interface
-# Integers
+    4. interface
+## Integers
+- Go's numeric data types include several sizes of integers, floating-point numbers, and complex numbers. Each numeric type determines the size and signedness of its values
+- 4 distinct sizes of integers - 8, 16, 32, 64
+    - `int8`, `int16`, `int32`, `int64`, `uint8`, `uint16`, `uint32`, `uint64`
+    - `int` and `uint` are the natural or most efficient size for signed and unsigned integers on a particular platform
+        - Both these types have the same size, either 32 or 64 bits
+        - different compilers may make different choices even on identical hardware
