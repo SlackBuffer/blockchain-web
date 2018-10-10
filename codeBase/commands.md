@@ -2,7 +2,7 @@
 - 版本
     - `docker --version`
     - `docker-compose --version`
-- `docker logs contanierName`
+- `docker logs containerName`
 - `docker ps`, `docker ps -a`  <!-- container -->
 - `docker image rm`
 - `docker run -it ubuntu:16.04 /bin/bash`
@@ -53,7 +53,7 @@
     ```
 
 # Ubuntu
-- Ubunbu 16.04
+- Ubuntu 16.04
 
     ```bash
     # 创建用户
@@ -179,4 +179,3 @@
     }
     vim /etc/nginx/nginx.conf
     ```
-    
