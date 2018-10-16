@@ -686,8 +686,30 @@
     - If a name is declared in both an outer block and an inner block, the inner declaration will be found first. In that case, the inner declaration is said to shadow or hide the outer one, making it inaccessible
     - [ ] At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions
 
+    ```go
+    if f, err := os.Open(fname); err != nil { // compile error: unused f
+        return err
+    }
+    f.Stat()    // compile error: undefined f
+    f.Close()   // compile error: undefined f
+    
+    f, err := os.Open(fname)
+    if err != nil {
+        return err
+    }
+    f.Stat()
+    f.Close()
 
-- [ ] continue here
+    if f, err := os.Open(fname); err != nil {
+        return err
+    } else {
+        // f and err are visible here too
+        f.Stat()
+        f.Close()
+    }
+    ```
+
+    - Normal practice in Go is to deal with the error in the `if` block and then return, so that the successful execution path is not indented
 # Basic Data Types
 - 4 categories
     1. basic types
@@ -703,3 +725,22 @@
     - `int` and `uint` are the natural or most efficient size for signed and unsigned integers on a particular platform
         - Both these types have the same size, either 32 or 64 bits
         - different compilers may make different choices even on identical hardware
+- `rune` is a synonym for `int32` and indicates that a value is a Unicode code point
+- `byte` is a synonym for `uinit8` and emphasizes that the value is a piece of raw data rather than a small numeric quantity
+- `uintptr` is an unsigned integer type, whose width is not specified but is sufficient to hold all the bits of a pointer value
+    - Used only for low-level programming, such as at the boundary of a Go program and a C library or an operating system
+- Regardless of their size, `int`, `uint`, and `uintptr`are different types from their explicitly sized siblings. An explicit conversion is required
+- Signed numbers are represented in 2's-complement form, in which the high-order bit is reserved for the sign of the number (0 positive, 1 negative). Unsigned integers use the full range of bits
+    - > https://www.jianshu.com/p/35cf507ebe7f
+- 5 level of precedence for **binary operators**
+    1. `*`, `/`, `%`, `<<`, `>>`, `&`, `&^`
+    2. `+`, `-`, `|`, `^`
+    3. `==`, `!=`, `<`, `<=`, `>`, `>=`
+    4. `&&`
+    5. `||`
+    - Operators at the same level **associate to the left**
+    - Each operator in the first 2 lines has a corresponding assignment operator
+    - `+`, `-`, `*` and `/` may be applied to integer, floating-point, and complex numbers
+        - The behavior of `/` depends on whether its operands are integers (`5.0/4` is `1.25`, `5/4` is `1`, `5.0/1.0` is `5`)
+        - Integer division truncates the result toward zero
+    - The remainder operator `%` applies only to integers. The sign of the remainder is always the same as the sign of the dividend (`-5%3` and `-5%-2` are both `-2`)
