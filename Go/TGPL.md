@@ -744,3 +744,8 @@
         - The behavior of `/` depends on whether its operands are integers (`5.0/4` is `1.25`, `5/4` is `1`, `5.0/1.0` is `5`)
         - Integer division truncates the result toward zero
     - The remainder operator `%` applies only to integers. The sign of the remainder is always the same as the sign of the dividend (`-5%3` and `-5%-2` are both `-2`)
+- Overflow
+    - The high-order bits that do not fit will be silently discarded
+- All values of basic type - booleans, numbers, and strings - are comparable, meaning that 2 values of the same type may be compared using `==` and `!=`
+- Integers, floating-point numbers, and strings are ordered by the comparison operators
+- For integers, `+x` is shorthand for `0+x` and `-x` is shorthand for `0-x`; for floating-point and complex numbers, `+x` is just `x` and `-x` is negation of `x`
