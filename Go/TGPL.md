@@ -105,7 +105,7 @@
     - A goroutine a concurrent function execution
     - The function `main` runs in a goroutine and  the `go` statement creates additional goroutines
     - When one goroutine attempts a send or receive on a channel, it blocks util another goroutine attempts the corresponding receive or send operation, at which point the value is transferred and both goroutines proceed
-        - [ ] channel blocks, right?
+        - <mark>[ ] channel blocks, right?</mark>
 - *channel*
     - A communication mechanism that allows one goroutine to pass values of a **specified type** to another goroutine
 - `fmt.printf`
@@ -157,7 +157,7 @@
     ** or `-help`
     ** `flag.String` takes name, a default value, and a message, and creates a string variable
     ** the variable `sep` and `n` are pointers to the flag variable
-    ** When the program is run, it must call `flag.Parse` before the flags are used, to update the flag varialbes from their default
+    ** When the program is run, it must call `flag.Parse` before the flags are used, to update the flag variables from their default
     ** values. - [ ] The non-flag arguments are available from `flags.Args()` as a slice of strings
     ** If `flag.Parse()` encounters an error, it prints a usage message and calls `os.Exit(2)` to terminate the program
     */
@@ -173,7 +173,7 @@
     ```
  -->
 - dup
-    - `Sacnner` reads input and breaks it into lines or words
+    - `Scanner` reads input and breaks it into lines or words
     - When the end of the input is reached, `Close` closes the file and releases any resources
     - When a map is passed into a function, the function receives **a copy of the reference**, so any change the called function makes to the underlying data structure will be visible through the caller's map reference too
 <!-- 
@@ -250,7 +250,7 @@
     }
     ``` 
 -->
-- [ ] lissajous    
+- <mark>[ ] lissajous</mark>
     - `[]color.Color{}` (slice) and `gif.GIF{...}` (struct) are **composite literals**
 <!-- 
     ```go
@@ -382,7 +382,7 @@
     - Generally, the larger the scope of a name, the longer and more meaningful it should be
 - Use "camel case"
 - The letters of acronyms and initialisms are always rendered **in the same case**
-    - `htmlEacape`, `HTMLEscape`
+    - `htmlEscape`, `HTMLEscape`
 ## Declarations
 - A declaration names a program entity and specifies some or all of its property
 - 4 major kinds of declarations: `var`, `const`, `type`, `func`
@@ -391,7 +391,7 @@
 ## Variables
 - A variable is a piece of storage containing a value
 - A var declaration creates a variable of a particular type, attaches a name to it, and sets its initial value
-    - `var name type = expresssion`
+    - `var name type = expression`
     - Either the `type` or the `= expression` can be omitted, but not both
         1. If the expression is omitted, the initial value is the *zero value* for its type
 - Initializers may be literal values or arbitrary expressions
@@ -631,7 +631,7 @@
     - Within each file, `init` functions are automatically executed when the program starts, in the order in which they are declared
 - One package is initialized at a time, in the order of imports in the program, **dependencies first**
 - Initialization proceeds from the **bottom up**; the `main` package is the last to be initialized
-- [ ] population count
+- <mark>[ ] population count</mark>
 ## Scope
 - A declaration associates a name with a program entity, such a function or a variable
 - The scope of a declaration is the part of the source code where a use of the declared name refers to the declaration
@@ -660,7 +660,7 @@
     // the explicit block for the loop body, and an implicit
     // block that additionally encloses the variables
     // declared by the initialization clause
-    // the scope of a variale declared in the implicit block
+    // the scope of a variable declared in the implicit block
     // is the condition, post-statement(i++), and body of the for statement
 
     if x := f(); x == 0 {
@@ -684,7 +684,7 @@
 - When the compiler encounters a reference to a name, it looks for a declaration, staring with the innermost enclosing lexical block and working up to the universe block
     - If the compiler finds no declaration, it reports an "undeclared name" error
     - If a name is declared in both an outer block and an inner block, the inner declaration will be found first. In that case, the inner declaration is said to shadow or hide the outer one, making it inaccessible
-    - [ ] At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions
+    - <mark>[ ] At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions</mark>
 
     ```go
     if f, err := os.Open(fname); err != nil { // compile error: unused f
@@ -726,11 +726,30 @@
         - Both these types have the same size, either 32 or 64 bits
         - different compilers may make different choices even on identical hardware
 - `rune` is a synonym for `int32` and indicates that a value is a Unicode code point
-- `byte` is a synonym for `uinit8` and emphasizes that the value is a piece of raw data rather than a small numeric quantity
+- `byte` is a synonym for `uint8` and emphasizes that the value is a piece of raw data rather than a small numeric quantity
 - `uintptr` is an unsigned integer type, whose width is not specified but is sufficient to hold all the bits of a pointer value
     - Used only for low-level programming, such as at the boundary of a Go program and a C library or an operating system
-- Regardless of their size, `int`, `uint`, and `uintptr`are different types from their explicitly sized siblings. An explicit conversion is required
-- Signed numbers are represented in 2's-complement form, in which the high-order bit is reserved for the sign of the number (0 positive, 1 negative). Unsigned integers use the full range of bits
+- Regardless of their size, `int`, `uint`, and `uintptr` are different types from their explicitly sized siblings. An explicit conversion is required
+- Signed numbers are represented in 2's-complement form, in which the high-order bit is reserved for the sign of the number (`0` positive, `1` negative). Unsigned integers use the full range of bits
+    - 8 bit 有 256 个状态
+        1. 无符号数
+            - 最小数 `00000000`（`0`），最大数 `11111111`（`255`）
+        2. 有符号数
+            - 共 7 位用于表示数字范围
+            - 正数最小数 `00000000`（`+0`），正数最大数 `01111111`（`127`）
+            - 负数最“大”数 `10000000`（`-0`），负数最小数 `11111111`（`-127`）
+            - 同时存在正零和负零，存在冗余
+    - 机器数：一个数在计算机中的二进制表示，带符号
+    - 真值：机器数对应的真正的数值
+    - 原码 = 符号位 + 真值绝对值
+    - 反码
+        - 正数反码即正数本身
+        - 负数反码是符号位不变（`1`），其余各位取反
+    - 补码
+        - 正数补码即正数本身
+        - 负数补码是符号位不变，其余各位取反，再加 `1`（反码的基础上加 `1`）
+    - **符号位也参与运算**，使得计算机无需辨别符号位，且**只保留加法**（加法表示为加上一个负数），简化电路设计
+    - > https://www.cnblogs.com/zhangziqiu/archive/2011/03/30/ComputerCode.html
     - > https://www.jianshu.com/p/35cf507ebe7f
 - 5 level of precedence for **binary operators**
     1. `*`, `/`, `%`, `<<`, `>>`, `&`, `&^`
@@ -749,3 +768,26 @@
 - All values of basic type - booleans, numbers, and strings - are comparable, meaning that 2 values of the same type may be compared using `==` and `!=`
 - Integers, floating-point numbers, and strings are ordered by the comparison operators
 - For integers, `+x` is shorthand for `0+x` and `-x` is shorthand for `0-x`; for floating-point and complex numbers, `+x` is just `x` and `-x` is negation of `x`
+- Bitwise binary operators: `&`, `|`, `^`, `&^`, `<<` `>>`
+    - The first 4 treat their operands as bit patterns with no concept of arithmetic carry or sign
+    - `^`
+        1. It's bitwise exclusive OR (XOR) when used as a binary operator
+        2. It's bit wise negation or complement: returns a value with each bit in its operand inverted
+    - `&^` operator is bit clear (AND NOT): in the expression `z = x &^ y`, each bit of `z` is `0` if the corresponding bit of `y` is `1`; otherwise it equals the corresponding bit of `x`
+    - `x<<n`, `x>>n`
+        - `n` determines the number of bit positions to shift and must be unsigned
+        - `x` may be unsigned or signed
+        - Arithmetically, a left shift `x<<n` is equivalent to multiplication by `2^n` and a right shift `x>>n` is equivalent to the floor of division by `2^n`
+        - Left shifts fill the vacated bits with zeros, as do right shifts of unsigned numbers, but right shifts of signed numbers fill the vacated bits with copies of the sign bit
+            - For this reason, it is important to use unsigned arithmetic when you’re treating an integer as a bit pattern
+- We tend to use the signed `int` form even for quantities that can't be negative
+
+    ```go
+    medals := []string{"gold", "silver", "bronze"}
+    for i := len(medals) - 1; i >= 0; i-- {
+        fmt.Println(medals[i])
+    }
+    ```
+
+    - The built-in `len` function returns a signed `int`
+    - If `len` returns an unsigned number, then `i` too would be a `uint`, and the condition `i >= 0` would always be true by definition. After the 3rd iteration, in which `i == 0`, the `i--` statement would cause `i` to become not `-1`, but the maximum `uint` value (for example, `2^64 -1`), and the evaluation of `medals[i]` would fail at run time, or panic, by attempting to access an element outside the bounds of the slice
