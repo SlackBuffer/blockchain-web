@@ -50,3 +50,30 @@
         - If there's a handler (function) for that event, JS engine creates its execution context and processes it. Then next event in the queue move up
     - The JS code that's running is still asynchronous
     - Any event that happens **outside** the JS engine gets placed in that queue
+# Types and operators
+- Variables can hold different types of values because it's all figured out during execution
+- Let `undefined` mean a variable is never set a value (initialized)
+    - Leave `undefined` for the JS engine, use `null` to represent lack of existence
+- There's only one numeric type in JavaScript under the hood: floating type
+- <mark>[ ] symbol</mark>
+    - Also a primitive type
+- **Operators**
+    - A special type **function** that is syntactically (written) differently
+        - JS engine define the function for you
+    - Operators generally take two parameters and return a value
+
+    ```js
+    function +(a, b) {
+        // add the two
+    }
+    +(3, 4) // annoying
+    a + 3 // infix notation
+    ```
+
+    - Infix notation is essentially a function call
+- [Associativity](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence#Associativity)
+    - What order operator functions (with the same precedence) get called in: left-to-right (the operator furthest on the left will be called first) or right-to-left
+    - > https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence#Table
+- Assignment
+    - The assignment operation evaluates to the assigned value
+    - Chaining the assignment operator is possible in order to assign a single value to multiple variables
