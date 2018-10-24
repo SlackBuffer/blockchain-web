@@ -828,10 +828,11 @@
     - `&^` operator is bit clear (AND NOT): in the expression `z = x &^ y`, each bit of `z` is `0` if the corresponding bit of `y` is `1`; otherwise it equals the corresponding bit of `x`
     - `x<<n`, `x>>n`
         - `n` determines the number of bit positions to shift and must be unsigned
-        - `x` may be unsigned or signed
+        - **`x` may be unsigned or signed**
         - Arithmetically, a left shift `x<<n` is equivalent to multiplication by `2^n` and a right shift `x>>n` is equivalent to the floor of division by `2^n`
         - Left shifts fill the vacated bits with zeros, as do right shifts of unsigned numbers, but right shifts of signed numbers fill the vacated bits with copies of the sign bit
             - For this reason, it is important to use unsigned arithmetic when you’re treating an integer as a bit pattern
+- Binary operators for arithmetic and logic (except shifts) must have operands of the same type
 - Use bitwise operations to interpret a `uint8` value as a compact and efficient set of 8 independent bits
 
     ```go
@@ -864,3 +865,11 @@
     - The built-in `len` function returns a signed `int`
     - If `len` returns an unsigned number, then `i` too would be a `uint`, and the condition `i >= 0` would always be `true` by definition. After the 3rd iteration, in which `i == 0`, the `i--` statement would cause `i` to become not `-1`, but the maximum `uint` value (for example, `2^64 -1`), and the evaluation of `medals[i]` would fail at run time, or panic, by attempting to access an element outside the bounds of the slice
     - For this reason, unsigned numbers tend to be used only when their bitwise operators or peculiar arithmetic operators are required, as when implementing *bit sets*, parsing binary file formats, or for hashing and cryptography. They are typically not used for merely non-negative quantities
+- In general, an explicit conversion is required to convert a value from one type to another
+    - Many integer-to-integer conversions do not entail any change in value; they just tell the complier to how to interpret a value
+    - A conversion that narrows a big integer into a smaller one, or a conversion from a **integer to floating-point** or vice versa, may change the value or lose precision
+        - Float ot integer conversion discards any fractional part, truncating toward zero
+    - Avoid conversions in which the operands is out of range for the target type, because the behavior depends on the implementation
+- Integer literals of any size and type can be written as ordinary decimal numbers, octal numbers (begin with `0`), hexadecimal (begin with `0x` or `0X`)
+    - Hex digits may be upper or lower case
+    - 
