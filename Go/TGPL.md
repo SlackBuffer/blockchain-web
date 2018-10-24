@@ -739,18 +739,70 @@
             - 正数最小数 `00000000`（`+0`），正数最大数 `01111111`（`127`）
             - 负数最“大”数 `10000000`（`-0`），负数最小数 `11111111`（`-127`）
             - 同时存在正零和负零，存在冗余
+            - `10000000` 是某个负数的补码，减 `1` 得到 `01111111`，取反得到原码 `10000000` （[ ] 想象一下前面还有很多 0，这样第一个 1 就不是符号位了，就用它来表示 128 吧，又因为是负数，所以是 -128）
+            - > https://www.jianshu.com/p/35cf507ebe7f            
     - 机器数：一个数在计算机中的二进制表示，带符号
     - 真值：机器数对应的真正的数值
     - 原码 = 符号位 + 真值绝对值
+
+        ```
+         00010000   (16)            10001000    (-8)
+        +10001000   (-8)           +10001000    (-8)
+        ---------                  ---------
+         10011000   (-24 wrong)     00010000    (16 wrong)
+        ```
+
+        - 原码若用于有减法参与的运算会得到结果错误
+        - 正常的加法规则不适用于有负数参与的加法，因此必须制定两套运算规则，意味着必须为加法运算设计两种电路
     - 反码
         - 正数反码即正数本身
-        - 负数反码是符号位不变（`1`），其余各位取反
+        - 负数反码是**其原码**的**符号位以外的各位**逐位**取反**或该负数的绝对值（即**对应的正数**）的原码的每一个二进制位都取反
+
+        ```
+         00010000   (16 的反码)            11110111    (-8 的反码)
+        +11110111   (-8 的反码)           +11110111    (-8 的反码)
+        ---------                        ---------
+         00000111   (just wrong)          11111000    (just wrong)  
+        ```
+
     - 补码
         - 正数补码即正数本身
-        - 负数补码是符号位不变，其余各位取反，再加 `1`（反码的基础上加 `1`）
-    - **符号位也参与运算**，使得计算机无需辨别符号位，且**只保留加法**（加法表示为加上一个负数），简化电路设计
-    - > https://www.cnblogs.com/zhangziqiu/archive/2011/03/30/ComputerCode.html
-    - > https://www.jianshu.com/p/35cf507ebe7f
+        - 负数补码是该负数的绝对值（即**对应的正数**）的原码的每一个二进制位都取反，再加 `1`
+
+        ```
+         00010000   (16 的补码)            11111000    (-8 的补码)
+        +11111000   (-8 的补码)           +11111000    (-8 的补码)
+        ---------                        ---------
+         00001000   (8 的补码)             11110000    (-16 的补码)  
+        ```
+
+        - **[补码本质](http://www.ruanyifeng.com/blog/2009/08/twos_complement.html)**
+            1. `负数 = 0 - 该负数的绝对值`，不够减就**借位**
+
+                ```
+                 00000000   (0)            
+                -00001000   (8)           
+                            (-8)
+
+                # 发生借位，实际被减数是 100000000，100000000 = 11111111 + 1
+                 100000000
+                - 00001000
+                ----------
+                  11111000
+
+                # 上一步等价于一下两步
+                 11111111   # 取反步骤
+                -00001000
+                ---------
+                 11110111   # 加 1 步骤
+                +00000001
+                ---------
+                 11111000
+                ```
+
+    - 正数的原码、反码、补码的最高位都是 0，所以最高位为 1 的一定是以某种码表示的负数
+    - 计算机内部采用（对应正数）的 2 的补码（Two's Complement）表示负数
+    - 计算机读到最高位是 1 的数，知道该数是负数，而负数是以补码形式存储的，所以它将其当补码处理
 - 5 level of precedence for **binary operators**
     1. `*`, `/`, `%`, `<<`, `>>`, `&`, `&^`
     2. `+`, `-`, `|`, `^`
@@ -780,6 +832,26 @@
         - Arithmetically, a left shift `x<<n` is equivalent to multiplication by `2^n` and a right shift `x>>n` is equivalent to the floor of division by `2^n`
         - Left shifts fill the vacated bits with zeros, as do right shifts of unsigned numbers, but right shifts of signed numbers fill the vacated bits with copies of the sign bit
             - For this reason, it is important to use unsigned arithmetic when you’re treating an integer as a bit pattern
+- Use bitwise operations to interpret a `uint8` value as a compact and efficient set of 8 independent bits
+
+    ```go
+    var x uint8 = 1<<1 | 1<<5
+    var y uint8 = 1<<1 | 1<<2
+    fmt.Printf("%08b\n", x) // "00100010", the set {1, 5}
+    fmt.Printf("%08b\n", y) // "00000110", the set {1, 2}
+    fmt.Printf("%08b\n", x&y) // "00000010", the intersection {1}
+    fmt.Printf("%08b\n", x|y) // "00100110", the union {1, 2, 5}
+    fmt.Printf("%08b\n", x^y) // "00100100", the symmetric difference {2, 5}
+    fmt.Printf("%08b\n", x&^y) // "00100000", the difference {5}
+    for i := uint(0); i < 8; i++ {
+        if x&(1<<i) != 0 { // membership test (easy to understand, just try it)
+            fmt.Println(i) // "1", "5"
+        }
+    }
+    fmt.Printf("%08b\n", x<<1) // "01000100", the set {2, 6}
+    fmt.Printf("%08b\n", x>>1) // "00010001", the set {0, 4}
+    ```
+
 - We tend to use the signed `int` form even for quantities that can't be negative
 
     ```go
@@ -790,4 +862,5 @@
     ```
 
     - The built-in `len` function returns a signed `int`
-    - If `len` returns an unsigned number, then `i` too would be a `uint`, and the condition `i >= 0` would always be true by definition. After the 3rd iteration, in which `i == 0`, the `i--` statement would cause `i` to become not `-1`, but the maximum `uint` value (for example, `2^64 -1`), and the evaluation of `medals[i]` would fail at run time, or panic, by attempting to access an element outside the bounds of the slice
+    - If `len` returns an unsigned number, then `i` too would be a `uint`, and the condition `i >= 0` would always be `true` by definition. After the 3rd iteration, in which `i == 0`, the `i--` statement would cause `i` to become not `-1`, but the maximum `uint` value (for example, `2^64 -1`), and the evaluation of `medals[i]` would fail at run time, or panic, by attempting to access an element outside the bounds of the slice
+    - For this reason, unsigned numbers tend to be used only when their bitwise operators or peculiar arithmetic operators are required, as when implementing *bit sets*, parsing binary file formats, or for hashing and cryptography. They are typically not used for merely non-negative quantities
