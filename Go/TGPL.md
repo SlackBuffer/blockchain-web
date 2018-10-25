@@ -872,4 +872,29 @@
     - Avoid conversions in which the operands is out of range for the target type, because the behavior depends on the implementation
 - Integer literals of any size and type can be written as ordinary decimal numbers, octal numbers (begin with `0`), hexadecimal (begin with `0x` or `0X`)
     - Hex digits may be upper or lower case
-    - 
+    - Octal numbers seem to be used for exactly one purpose - file permissions on POSIX system
+- When printing numbers using the `fmt` package, we can control the radix and format with the `%d`, and `%x` verbs
+
+    ```go
+    o := 0666
+    fmt.Printf("%d %[1]o %#[1]o\n", o) // 438 666 0666
+    x := int64(0xdeadbeef)
+    fmt.Printf("%d %[1]x %#[1]x %#[1]X\n", x) // 3735928559 deadbeef 0xdeadbeef 0XDEADBEEF
+    ```
+
+    - Usually a `Printf` format string containing multiple `%` verbs would require the same number of extra operands, but the `[1]` adverbs after `%` tell `Printf` to use the first operand over and over again
+    - The `#` adverb for `%o` or `%x` or `%X` tells `Printf` to emit a `0` or `0x` or `0X` prefix respectively
+- Rune literals are written as a character within single quotes
+    - A simple example is an ASCII character like `'a'`. It's possible to write any Unicode code point directly or with numeric escapes
+    - Runes are printed with `%c`, or with `%q` if quoting is desired
+
+    ```go
+    ascii := 'a'
+    unicode := '国'
+    newline := '\n'
+    fmt.Printf("%d %[1]c %[1]q\n", ascii)
+    fmt.Printf("%d %[1]c %[1]q\n", unicode)
+    fmt.Printf("%d %[1]c %[1]q\n", newline)
+    ```
+
+## Floating-point Numbers
