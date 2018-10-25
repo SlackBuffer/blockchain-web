@@ -70,10 +70,24 @@
     a + 3 // infix notation
     ```
 
-    - Infix notation is essentially a function call
+    - ***Infix notation*** is essentially a function call
 - [Associativity](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence#Associativity)
     - What order operator functions (with the same precedence) get called in: left-to-right (the operator furthest on the left will be called first) or right-to-left
-    - > https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence#Table
+    - > [Operator precedence and associativity](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence#Table)
 - Assignment
     - The assignment operation evaluates to the assigned value
     - Chaining the assignment operator is possible in order to assign a single value to multiple variables
+- Coercion
+    - The operator (function defined by the engine) does the coercion under the hood
+
+    ```js
+    // weird
+    Number(null)        // 0
+    Number(undefined)   // NaN
+    null == 0           // false
+    null < 1            // true
+    null < -1           // false
+    ```
+
+    - > [<u>Equality comparisons and sameness</u>
+](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness)
