@@ -91,3 +91,5 @@
 
     - > [<u>Equality comparisons and sameness</u>
 ](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness)
+- Default values
+    - `||` returns the value that can be coerced to `true`
