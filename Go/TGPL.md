@@ -898,3 +898,41 @@
     ```
 
 ## Floating-point Numbers
+- Go provides 2 sizes of floating-pointing numbers, `float32` and `float64`
+    - The limit of floating-point value can be found in the `math` package
+        - The constant `math.MaxFloat32` and `math.MaxFloat64` is about `3.4e38` and `1.8e308` respectively. The smallest positive values are near `1.4e-45` and `4.9e-324`, respectively
+    - A `float32` provides approximately 6 decimal digits of precision, whereas a `float64` provides about 15 digits
+    - `float64` should be preferred for most purposes because `float32` computations accumulate error rapidly unless one is quite careful, and the largest positive integer that can be exactly represented as a `float32` is small
+
+    ```go
+    var f float32 = 16777216    // 1 << 24
+    fmt.Println(f)      // 1.6777216e+07
+    fmt.Println(f+1)    // 1.6777216e+07
+    ```
+
+    - Digits may be omitted before the decimal point (`.708`) or after it (`1.`)
+    - Very small or very large numbers are better written in scientific notation, with the letter `e` or `E` preceding the decimal exponent
+- Floating-point values are conveniently printed with `Printf`'s `%g` verb, which choose the most compact representation that has adequate precision, but for table data, the `%e` (exponent) or `%f` (no exponent) forms may be more appropriate
+    - All 3 verbs allow field width and numeric precision to be controlled
+
+    ```go
+    for x := 0; x < 8; x++ {
+        fmt.Printf("x = %d e^x = %8.3f\n", x, math.Exp(float64(x)))
+    }
+    ```
+
+- `math` package has functions for creating and detecting the special values defined by IEEE 754
+    - The positive and negative infinities, which represent numbers of excessive magnitude and the result of division by zero
+    - `NaN`, the result of such mathematically dubious operations as `0/0` or `Sqrt(-1)`
+        - `math.IsNaN` test whether  its argument is a not-a-number value, and `math.NaN` returns such a value
+        - It's tempting to use `NaN` as a sentinel value in a numeric computation, but testing whether a specific computational result is equal to `NaN` is fraught with peril because any comparison with `NaN` yields `false` (except `!=`, which is always the negation of `==`)
+        - If a function that returns a floating-point result might fail, it's better to report the failure separately
+
+        ```go
+        func compute() (value float64, ok bool) {
+            if failed {
+                return 0, false
+            }
+            return result, true
+        }
+        ```
