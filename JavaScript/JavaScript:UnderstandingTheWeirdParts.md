@@ -31,6 +31,7 @@
     var myVar = 1; console.log(myVar);
     a(); console.log(myVar);    // 1 2 undefined 1
 
+    // where I got wrong
     function b() { console.log(myVar) } // b sits lexically at the global level
     function a() { var myVar = 2; b(); }
     var myVar = 1;
