@@ -1,0 +1,18 @@
+- > https://reactjs.org/docs/react-component.html
+- > https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html
+- `getDerivedStateFromProps` is invoked right before calling the `render` method, both on the initial mount and on subsequent updates. It should return an object to update the state, or `null` to update nothing
+- For a long time, the lifecycle `componentWillReceiveProps` was the only way to update `state` in response to a change in `props` without an additional `render` (- [ ] without an additional `render`)
+- `getDerivedStateFromProps` exists for only one purpose. It enables a component to update its internal `state` as the result of changes in `props`
+- *"controlled"* and *"uncontrolled"*
+    - Data passed in as `props` can be thought of as **controlled** (because the parent component controls that data)
+    - Data that exists only in internal `state` can be thought of as **uncontrolled** (because the parent can’t directly change it)
+    - When a derived state value is also updated by `setState` calls, there isn’t a single source of truth for the data
+        - In the loading example, there is a clear source of truth for both the “source” prop and the “loading” state
+            - When the source `prop` changes, the loading `state` should always be overridden
+            - Conversely, the `state` is overridden only when the `prop` changes and is otherwise managed by the component
+- A common **misconception** is that `getDerivedStateFromProps` and `componentWillReceiveProps` are only called when `props` “change”
+    - These lifecycles are called any time **a parent component rerenders**, regardless of whether the `props` are “different” from before 
+    - Because of this, it has always been unsafe to unconditionally override state using either of these lifecycles. Doing so will **cause state updates to be lost**
+    - Anti-pattern: Unconditionally copying props to state
+- When a `key` changes, React will create a new component instance rather than update the current one
+    - Keys are usually used for dynamic lists but are also useful here
