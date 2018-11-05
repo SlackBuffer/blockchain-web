@@ -936,3 +936,30 @@
             return result, true
         }
         ```
+
+## Complex Numbers
+- Go provides 2 sizes of complex numbers, `complex64` and `complex128`, whose components are `float32` and `float64` respectively
+    - The built-in function `complex` creates a complex number from its real and imaginary components, and the built-in `real` and `imag` functions extract those components
+    - The `math/cmplx` package provides library functions for working with complex numbers
+
+    ```go
+    var x complex128 = complex(1, 4) // 1+2i
+    // x := 1 + 4i
+	fmt.Println(real(x), imag(x))
+    ```
+
+## Booleans
+- The conditions in `if` and `for` statements are booleans, and comparison operators like `==` and `<` produce a boolean result
+- `&&` and `||` have short-circuit behavior: if the answer is already determined by the value of the left operand, the right operand is not evaluated
+    - `s != "" && s[0] == 'x'`: `s[0]` would panic if applied to an empty string
+- There's no implicit conversion from a boolean value to a numeric value like 0 or 1, or vice versa
+## Strings
+- A string is an immutable sequence of bytes
+    - Strings may contain arbitrary data, including bytes with value 0, but usually they contain human-readable text
+    - Text strings are conventionally interpreted as UTF-8-encoded sequences of Unicode **code points** (*runes*)
+- The built-in `len` function returns the **number of bytes** (not runes) in a string, and the index operation `s[i]` retrieves the **`i`-th byte** of string `s`, where `0<=i<len(s)`. Attempting to access a byte outside this range results in a panic
+    - The `i`-th byte of a string is not necessarily the `i`-th character of a string, because the UTF-8 encoding of a non-ASCII code point require two or more bytes
+- The substring operation `s[i:j]` yields a new string consisting of the bytes of the original string starting at index `i` and continuing up to, but not including , the byte at index `j` (the containing `j-i` bytes). A panic results if either index is out of bounds or if `j` is less than `i`
+    - Either or both of the `i` and `j` operands may be omitted, in which case the default values of `0` (the start of the string) and `len(s)` (its end) are assumed, respectively
+- The `+` operator makes a new string by concatenating two strings
+- Strings may be compared with comparison operators like `==` and `<`; the comparison is done **byte to byte**, so the result is the natural lexicographic ordering
