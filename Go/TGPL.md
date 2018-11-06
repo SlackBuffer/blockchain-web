@@ -421,7 +421,7 @@
 - **`:=` is a declaration, `=` is an assignment**
 - `i, j := 0, 1`
     - Declarations with multiple initializer expressions should be used only when they help readability (such as for short and natural groupings like initialization part of a `for` loop)
-    - > tuple assignment: `i, j = j, i` swaps values of `i` and `j`
+    - > <mark>tuple assignment: `i, j = j, i` swaps values of `i` and `j`</mark>
 - `f, err := os.Open(name)`
 - A short variable declaration **must declare at least one new variable**
     - If some of variables in a short variable declaration were already declared **in the same lexical block**, then,  for those variables, the short variable declaration acts like an **assignment**
@@ -509,7 +509,7 @@
         - Thus `j = i++` is illegal
 - Each of the arithmetic and binary operators has a corresponding assignment operator allowing (`*=`)
 ### Tuple assignments
-- All of the right-hand expression are evaluated before any of the variables are updated, making this form most useful when some of the variables appear on both sides of the assignment
+- ***All of the right-hand expression are evaluated before any of the variables are updated***, making this form most useful when some of the variables appear on both sides of the assignment
 <!-- 
     ```go
     // GCD (greatest common divisor)
@@ -963,3 +963,54 @@
     - Either or both of the `i` and `j` operands may be omitted, in which case the default values of `0` (the start of the string) and `len(s)` (its end) are assumed, respectively
 - The `+` operator makes a new string by concatenating two strings
 - Strings may be compared with comparison operators like `==` and `<`; the comparison is done **byte to byte**, so the result is the natural lexicographic ordering
+- String values are **immutable**
+    - Immutability means that it's safe for two copies of a string to share the same underlying memory, making it cheap to copy strings of any length. Similarly, a string `s` and a substring like `s[7:]` may safely share the same data, so the substring operation is also cheap. No new memory is allocated in either case
+    
+    ```go
+    s := "left foot"
+    t := s
+    s += ", right foot"
+    ```
+
+    - This does not modify the string that `s` originally held but causes `s` to hold the new string formed by the `+=` statement
+### String Literals
+- A string value can be written as a string literal, a sequence of bytes enclosed in **double quotes**
+    - Because Go source files are always encoded in UTF-8 and Go text are conventionally interpreted as UTF-8, we can include Unicode code points in string literals
+- Escape sequences that begin with a backslash `\` can be used to insert arbitrary byte values into the string
+    - Arbitrary bytes can also be included in literal strings using hexadecimal or octal escapes. A hexadecimal escape is written `\xhh`, with exactly two hexadecimal digits `h` (in upper or lower case). An octal escape is written `\ooo` with exactly three octal digits `o` not exceeding `\377`. Both denote a **single byte** with the specified value
+- A raw string literal is written `...`
+    - Within a rao string literal, no escape sequences are processed; the contents are taken literally, including backslashes and newlines, so a raw string may spread over several lines in the program source
+    - The only processing is that carriage returns are deleted so that the value of the string is the same on all platforms, including those conventionally put carriage return in text files
+### Unicode
+- US-ASCII uses 7 bits to represent 128 characters
+- Unicode collects all of the characters in all of the world's writing systems, plus accents and other diacritical marks, control codes like tab and carriage return, and plenty of esoterica, and assigns each one of a standard number called a *Unicode code point*, in Go terminology, a `rune`
+    - Unicode version 8 defines code points for over 120000 characters in well over 100 languages and scripts
+- The natural data type to hold a single rune is `int32`, and that's what Go uses; it has the synonym `rune` for precisely this purpose
+    - We could represent a sequence of runes as a sequence of `int32` values. In this representation, which is called UTF-32 or UCS-4, the encoding of each Unicode code point has the same size, 32 bits. This is simple and uniform, but it uses munch more than necessary since most computer-readable text in ASCII, which require only 8 bits or 1 byte per character
+    - All the characters in widespread use still number fewer than 65536, which would fit in 16 bits
+### UTF-8
+- UTF-8 is a **variable-length** encoding of Unicode code points as bytes
+    - It uses between 1 and 4 bytes to represent each , but only 1 byte for ASCII characters, and only 2 or 3 bytes for most runes in common use
+    - The high-order bits of the first byte of the encoding for a rune indicate how many bytes follow
+        - A high-order `0` indicates 7-bit ASCII, where each rune takes only 1 byte, so it's identical to conventional ASCII
+        - A high-order `110` indicates that the rune takes 2 bytes; the second byte begins with `10`
+
+        ```
+        0xxxxxxx                             runes 0−127     (ASCII)
+        110xxxxx 10xxxxxx                    128−2047        (values <128 unused)
+        1110xxxx 10xxxxxx 10xxxxxx           2048−65535      (values <2048 unused)
+        // 最大值是 2^(x 的位数) - 1，上一组范围内的数没被使用到
+        
+        11110xxx 10xxxxxx 10xxxxxx 10xxxxxx  65536−0x10ffff  (other values unused)
+        ```
+
+    - The `unicode` package provides functions for working with individual runes, and the `unicode/utf8` package provides functions for encoding and decoding runes as bytes using UTF-8
+- Many Unicode characters are hard to type on a keyboard or to distinguish visually from similar-looking ones; some are invisible. Unicode escapes in Go string literals allow us to specify them by their numeric code point value
+    - Two forms: `\uhhhh` for a 16-bit value and `Uhhhhhhhh` for a 32-bit value, where each `h` is a hexadecimal digit
+
+    ```go
+    "BF"
+    "\xe4\xb8\x96\xe7\x95\x8c" // 11100100 10111000 10010110
+    "\u4e16\u754c"
+    "\U00004e16\U0000754c"
+    ```
