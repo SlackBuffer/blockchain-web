@@ -1000,17 +1000,89 @@
         110xxxxx 10xxxxxx                    128−2047        (values <128 unused)
         1110xxxx 10xxxxxx 10xxxxxx           2048−65535      (values <2048 unused)
         // 最大值是 2^(x 的位数) - 1，上一组范围内的数没被使用到
-        
+
         11110xxx 10xxxxxx 10xxxxxx 10xxxxxx  65536−0x10ffff  (other values unused)
         ```
 
+    - A variable-length encoding precludes direct indexing to access the `n`-th character of a string, but UTF-8 has many desirable properties to compensate. The encoding is compact, compatible with ASCII, and self-synchronizing: it's possible to find the beginning of a character by backing up no more than three bytes. It's also a prefix code, so it can be decoded from left to right without any ambiguity or lookahead. No rune's encoding is a substring of any other, or even a sequence of others, so you can search for a rune by just searching its bytes, without worrying about the preceding context. The lexicographic byte order equals the Unicode code point order, so sorting UTF-8 works naturally. There're no embedded NUL (zero) bytes, which is convenient for programming languages that use NUL to terminate strings
     - The `unicode` package provides functions for working with individual runes, and the `unicode/utf8` package provides functions for encoding and decoding runes as bytes using UTF-8
 - Many Unicode characters are hard to type on a keyboard or to distinguish visually from similar-looking ones; some are invisible. Unicode escapes in Go string literals allow us to specify them by their numeric code point value
     - Two forms: `\uhhhh` for a 16-bit value and `Uhhhhhhhh` for a 32-bit value, where each `h` is a hexadecimal digit
 
     ```go
     "BF"
-    "\xe4\xb8\x96\xe7\x95\x8c" // 11100100 10111000 10010110
+    "\xe4\xb8\x96\xe7\x95\x8c" // 1110,0100 10,111000 10,010110, 去掉 1110, 10, 10 连起来即是 4e16 (100111000010110)
     "\u4e16\u754c"
     "\U00004e16\U0000754c"
     ```
+
+- Unicode escapes may also be used in rune literals
+    - `'B' '\u4e16' '\U00004e16'` are equivalent
+    - A rune whose value is less than 256 may be written with a single hexadecimal escape, such as `'\x41'` fro `'A'`, but for higher values, a `\u` or `\U` escape must be used. Consequently, `\xe4\xb8\x96` is not a legal rune literal literal, even though those 3 bytes are a valid UTF-8 encoding of a single code point
+- Thanks to the nice properties of UTF-8, many string operations don't require decoding
+
+    ```go
+    func HasPrefix(s, prefix string) bool {
+        return len(s) >= len(prefix) && s[:len(prefix)] == prefix
+    }
+    func hasSuffix(s, suffix string) bool {
+        return len(s) >= len(suffix) && s[len(s)-len(suffix):] == suffix
+    }
+    func Contains(s, substr string) bool {
+        for i := 0; i < len(s); i++ {
+            if HasPrefix(s[i:], substr) {
+                return true
+            }
+        }
+        return false
+    }
+    ```
+
+- Individual Unicode characters
+
+    ```go
+    s := "Hello, 世界"
+    fmt.Println(len(s)) // "13"
+    fmt.Println(utf8.RuneCountInString(s)) // "9"
+
+    for i := 0; i < len(s); {
+        r, size := utf8.DecodeRuneInString(s[i:])
+        fmt.Printf("%d\t%c\n", i, r)
+        i += size
+    }
+
+    for i, r := range "Hello, 世界" {
+        fmt.Printf("%d\t%q\t%d\n", i, r, r)
+    }
+
+    // count the number of runes in a string
+    n :=0
+    for range s {
+        n++
+    }
+    utf8.RuneCountInString(s)
+    ```
+
+    - Each call to `DecodeRuneInString` return `r`, the rune itself, and `size`, the number of bytes occupied by the utf-8 encoding of `r`
+    - Go's `range` loop, when applied to a string, performs UTF-8 decoding implicitly
+    - Each time a UTF-8 decoder, whether explicit in a call to `utf8.DecodeRuneInString` or implicit in a `range` loop, consumes an unexpected input byte, it generates a special Unicode replacement character, `'\uFFFD'` (usually printed as a white question mark inside a black hexagonal or diamond-like shape)
+        - When a program encounters this rune value, it's often a sign that some upstream part of the system that generated the string data has been careless in its treatment of text encodings
+- UTF-8 is exceptionally convenient as an interchange format but within a program runes may be more convenient because they are of uniform size and are thus easily indexed in arrays and slices
+- A `[]rune` conversion applied to a UTF-8 encoded string returns the sequence of unicode points that the string encodes
+
+    ```go
+    // "program" in Japanese katakana
+    s := "プログラム"
+    fmt.Printf("% x\n", s) // "e3 83 97 e3 83 ad e3 82 b0 e3 83 a9 e3 83 a0"
+    r := []rune(s)
+    fmt.Printf("%x\n", r) // "[30d7 30ed 30b0 30e9 30e0]"
+    fmt.Println(string(r)) // "プログラム"
+    fmt.Println(string(65)) // "A", not "65"
+    fmt.Println(string(0x4eac)) // "京"
+    fmt.Println(string(1234567)) // �
+    ```
+
+    - The verb `% x` inserts a space between each pair of hex digits
+    - If a slice of runes is converted to a string, it produces the concatenation of the UTF-8 encoding of each rune
+    - Converting an integer value to a string interprets the integer as a rune value, and yields the UTF-8 representation of that rune. If the rune is invalid, the replacement character is substituted
+### Strings and Byte Slices
