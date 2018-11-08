@@ -1,4 +1,25 @@
 <!-- The Go Programming Language -->
+# Tips
+- Package structure
+    - The source code for a package resides in one or more `.go` files, usually in a directory whose name ends with the import path
+        - `gopl.io/ch1/helloworld` package are stored in directory `$GOPATH/src/gopl.io/ch1/helloworld`
+    - A package consists of one or more `.go` source files in a single directory that define what the package does
+    - Each package serves as a separate name space for its declarations
+        - Within the `image` package, the identifier `Decode` refers to a different ***function*** than does the same identifier in the `unicode/utf16` package
+    - Package `main` defines a standalone executable program, not a library
+    - By convention, we describe each package in a comment immediately preceding its package declaration  
+    - Package names are always in lower case
+- Source file structure
+    - Each source file begins with a `package` declaration that states which package the file belongs to, followed by a list of other packages that it imports
+    - The `import` declarations must follow the `package` declaration
+    - By convention, we describe each package in a comment immediately preceding its package declaration
+        - The `doc comment` immediately preceding the package declaration documents the package as a whole. Only one file in each package should have a package doc comment
+        - Extensive doc comments are often placed in a file of their own, conventionally called `doc.go`
+        - Functions and other package-level entities may be declared ***in any order***
+- Visibility
+    - Package-level names like the types and constants declared in one file of a package are visible to all the other files of the package
+- Imports
+- Package initialization
 # 1. Tutorial
 - > [Go Blog](https://blog.golang.org)
 - > [Go Playground](https://play.golang.org)
@@ -92,7 +113,7 @@
     - An anonymous function defined at its point of use
     - `http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {...})`
 - Methods
-    - A method is a function associated with a named type
+    - A method is **a function associated with a named type**
     - Methods may be attached to any named type
 - **Interfaces**
     - Interfaces are abstract types that let us treat different concrete types in the same way based on **what methods they have**, not how they are represented or implemented 
@@ -328,7 +349,7 @@
     ``` 
 -->
 - server
-    - Behind the scenes, server2 runs the handler for each incoming request in a separate goroutine so it can serve multiple requests simultaneously
+    - Behind the scenes, `server2` runs the handler for each incoming request in a separate goroutine so it can serve multiple requests simultaneously
         - If 2 concurrent request try to update `count` at the same time, it might not be incremented consistently (race condition)
         - Must ensure at most one goroutine accesses the variable at a time
 <!-- 
@@ -367,15 +388,15 @@
 - Variables store value. Simple expressions are combined into larger ones with operation like addition and subtraction. Basic types are collected into aggregates like arrays and structs. Expressions are used in statements whose execution order is determined by control-flow statements like `if` and `for`. Statements are grouped into functions for isolation and reuse. Functions are gathered into source files and packages
 ## Names
 - The name of Go functions, variables, constants, types, statement labels, and packages follow a simple rule: a name begin with a letter (that is, anything that Unicode deems a letter) or an underscore and may have any number of additional letters, digits, and underscores
-- Go has 2 keywords. They cannot be used as names
+- Go has **25** keywords. They cannot be used as names
     - `break`, `case`, `chan`, `const`, `continue`, `default`, `defer`, `else`, `fallthrough`, `for`, `func`, `go`, `goto`, `if`, `import`, `interface`, `map`, `package`, `range`, `return`, `select`, `struct`, `switch`, `type`, `var`
 - Go has about a dozen ***predeclared names*** like `int` and `true` for built-in constants, types, and functions
     - These names are not reserved, there're a handful of places where redeclaring one of them makes sense
 - Scope
-    - An entity declared within a function is local to that function. An entity declared outside a function is visible in **all files of the package** to which it belongs
+    - An entity declared within a function is **local** to that function. An entity declared outside a function is visible in **all files of the package** to which it belongs
 - Visibility
     - The case of the first letter of a name determines its visibility ***across package boundaries***
-    - A name beginning with an upper-case letter is exported. That means it's visible and accessible outside of its own package and may be referred to by other parts of the program
+    - A name beginning with an upper-case letter is **exported**. That means it's visible and accessible outside of its own package and may be referred to by other parts of the program
 - Package names are always in lower case
 - There' no limit on name length
     - Go programs lean toward short names, especially for local variables with small scopes
@@ -386,7 +407,7 @@
 ## Declarations
 - A declaration names a program entity and specifies some or all of its property
 - 4 major kinds of declarations: `var`, `const`, `type`, `func`
--- Functions and other package-level entities may be declared **in any order**
+- Functions and other package-level entities may be declared ***in any order***
 - (`const`, `var`) Declarations may appear at package level(so the names are visible throughout the package) or within a function(so the names are visible only within that function)
 ## Variables
 - A variable is a piece of storage containing a value
@@ -594,6 +615,7 @@
 - The source code for a package resides in one or more `.go` files, usually in a directory whose name ends with the import path
     - `gopl.io/ch1/helloworld` package are stored in directory `$GOPATH/src/gopl.io/ch1/helloworld`
 - Each package serves as a separate name space for its declarations
+    - Within the `image` package, the identifier `Decode` refers to a different ***function*** than does the same identifier in the `unicode/utf16` package
 - Packages
     - A package consists of one or more `.go` source files in a single directory that define what the package does
     - Each source file begins with a `package` declaration that states which package the file belongs to, followed by a list of other packages that it imports
@@ -957,7 +979,7 @@
 - A string is an immutable sequence of bytes
     - Strings may contain arbitrary data, including bytes with value 0, but usually they contain human-readable text
     - Text strings are conventionally interpreted as UTF-8-encoded sequences of Unicode **code points** (*runes*)
-- The built-in `len` function returns the **number of bytes** (not runes) in a string, and the index operation `s[i]` retrieves the **`i`-th byte** of string `s`, where `0<=i<len(s)`. Attempting to access a byte outside this range results in a panic
+- The built-in `len` function returns the **number of bytes** (**not runes**) in a string, and the index operation `s[i]` retrieves the **`i`-th byte** of string `s`, where `0<=i<len(s)`. Attempting to access a byte outside this range results in a panic
     - The `i`-th byte of a string is not necessarily the `i`-th character of a string, because the UTF-8 encoding of a non-ASCII code point require two or more bytes
 - The substring operation `s[i:j]` yields a new string consisting of the bytes of the original string starting at index `i` and continuing up to, but not including , the byte at index `j` (the containing `j-i` bytes). A panic results if either index is out of bounds or if `j` is less than `i`
     - Either or both of the `i` and `j` operands may be omitted, in which case the default values of `0` (the start of the string) and `len(s)` (its end) are assumed, respectively
@@ -972,7 +994,7 @@
     s += ", right foot"
     ```
 
-    - This does not modify the string that `s` originally held but causes `s` to hold the new string formed by the `+=` statement
+    - This does not modify the string that `s` originally held but causes `s` to hold the new string formed by the `+=` statement (***explanation for immutability***)
 ### String Literals
 - A string value can be written as a string literal, a sequence of bytes enclosed in **double quotes**
     - Because Go source files are always encoded in UTF-8 and Go text are conventionally interpreted as UTF-8, we can include Unicode code points in string literals
@@ -1086,3 +1108,16 @@
     - If a slice of runes is converted to a string, it produces the concatenation of the UTF-8 encoding of each rune
     - Converting an integer value to a string interprets the integer as a rune value, and yields the UTF-8 representation of that rune. If the rune is invalid, the replacement character is substituted
 ### Strings and Byte Slices
+- 4 important standard packages for manipulating string
+    1. `strings`
+        - Searching, replacing, comparing, trimming, splitting, and joining strings
+    2. `bytes`
+        - Similar functions for manipulating slices of bytes, of type `[]byte`
+        - Because strings are immutable, building up strings incrementally can involve a lot of allocation and copying. In such cases, it's more efficient to use the `bytes.Buffer` type
+    3. `strconv`
+        - Converting boolean, integer, and floating-point values to and from their string representations, and functions for quoting and unquoting strings
+    5. `unicode`
+        - Provides functions like `IsDigit`, `IsLetter`, `IsUpper`, and `IsLower` for classifying runes. Converting functions like `ToUpper` and `ToLower` convert a rune into the given case if it's a letter
+            - All these functions use the Unicode standard categories for letters, digits, and so on
+            - The `strings` package has similar functions, also called `ToUpper` and `ToLower`, that return a new string with the specified transformation applied to each character of the original string
+- The `path` package works with slash-delimited paths on any platform. `path/filepath`
