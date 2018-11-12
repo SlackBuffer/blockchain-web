@@ -1,7 +1,7 @@
 <!-- The Go Programming Language -->
 # Tips
 - Package structure
-    - The source code for a package resides in one or more `.go` files, usually in a directory whose name ends with the import path
+    - The source code for a package resides in one or more `.go` files, usually in a **directory** whose name ends with the import path
         - `gopl.io/ch1/helloworld` package are stored in directory `$GOPATH/src/gopl.io/ch1/helloworld`
     - A package consists of one or more `.go` source files in a single directory that define what the package does
     - Each package serves as a separate name space for its declarations
@@ -15,11 +15,157 @@
     - By convention, we describe each package in a comment immediately preceding its package declaration
         - The `doc comment` immediately preceding the package declaration documents the package as a whole. Only one file in each package should have a package doc comment
         - Extensive doc comments are often placed in a file of their own, conventionally called `doc.go`
-        - Functions and other package-level entities may be declared ***in any order***
-- Visibility
-    - Package-level names like the types and constants declared in one file of a package are visible to all the other files of the package
+    - Functions and other package-level entities may be declared ***in any order***
+- Declarations
+    - A declaration names a program entity and specifies some or all of its property
+    - A declaration associates a name with a program entity, such a function or a variable    
+    - A `var` declaration tends to be reserved for local variables that need an explicit type that differs from that of the initializer expression - [ ], or for when the variable will be assigned a value later and its initial value is unimportant
+    - Short variable declarations are used within a function only, not for package-level variables
+        - Declarations with multiple initializer expressions should be used only when they help readability (such as for short and natural groupings like initialization part of a `for` loop)
+        - **`:=` is a declaration, `=` is an assignment**
+        - > <mark>tuple assignment: `i, j = j, i` swaps values of `i` and `j`</mark>
+        - A short variable declaration **must declare at least one new variable**
+            - If some of variables in a short variable declaration were already declared **in the same lexical block**, then, for those variables, the short variable declaration acts like an **assignment**
+            - A short variable declaration acts like an assignment only to variables that were already in the same lexical scope; declarations in an outer block are ignored
+    - Declare a `string` variable
+        1. `s := ""`
+            - Can be used only within a function, not for package-level variables
+        2. `var s string`
+            - relies on default initialization to the zero value
+        3. `var s = ""`
+            - rarely used except when declaring multiple variables
+        4. `var s string = ""`
+            - explicit about the variable's type
+            - redundant when variable type is the same as that of the initial value
+            - necessary when they are not of the same type
+- `new`
+    - `new(T)` creates an **unnamed** variable of type `T`, initializes it to the zero value of `T`, and returns its **address**, which is a value of type `*T` (此处 `*T` 是指存放类型为 `T` 的变量的地址的指针类型变量，不是取变量 `T` 的值)
+        
+        ```go
+        p := new(int)   // p, of type *int, points to an unnamed int variable
+        fmt.Println(*p) // "0"
+        *p = 2          // sets the unnamed int to 2
+        fmt.Println(*p) // "2"
+        var q *int = new(int)
+        fmt.Println(*q) // "0"
+        ````
+
+    - A variable created with `new` is no different from an ordinary local variable whose address is taken, except that there's no need to invent (and declare) a dummy name
+    - Thus the `new` is only a syntactic convenience
+    - Each call to `new` returns a distinct variable with a unique address
+        - One exception: two variables whose type carries no information and is therefore of size zero, such as `struct{}` or `[0]int`, may, depending on the implementation, have the same address
+- Type declarations
+    - A `type` declaration defines a new **named type** that has the same underlying types as an existing type - `type name underlying-type`
+    - The underlying type of a named type determines its structure and representation, and also the set of intrinsic operations it supports, which are the same as if the underlying type had been used directly
+    - Type declarations most often appear at package level, where the named type is **visible** throughout the package, and if the name is exported (it starts with an upper-case letter), it’s accessible from other packages as well
+    - The named type provides a way to separate different and perhaps incompatible uses of the underlying types so that they can't be mixed unintentionally
+        - Even though `Celsius` and `Fahrenheit` have the same underlying type, they are not the same type, so they cannot be be compared or combined in arithmetic expressions
+        - Distinguishing the types makes it possible to avoid errors like inadvertently combining temperatures in the 2 different scales
+        - An explicit type conversion like `Celsius(t)` or `Fahrenheit(t)` is required to convert from a `float64`. 
+        - `Celsius(t)` and  `Fahrenheit(t)` are conversions, not function calls. They don't change the value or representation in any way, but they make the change of meaning explicit
+    - Comparison operators like `==` and `<` can also be used to compare a value of a named type to another of the same type, or to a **value** of the underlying type
+    - Named types also make it possible to define new behaviors for values of the type. These behaviors are expressed as a set of functions associated with the type, called the type's methods - `func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }`
+        - The `Celsius` parameter `c` appears before the function name, associate with the `Celsius` type a method named `String` that returns `c`'s numeric value followed by °C
+        - `func String() string { ... }` is the method associated with `Celsius` type
+        - > Many types declare a `String` method of this form because it controls how values of the type appear when printed as a string by the `fmt` package
+- Type conversions
+    - For every type `T`, there's a corresponding conversion operation `T(x)` that converts the value `x` to type `T`
+    - A conversion from one type to another type is allowed if **both have the same underlying type**, or if both are **unnamed pointer** types (created with `new`) that point to variables of the same underlying type
+    - Conversions are allowed between numeric types, and between string and some slice types. These conversions **may change** the representation of the value
+        - Converting a floating-point number to an integer discards any fractional part
+        - Converting a string to a `[]byte` slice allocates a copy of the string data
+- Initialization
+    - One package is initialized at a time, in the order of imports in the program, **dependencies first**
+    - Package initialization begins by initializing package-level variables in the order in which they are declared, except that **dependencies are resolved first**
+    - If the package has multiple `.go` files, they are initialized in the order in which the files are given to the compiler
+        - The `go` tool sorts `.go` files by name before invoking the compiler
+    - Each variable declared at package level starts life with the value of its initializer expression, if any
+    - For some variables (like table of data), an initializer expression may not be the simplest way to set its initial value. In that case, the `init` function mechanism may be simpler
+        - Such `init` function can't be called or referenced, but otherwise they are normal functions
+        - Within each file, `init` functions are automatically executed when the program starts, **in the order** in which they are declared
+        - Initialization proceeds from the **bottom up**; the `main` package is the last to be initialized
+    - Package-level variables are initialized **before `main` begins**
+    - Local variables are initialized as their declarations are encountered during function execution
 - Imports
-- Package initialization
+    - Within a Go program, every package is identified by a unique string called *import path*. These are the strings that appear in an `import` declaration like `"gopl.io/ch2/tempconv"`
+    - By convention, a package's name matches the last segment of its import path
+    - An import declaration may specify an alternative name to avoid conflicts
+- Scope, visibility
+    - The scope of a declaration is the part of the source code where a use of the declared name refers to the declaration
+    - A *syntactic block* is a sequence of statements enclosed in braces like those that surround the body of a function or a loop
+        - A name declared inside a syntactic block is not visible outside that block, the block encloses its declarations and determines their scope
+    - The scope of a declaration is a region of the program text; it's a compile-time property
+        - The lifetime of a variable is the range of time during the execution when the variable can be referred to by other parts of the program; it's a run-time property
+    - *Lexical block*: other groupings of declarations that are not explicitly surrounded by braces
+        - Universe block: a lexical block for the entire source code
+            - The declarations of built-in types, functions, and constants like `int`, `len`, `true` are in the universe block and can be referred throughout the entire program        
+        - There's a lexical block for each package; for each file; for each `for`, `if`, and `switch` statement; for each case in a `switch` or `select` statement; for each explicit syntactic block
+        -  `for` loops, `if` statements, and `switch` statements create implicit blocks **in addition to their body blocks**
+            - The `for` loop creates 2 lexical blocks the explicit block `for` the loop body, and an implicit block that additionally encloses the variables declared by the initialization clause the scope of a variable declared in the implicit block is the condition, post-statement(`i++`), and body of the for statement
+            - [ ] The second `if` statement is **nested** within the first, so variables declared within the first statement's initializer are visible within the second
+            - For a `switch` statement, there's a block for the condition and a block for each case body
+    - The scope of a control-flow label, as used by `break`, `continue`, and `goto` statements, is the entire enclosing function
+    - At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions
+    - Package-level names like the types and constants declared in one file of a package are visible to all the other files **of the same package**
+    - **"exported" 对 packages 之间而言的**
+    - Imported packages are declared at the **file level**, so they can be referred to from the same file, but not from another file in the same package without another `import`
+- Lifetime of variables
+    - The lifetime of a package-level variable is the entire execution of the program
+    - Local variables have dynamic lifetimes: a new instance is created each time the declaration statement is executed, and the variable lives on until it becomes unreachable, at which point its storage may be recycled
+        - Every package-level variable, and every local variable of each currently active function, can potentially be the start or root of a path to the variable in question, following pointers and other kinds of references that ultimately lead to the variable
+        - If no such path exists, the variable has become unreachable, so it can no longer affect the rest of the computation
+    - Function parameters and results are local variables too; they are created each time their enclosing function is called
+- Pointers
+    - If a variable is declared `var x int`, the expression `&x` ("address of `x`") yields a value (`p`) to an integer variable, that is, a value of type `*int`, which is pronounced "pointer to `int`"
+    - If this value is called `p`, we say "`p` points to `x`", or equivalently "`p` <del>contains</del> is the address of `x`"
+    - <del>The variable to which `p` points is written `*p`. The expression `*p` yields the value of that variable, an `int` </del> The variable that holds the `p` value is written `*p`. The expression `*p` yields the value of the value sits on the location of `p`
+    - Since `*p` denotes a variable, it may also appear on the left-hand side of an assignment, in which case the assignment updates the variable
+    - The zero type of a pointer of any type is `nil`
+        - `var p *int`
+        - Each time we take the address of a variable or copy a pointer, we create new **aliases** or ways to identify the same variable
+        - To find all the statements that access a variable, we have to know all its alias
+        - It's not just pointers that create aliases; aliasing also occurs when we copy values of other reference types like slices, maps, and channels, and even structs, arrays, and interfaces that contains these types
+- A complier may choose to allocate local variables on the heap or the stack
+
+    ```go
+    var global *int
+    func f() {
+        var x int
+        x = 1
+        global = &x
+    }
+    func go() {
+        y := new(int)
+        *y = 1
+    }
+    ```
+
+    - `x` must be heap-allocated because it's still reachable from the variable `global` after `f` has returned; we say `x` escapes from `f`
+    - It's safe for the complier to allocate `*y` on the stack, even though it was allocated with `new`
+    - Keeping unnecessary pointers to short-lived objects within long-lived objects, especially global variables, will prevent the GC from reclaiming the short-lived objects
+- Assignments
+    - `++`, `--` are postfix only
+        - `i++` is a statement, not an expression, thus `j = i++` is illegal
+    - ***All of the right-hand expression are evaluated before any of the variables are updated***, making this form most useful when some of the variables appear on both sides of the assignment
+        - Tuple assignment
+    - Certain expressions, such as a call to a function with multiple results, produce several values. When such a call is used in an assignment statement, the left-hand side must have as many variables as the function has results
+        - Often, functions use these additional results to indicate some kind of error, either by returning an `error`, or a `bool`, usually called `ok`
+        - 3 operators sometimes behave this way too
+            - If a map lookup, type assertion, or channel receive appears in an assignment in which two results are **expected**, each produces an additional boolean result
+    - Assignment statements are an explicit form of assignment
+    - Places where assignment occurs implicitly
+        - A function call implicitly assigns the values to the corresponding parameter variables
+        - A `return` statement implicitly assigns the `return` operands to the corresponding result variables
+        - A literal expression for a composite type: `medals := []string{"gold", "silver", "bronze"}`, as if it had been written like `medals[0] = "gold"; medals[1] = "silver"; medals[2] = "bronze"`
+            - The elements of maps and channels, though not ordinary variables, are also subject or implicit assignments
+    - An assignments is always legal if the left-hand side (the variable) and the right-hand side (the value) have the same type. More generally, the assignment is legal only if the value is *assignable* to the type of the variable
+        - The rule for assignability
+            - For the types we've discussed so far, the types must exactly match
+            - `nil` may be assigned to any variable of interface or reference type
+            - Constants have more flexible rules for assignability that avoid the need for most explicit conversions
+- Normal practice in Go is to deal with the error in the `if` block and then return, so that the successful execution path is not indented
+- By convention, formatting functions whose names end in `f` use the formatting rules of `fmt.Printf`, whereas those whose names ends in `ln` follow `Println`, formatting their arguments as if by `%v`, followed by a newline (P.10)
+---
 # 1. Tutorial
 - > [Go Blog](https://blog.golang.org)
 - > [Go Playground](https://play.golang.org)
@@ -42,7 +188,7 @@
 - The value of a constant must be a number, string, or boolean
 - If a variable is not explicitly initialized, it's implicitly initialized to the *zero value* of its type
 - `if`
-    - Go allows a simple statement such as a local variable to precede the `if` condition
+    - Go allows a simple statement such as a local variable declaration to precede the `if` condition
         - `if err := r.ParseForm(); err != nil {...}` reduces the scope of variable `err`
 - `switch`
     - Cases are evaluated from top to bottom, so the first matching one is executed
@@ -445,11 +591,11 @@
     - > <mark>tuple assignment: `i, j = j, i` swaps values of `i` and `j`</mark>
 - `f, err := os.Open(name)`
 - A short variable declaration **must declare at least one new variable**
-    - If some of variables in a short variable declaration were already declared **in the same lexical block**, then,  for those variables, the short variable declaration acts like an **assignment**
+    - If some of variables in a short variable declaration were already declared **in the same lexical block**, then, for those variables, the short variable declaration acts like an **assignment**
     - A short variable declaration acts like an assignment only to variables that were already in the same lexical scope; declarations in an outer block are ignored
-- Declare a string variable
+- Declare a `string` variable
     1. `s := ""`
-        - can be used only within a function, not for package-level variables
+        - Can be used only within a function, not for package-level variables
     2. `var s string`
         - relies on default initialization to the zero value
     3. `var s = ""`
@@ -463,7 +609,7 @@
 - A pointer value is the address of a variable. A pointer is thus the **location** at which a value is stored
     - Not every value has an address, but every variable does
     - With a pointer, we can read or update the value of a variable indirectly, without using or even knowing the name of the variable, if indeed it has a name
-- If a variable is declared `var x int`, the expression `&x` ("address of x") yields a value to an integer variable, that is, a value of type `*int`, which is pronounced "pointer to int"
+- If a variable is declared `var x int`, the expression `&x` ("address of `x`") yields a value (`p`) to an integer variable, that is, a value of type `*int`, which is pronounced "pointer to `int`"
     - If this value is called `p`, we say "`p` points to `x`", or equivalently "`p` contains the address of `x`"
     - The variable to which `p` points is written `*p`. The expression `*p` yields the value of that variable, an `int`
     - Since `*p` denotes a variable, it may also appear on the left-hand side of an assignment, in which case the assignment updates the variable
@@ -490,8 +636,8 @@
  - Each time we take the address of a variable or copy a pointer, we create new **aliases** or ways to identify the same variable
     - To find all the statements that access a variable, we have to know all its alias
     - It's not just pointers that create aliases; aliasing also occurs when we copy values of other reference types like slices, maps, and channels, and even structs, arrays, and interfaces that contains these types
-### the `new` function
-- Another to create a variable is to use the built-in function `new`
+### The `new` function
+- Another way to create a variable is to use the built-in function `new`
 - `new(T)` creates an **unnamed** variable of type `T`, initializes it to the zero value of `T`, and returns its **address**, which is a value of type `*T`
     - A variable created with `new` is no different from an ordinary local variable whose address is taken, except that there's no need to invent (and declare) a dummy name
     - Thus the `new` is only a syntactic convenience
@@ -526,10 +672,9 @@
 - The value held by a variable is updated by an assignment statement, which in its simplest form has a variable on the left of the sign `=` sign and an expression on the right
 - `++`, `--`
     - postfix only
-    - `i++` is a statement, not an expression
-        - Thus `j = i++` is illegal
+    - `i++` is a statement, not an expression, thus `j = i++` is illegal
 - Each of the arithmetic and binary operators has a corresponding assignment operator allowing (`*=`)
-### Tuple assignments
+### Tuple assignment
 - ***All of the right-hand expression are evaluated before any of the variables are updated***, making this form most useful when some of the variables appear on both sides of the assignment
 <!-- 
     ```go
@@ -550,7 +695,7 @@
     }
     ``` 
 -->
-- Certain expressions, such as a call to a function with multiple results,produce several values
+- Certain expressions, such as a call to a function with multiple results, produce several values
     - When such a call is used in an assignment statement, the left-hand side must have as many variables as the function has results
     - Often, functions use these additional results to indicate some kind of error, either by returning an `error`, or a `bool`, usually called `ok`
 - There're 3 operators that sometimes behave this way too
@@ -568,8 +713,7 @@
 - Places where assignment occurs implicitly
     - A function call implicitly assigns the values to the corresponding parameter variables
     - A `return` statement implicitly assigns the `return` operands to the corresponding result variables
-    - A literal expression for a composite type 
-        - `medals := []string{"gold", "silver", "bronze"}`
+    - A literal expression for a composite type: `medals := []string{"gold", "silver", "bronze"}`
         - The elements of maps and channels, though not ordinary variables, are also subject or implicit assignments
 - An assignments is always legal if the left-hand side (the variable) and the right-hand side (the value) have the same type. More generally, the assignment is legal only if the value is *assignable* to the type of the variable
 - The rule for assignability
@@ -577,9 +721,10 @@
     - `nil` may be assigned to any variable of interface or reference type
     - Constants have more flexible rules for assignability that avoid the need for most explicit conversions
 ## Type Declarations
-- A `type` declaration defines a new named type that has the same underlying types as an existing type
+- A `type` declaration defines a new **named type** that has the same underlying types as an existing type
     - `type name underlying-type`
-- The named types provides a way to separate different and perhaps incompatible uses of the underlying types so that they can't be mixed unintentionally
+- Type declarations most often appear at package level, where the named type is visible throughout the package, and if the name is exported (it starts with an upper-case letter), it’s accessible from other packages as well
+- The named type provides a way to separate different and perhaps incompatible uses of the underlying types so that they can't be mixed unintentionally
     - Even though `Celsius` and `Fahrenheit` have the same underlying type, they are not the same type, so they cannot be be compared or combined in arithmetic expressions
     - Distinguishing the types makes it possible to avoid errors like inadvertently combining temperatures in the 2 different scales
     - An explicit type conversion like `Celsius(t)` or `Fahrenheit(t)` is required to convert from a `float64`. 
@@ -606,13 +751,12 @@
         - Converting a floating-point number to an integer discards any fractional part
         - Converting a string to a `[]byte` slice allocates a copy of the string data
 - The underlying type of a named type determines its structure and representation, and also the set of intrinsic operations it supports, which are the same as if the underlying type had been used directly
-- Comparison operators like `==` and `<` can also be used to compare a value of a named type to another of the same type, or to a value of of an unnamed type with the same underlying type
-- Named types also make it possible to define new behaviors for values of the type. These behaviors are expressed as a set of functions associated with the type, called the type's methods
-    - `func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }`
+- Comparison operators like `==` and `<` can also be used to compare a value of a named type to another of the same type, or to a **value** of the underlying type
+- Named types also make it possible to define new behaviors for values of the type. These behaviors are expressed as a set of functions associated with the type, called the type's methods - `func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }`
     - The `Celsius` parameter `c` appears before the function name, associate with the `Celsius` type a method named `String` that returns `c`'s numeric value followed by °C
     - > Many types declare a `String` method of this form because it controls how values of the type appear when printed as a string by the `fmt` package
 ## Packages and Files
-- The source code for a package resides in one or more `.go` files, usually in a directory whose name ends with the import path
+- The source code for a package resides in one or more `.go` files, usually in a **directory** whose name ends with the import path
     - `gopl.io/ch1/helloworld` package are stored in directory `$GOPATH/src/gopl.io/ch1/helloworld`
 - Each package serves as a separate name space for its declarations
     - Within the `image` package, the identifier `Decode` refers to a different ***function*** than does the same identifier in the `unicode/utf16` package
@@ -660,10 +804,9 @@
     - The scope of a declaration is a region of the program text; it's a compile-time property
     - The lifetime of a variable is the range of time during the execution when the variable can be referred to by other parts of the program; it's a run-time property
 - A *syntactic block* is a sequence of statements enclosed in braces like those that surround the body of a function or a loop
-    - A name declared inside a syntactic block is not visible outside that block
-    - The block encloses its declarations and determines their scope
+    - A name declared inside a syntactic block is not visible outside that block, the block encloses its declarations and determines their scope
 - *Lexical block*: other groupings of declarations that are not explicitly surrounded by braces
-    - universe block: a lexical block for the entire source code
+    - Universe block: a lexical block for the entire source code
     - There's a lexical block for each package; for each file; for each `for`, `if`, and `switch` statement; for each case in a `switch` or `select` statement; for each explicit syntactic block
     -  `for` loops, `if` statements, and `switch` statements create implicit blocks **in addition to their body blocks**
 
@@ -693,7 +836,7 @@
         fmt.Println(x, y)
     }
     fmt.Println(x, y) // compile error: x and y are not visible here
-    // the second if statement is **nested** within the first, so variables declared within the first 
+    // [ ] the second if statement is **nested** within the first, so variables declared within the first 
     // statement's initializer are visible within the second
     ```
 
@@ -706,8 +849,8 @@
 - When the compiler encounters a reference to a name, it looks for a declaration, staring with the innermost enclosing lexical block and working up to the universe block
     - If the compiler finds no declaration, it reports an "undeclared name" error
     - If a name is declared in both an outer block and an inner block, the inner declaration will be found first. In that case, the inner declaration is said to shadow or hide the outer one, making it inaccessible
-    - <mark>[ ] At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions</mark>
-
+    - <mark>At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions</mark>
+<!-- 
     ```go
     if f, err := os.Open(fname); err != nil { // compile error: unused f
         return err
@@ -730,8 +873,8 @@
         f.Close()
     }
     ```
-
-    - Normal practice in Go is to deal with the error in the `if` block and then return, so that the successful execution path is not indented
+  -->
+- Normal practice in Go is to deal with the error in the `if` block and then return, so that the successful execution path is not indented
 # Basic Data Types
 - 4 categories
     1. basic types
