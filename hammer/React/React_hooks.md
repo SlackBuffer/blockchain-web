@@ -162,7 +162,6 @@
     - There is just one other valid place to call Hooks — your own custom Hooks
     - By following this rule, you ensure that all stateful logic in a component is clearly visible from its source code
     - > https://reactjs.org/docs/hooks-rules.html#eslint-plugin
-
 # From classes to hooks
 - `constructor`: Function components don’t need a constructor. You can initialize the state in the useState `call`. If computing it is expensive, you can pass a function to `useState`
 - `getDerivedStateFromProps`: Schedule an update while rendering instead

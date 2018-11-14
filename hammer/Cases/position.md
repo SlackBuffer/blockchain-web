@@ -1,0 +1,23 @@
+- [`clientWidth`](https://developer.mozilla.org/en-US/docs/Web/API/Element/clientWidth)
+    - [ ] The `Element.clientWidth` property is zero for elements with no CSS or inline layout boxes
+    - Otherwise it's the inner width of an element in **pixels**
+    - It **includes padding** but excludes borders, margins, and vertical scrollbars (if present)
+    - It will **round the value into an integer**
+        - `element.getBoundingClientRect()` will yield an fractional value
+    - It's read-only
+- `clientHeight`
+    - The `Element.clientHeight` read-only property is zero for elements with no CSS or inline layout boxes
+    - Otherwise, it's the inner height of an element in pixels
+    - It includes padding but excludes borders, margins, and horizontal scrollbars (if present)
+        - `clientHeight` can be calculated as: CSS height + CSS padding - height of horizontal scrollbar (if present)
+    - It will round the value
+- ![](https://developer.mozilla.org/@api/deki/files/185/=Dimensions-client.png)
+- [ ] http://www.mamicode.com/info-detail-2194876.html
+- [ ] https://www.cnblogs.com/lyzg/p/5517190.html
+- https://github.com/inorganik/CountUp.js
+- [ ] [网页性能管理](http://www.ruanyifeng.com/blog/2015/09/web-page-performance-in-depth.html)
+- [`Element.getBoundingClientRect()`](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect)
+- > [Intersection Observer API
+](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+- > http://www.ruanyifeng.com/blog/2009/09/find_element_s_position_using_javascript.html
+- > http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html
