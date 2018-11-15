@@ -99,7 +99,7 @@
     - If you want to run an effect and clean it up only once (on mount and unmount), you can pass an empty array (`[]`) as a second argument. This tells React that your effect doesn’t depend on any values from props or state, so it never needs to re-run (don't make it a habit because it often leads to bugs)
 - Placing `useEffect` **inside the component** lets us access the count state variable (or any props) right from the effect. We don’t need a special API to read it — it’s already in the function scope. Hooks **embrace JavaScript closures** and avoid introducing React-specific APIs where JavaScript already provides a solution
 - The function passed to `useEffect` is going to be different on every render
-    - This is **intentional**. In fact, this is what lets us read the `count` value from inside the effect without worrying about it getting stale
+    - This is ***intentional***. In fact, this is what lets us read the `count` value from inside the effect without worrying about it getting stale
     - Every time we re-render, we schedule a different effect, replacing the previous one
     - In a way, this makes the effects behave more like a part of the render result — each effect “belongs” to a particular render
 - e.g.

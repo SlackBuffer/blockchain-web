@@ -115,4 +115,17 @@
 - Keys serve as a **hint** to React but they **don't get passed to the components**
 - If the `map()` body is too nested, it might be a good time to extract a component
 # Forms
-continues here https://reactjs.org/docs/forms.html
+- Form elements naturally keep some internal state
+    - Form elements such as `<input>`, `<textarea>`, and `<select>` typically maintain their own state and update it based on user input
+- A controlled component is an input form element whose value is controlled by React
+    - The React component that renders a form controls what happens in that form on subsequent user input
+    - React state is the "single source of truth"
+    - The `value` attribute is set on the form element
+- React `value`: `<input type="text">`, `<textarea>`, `<select>`
+    - Passing an array into the `value` attribute allows you to select multiple options in a `select` tag
+- > `<input type="file">` let the user choose one or more files to be uploaded to a server or manipulated by JavaScript via the [File API](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications). Its value is [ ] **read-only**, it's an [uncontrolled component](https://reactjs.org/docs/uncontrolled-components.html) in React
+- Specifying the `value` value (except `undefined`, `null`) on a controlled component prevents the user from changing the input
+- > [A complete solution including validation, keeping track of the visited fields, and handling form submission](https://jaredpalmer.com/formik)
+- Round to the third decimal place - `Math.round(output * 1000) / 1000`
+
+continue here https://reactjs.org/docs/composition-vs-inheritance.html
