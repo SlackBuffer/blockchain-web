@@ -39,15 +39,17 @@
 ## `some()`
 - 有一个元素为 `true`，最终结果就为 `true`。
 # Reduction methods
+- Your reducer function's **returned value is assigned to the accumulator**, whose value is **remembered** across each iteration throughout the array and ultimately becomes the final, single resulting value
 - 遍历所有元素，返回最终值。
 - 接受 2 个参数：
     1. 方法 - 接受 4 个参数：
-        1. 前一个元素值
+        1. 累加器 (accumulator)
         2. 当前元素值
         3. 当前元素下标
         4. 目标数组
     2. （可选）初始值
-    - 没有初始值时，第一次遍历从第二个元素开始，遍历次数少一次，此时第一个 index 是 1 不是 0；有初始值时 index 从 0 开始。
+    - Value to use as the first argument to the first call of the callback. If no initial value is supplied, the first element in the array will be used
+    - 没有初始值时，第一次遍历从第二个元素开始，遍历次数少一次，此时第一个 index 是 1 不是 0，有初始值时 index 从 0 开始。
     - 前一次遍历的返回值作为下一次遍历的第一个参数
 ## `reduce()`
 - 从第一个元素开始遍历。

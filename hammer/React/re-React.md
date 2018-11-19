@@ -53,6 +53,7 @@
 - React elements can represent both **DOM tags** and **user-defined components**
 - (React) Elements make up components
 - Conceptually, components are like JavaScript functions. They **accept arbitrary inputs (called “props”)** and **return React elements** describing what should appear on the screen
+- A component transforms props into UI
 - Function and class components are **equivalent** from React's point of view
 - When React sees an element representing a user-defined component, it passes JSX attributes to this component as **a single object** (`props`)
 - Always start component name with a capital letter. React treats components starting with lowercase letters as DOM tags
@@ -127,5 +128,303 @@
 - Specifying the `value` value (except `undefined`, `null`) on a controlled component prevents the user from changing the input
 - > [A complete solution including validation, keeping track of the visited fields, and handling form submission](https://jaredpalmer.com/formik)
 - Round to the third decimal place - `Math.round(output * 1000) / 1000`
+# Composition vs Inheritance
+- Some components don't know their children ahead of time. It's recommended that such components use the special `children` to pass children directly into their output
+- React elements are just objects, so you can pass them as props like any other data
+- Components may accept arbitrary props, including primitive values, React elements, or functions
+# Thinking in React
+- Single responsibility principle - a component should ideally only do one thing
+- Process
+    1. Break the UI into a component hierarchy
+    2. Build a static version in React
+    3. Identify the minimal (but complete) representation of UI state
+    4. Identify where your state should live
+    5. Add inverse data flow
+# [Accessibility](https://reactjs.org/docs/accessibility.html)
+- All `aria-*` HTML attributes are fully supported in JSX
+    - These attributes are hyphen-cased (also known as kebab-case, list-case, etc)
+- Semantic HTML is the foundation of accessibility in web application
+    - Sometimes we break HTML semantics when we add `<div>` elements to JSX to make React code work, especially when working with lists (`<ol>`, `<ul>`, and `<dl>`) and the HTML `<table>`. In these cases we should rather use React fragments to group together multiple elements
+        - You can map a collection of items to an array of fragments
+        - When you don't need any props on the Fragment tag you can use the short syntax (`<></>`)
+    - > [MDN HTML elements reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)
+- Every HTML form control, such as `<input>` and `<textarea>`, needs to be labeled accessibly
+- Ensure the web application can be fully operated with the keyboard only
+- Keyboard focus and focus outline
+    - Keyboard focus refers to the current element in the DOM that is selected to accept input from the keyboard
+    - Only ever use CSS that removes the outline, for example by setting `outline: 0`, if you're replacing it with another focus outline implementation
+- Mechanisms to skip to desired content
+    - Provide a mechanism to allow users to skip past navigation sections as this assists and speeds up keyboard navigation
+    - Skiplinks or [Skip Navigation Links](http://webaim.org/techniques/skipnav/) are hidden navigation links that only become visible when keyboard users interact with the page. They are very easy to implement with the internal page anchors and some styling
+    - Also use [landmark elements](http://www.scottohara.me/blog/2018/03/03/landmarks.html) and roles, such as `<main>` and `<aside>`, to demarcate page regions as assistive technology allow the user to quickly navigate to these sections
+- Programmatically managing focus
+    - React applications continuously modify the HTML DOM during runtime, sometimes leading to keyboard focus being lost or set to an unexpected element
+    - [Keyboard-navigable JavaScript widgets](https://developer.mozilla.org/en-US/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets)
+    - Use Refs to DOM elements to set focus in React
+- Mouse and pointer events
+- Setting the language
+- Setting the document title
+- Color contrast
+    - [Calculate an entire accessible color palette with Colorable](http://jxnblk.com/colorable/)
+- Development and testing tools
+# Fragments
+- Fragments declared with the explicit `<React.Fragment>` syntax may have keys. `key` is **the only attribute** that can be passed to `Fragment` for now
+- [Many tools](https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html#support-for-fragment-syntax) don't support short syntax yet
+# Refs and the DOM
+- There're a few cases where you need to imperatively modify a child outside the typical dataflow (re-render the child with new props in order to modify it)
+- Good cases for refs
+    - Managing focus, text selection, or media playback
+    - Triggering imperative animations
+    - Integrating with third-party DOM libraries
+- Refs provide a way to access DOM nodes or React elements created in the render method
+- Avoid using refs for anything that can be done declaratively
+- Refs are created using ***`React.createRef()` (1)*** and attached to React elements via the `ref` attribute
+    - Refs are commonly assigned to an instance property when a component is constructed so they can be referenced throughout the component
+- When a ref is passed to an element in `render`, a reference to that node becomes accessible at the `current` attribute of the ref
+- The value of the ref differs depending on the type of the node
+    - When the `ref` attribute is used on an HTML element, the `ref` created in the constructor with `React.createRef()` receives the underlying DOM element as its `current` property
+        - React will assign the `current` property with the DOM element when the component mounts, and assign it back to `null` when it unmounts
+        - **`ref` updates happen before** `componentDidMount` or `componentDidUpdate` lifecycle methods
+    - When the `ref` attribute is used on a custom class component, the `ref` object receives the **mounted instance** of the component as its `current`
+    - **You may not use the `ref` attribute on function components** because they don't have instances
+        - You can **use the `ref` attribute *inside* a function component** as long as you refer to a DOM element or a class component
+- In rare cases, you might want to have access to a child's DOM node from a parent component
+    - This is generally not recommended because it breaks component encapsulation, but it can occasionally be useful for **triggering focus or measuring the size of position of a child DOM node**
+- Adding a ref to the child component is not an ideal solution
+    - You would only get a component instance rather than a DOM node
+    - This wouldn't work with function components
+    - For these cases, ref forwarding is recommended. [ ] Ref forwarding lets components opt into exposing any child component's ref as their own
+    - Explicitly passing a ref as a differently named props is an alternative approach
 
-continue here https://reactjs.org/docs/composition-vs-inheritance.html
+        ```jsx
+        // expose a DOM to components above (pre React 16.3)
+        function CustomTextInput(props) {
+            return <div><input ref={props.inputRef} /></div>
+        }
+        class Parent extends React.Component {
+            constructor(props) {
+                super(props)
+                this.inputElement = React.createRef()
+            }
+            render() {
+                return <CustomTextInput inputRef={this.inputElement} />
+            }
+        }
+        ```
+
+        - `this.inputElement.current` in `Parent` will be set to the DOM node corresponding to the `<input>` element in the `CustomTextInput`
+    - Last option is to use `findDOMNode()`. It's discouraged and deprecated in `StrictMode`
+- ***Callback refs (2)*** is another way to set refs
+
+    ```jsx
+    class CustomTextInput extends React.Component {
+        constructor(props) {
+            super(props)
+            this.textInput = null
+            this.setTextInputRef = element => {
+                this.textInput = element
+            }
+            this.focusTextInput = () => {
+                if (this.textInput) this.textInput.focus()
+            }
+        }
+        componentDidMount() {
+            this.focusTextInput() // autofocus the input on mount
+        }
+        render() {
+            return (
+                <div>
+                    <input type="text" ref={this.setTextInputRef} />
+                    <input type="button" value="focus the text input" onClick={this.focusTextInput} />
+                </div>
+            )
+        }
+    }
+    ```
+
+    - The function receives the React component instance or HTML DOM element as its argument, which can be stored and accessed elsewhere
+    - React will call the `ref` callback with the DOM element when the component mounts, and call it with `null` when it unmounts
+    - Refs are guaranteed to be up-to-date before `componentDidMount` or `componentDidUpdate` fires
+
+    ```jsx
+    function CustomTextInput(props) {
+        return <div><input ref={props.inputRef} /></div>
+    }
+    class Parent extends React.Component {
+        render() {
+            return <CustomTextInput inputRef={el => this.inputElement = el} />
+        }
+    }
+    ```
+
+    - `Parent` passes its ref callback as an `inputRef` prop to the `CustomTextInput`, and the `CustomTextInput` passes the same function as a special `ref` attribute to the `<input>`. As a result, `this.inputElement` in `Parent` will be set to the DOM node corresponding to the `<input>` element in the `CustomTextInput`
+    - If the `ref` callback is defined as an inline function, it will get **called twice during updates**, first with `null` and then again with the DOM element. This is because a new instance of the function is created with each render, so React needs to **clear the old ref and set up the new one**. You can avoid this by defining the `ref` callback as a bound method on the class, but it shouldn't matter in most cases
+# Forwarding refs
+- Ref forwarding is a technique for automatically passing a ref through a component to one of its children
+- "Leaf" components like `FancyButton` or `MyTextInput` tend to be used throughout the application in a similar manner as a regular DOM `button` and `input`, and accessing their DOM nodes may be unavoidable for managing focus, selection, or animations
+- Ref forwarding is an opt-in feature that lets some components take a ref they receive, and pass it further down ("forward" it) to a child
+
+    ```jsx
+    const FancyButton = React.forwardRef((props, ref) => (
+        <button ref={ref}>{props.children}</button>
+    ))
+    const ref = React.createRef()
+    <FancyButton ref={ref}>Click me</FancyButton>
+    ```
+
+    - `ref.current` points to the `<button>` DOM node
+    - This way, components using `FancyButton` can get a ref to the underlying `button` DOM node and access it if necessary—just like if they used a DOM `button` directly
+    - The second `ref` argument only exists when you define a component with `React.forwardRef` call. Regular function or class components don’t receive the `ref` argument, and ref is not available in props either
+    - Ref forwarding is not limited to DOM components. You can forward refs to class component instances, too
+- > When you start using forwardRef in a component library, you should treat it as a breaking change and release a new major version of your library
+- Forwarding ref in higher-order components
+    - `ref` is not a prop. Like `key`, its handled differently by React
+    - If you add a ref to a HOC, the ref will refer to the outermost container component, not the wrapped component
+    - We can explicitly forward refs to the inner component using `React.forwardRef` API
+
+        ```jsx
+        function logProps(Component) {
+            class LogProps extends React.Component {
+                componentDidUpdate(prevProps) {
+                    console.log('old props:', prevProps)
+                    console.log('new props:', this.props)
+                }
+                render() {
+                    const {forwardedRef, ...rest} = this.props
+                    // Assign the custom prop "forwardedRef" as a ref
+                    return <Component ref={forwardedRef} {...rest} />;
+                }
+            }
+        // We can pass it along to LogProps as a regular prop, e.g. "forwardedRef"
+        // And it can then be attached to the Component.
+            return React.forwardRef((props, ref) => {
+                return <LogProps {...props} forwardedRef={ref} />
+            })
+        }
+        ```
+
+- Displaying a custom name in DevTools
+    - `React.forwardRef` accepts a render function. React DevTools uses this function to determine what to display for the ref forwarding component
+
+    ```jsx
+    // The following component will appear as ”ForwardRef” in the DevTools
+    const WrappedComponent = React.forwardRef((props, ref) => {
+        return <LogProps {...props} forwardedRef={ref} />
+    })
+    // If you name the render function, DevTools will also include its name (e.g. ”ForwardRef(myFunction)”)
+    const WrappedComponent = React.forwardRef(
+        function myFunction(props, ref) {
+            return <LogProps {...props} forwardedRef={ref} />
+        }
+    )
+    // Set the function’s displayName property to include the component you’re wrapping
+    function logProps(Component) {
+        class LogProps extends React.Component {
+            // ...
+        }
+        function forwardRef(props, ref) {
+            return <LogProps {...props} forwardedRef={ref} />;
+        }
+        // Give this component a more helpful display name in DevTools. e.g. "ForwardRef(logProps(MyComponent))"
+        const name = Component.displayName || Component.name;
+        forwardRef.displayName = `logProps(${name})`;
+        return React.forwardRef(forwardRef);
+    }
+    ```
+
+# Higher-order components
+- An HOC is a **function** that takes a component and returns a new component
+- HOCs are a pattern that emerges from React's compositional nature
+- Don’t mutate the original component. Use composition
+- Convention: pass unrelated props through to the wrapped component
+
+    ```jsx
+    render() {
+        // Filter out extra props that are specific to this HOC and shouldn't be passed through
+        const { extraProp, ...passThroughProps } = this.props
+        // Inject props into the wrapped component. These are usually state values or instance methods
+        const injectedProp = someStateOrInstanceMethod;
+        // Pass props to wrapped component
+        return (
+            <WrappedComponent
+                injectedProp={injectedProp}
+                {...passThroughProps}
+            />
+        )
+    }
+    ```
+
+    - `ref` is not really a prop - like `key`, it's handled specially be React. If you add a ref to an element whose component is the result of a HOC, the ref refers to an instance of the outermost container component, not the wrapped component
+    - The solution is use the `React.forwardRef`
+- Convention: maximizing composibility
+
+    ```jsx
+    // connect is a function that returns another function
+    // connect is a higher-order function that returns a higher-order component
+    // Instead of doing this...
+    const EnhancedComponent = withRouter(connect(commentSelector)(WrappedComponent))
+    // ... you can use a function composition utility
+    // compose(f, g, h) is the same as (...args) => f(g(h(...args)))
+    const enhance = compose(
+        // These are both single-argument HOCs
+        withRouter,
+        connect(commentSelector)
+    )
+    const EnhancedComponent = enhance(WrappedComponent)
+    ```
+
+    - Single-argument HOCs like the one returned by the `connect` function have the signature `Component => Component`. ***Functions whose output type is the same as its input type are really easy to compose together***
+- The container components created by HOCs show up in the React Developer Tools like any other component. To ease debugging, choose a display name that communicates that it’s the result of a HOC
+
+    ```jsx
+    function withSubscription(WrappedComponent) {
+        class WithSubscription extends React.Component {/* ... */}
+        WithSubscription.displayName = `WithSubscription(${getDisplayName(WrappedComponent)})`
+        return WithSubscription
+    }
+    function getDisplayName(WrappedComponent) {
+        return WrappedComponent.displayName || WrappedComponent.name || 'Component'
+    }
+    ```
+
+- React's diffing algorithm (*reconciliation*) uses **component identity** to determine whether it should update the **existing subtree** or throw it away and mount a new one
+    - If the component returned from `render` is identical (`===`) to the component from the previous render, React recursively updates the subtree by diffing it with the new one
+    - If they're not equal, the previous subtree is unmounted completely
+- Don't use HOCs inside the render method
+
+    ```jsx
+    render() {
+        // A new version of EnhancedComponent is created on every render
+        // EnhancedComponent1 !== EnhancedComponent2
+        const EnhancedComponent = enhance(MyComponent);
+        // That causes the entire subtree to unmount/remount each time!
+        return <EnhancedComponent />
+    }
+    ```
+
+    - The problem isn't about performance - remounting a component causes the **state** of that component and all of its **children** to be lost
+    - Instead apply HOCs **outside the component definition** so that the resulting component is created only once. Then its identity will be consistent across renders
+- In those rare cases where you need to apply a HOC dynamically, you can also do it inside a component's lifecycle methods or its constructor
+- Static methods must be copied over
+- When you apply a HOC to a component, the original component is wrapped with a container component. The new component does not have any of the static methods of the original component
+
+    ```jsx
+    // Define a static method
+    WrappedComponent.staticMethod = function() {/*...*/}
+    // Now apply a HOC
+    const EnhancedComponent = enhance(WrappedComponent)
+    // The enhanced component has no static method
+    typeof EnhancedComponent.staticMethod === 'undefined' // true
+
+    function enhance(WrappedComponent) {
+        class Enhance extends React.Component {/*...*/}
+        // Must know exactly which method(s) to copy :(
+        // You can use hoist-non-react-statics to automatically copy all non-React static methods
+        Enhance.staticMethod = WrappedComponent.staticMethod;
+        return Enhance
+    }
+    ```
+
+    - Another method is to export the static method separately from the component itself
+
+continues here https://reactjs.org/docs/reconciliation.html https://reactjs.org/docs/render-props.html

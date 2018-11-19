@@ -321,25 +321,30 @@
         // 原样返回传入的组件，不增强
         if (funcs.length === 0) { return arg => arg }
         if (funcs.length === 1) { return funcs[0] }
-        return funcs.reduce((a, b) => (...args) => a(b(args)))
+        return funcs.reduce((a, b) => (WrappedComponent, ...restArgs) => a(b(WrappedComponent, ...restArgs)))
     }
 
-    const enhance0 = compose()
-    const hocCA0 = enhance0(MyComponentA)    // 未增强组件
-    const enhance1 = compose(connect(mapStateToProps))
-    const hocCA1 = enhance1(MyComponentA) = connect(mapStateToProps)(MyComponentA)
-    const enhance2 = compose(connect(mapStateToProps), withLog())
-    const hocCA2 = enhance2(MyComponentA)
+    const enhanceZero = compose() = (arg => arg)
+    const hocCA0 = enhanceZero(MyComponent) = MyComponent    // 未增强组件
 
-    compose(a, b, c)
-    /* reduce */
-    ((...args) => a(b(args)), c).reduce((a, b) => (...args) => a(b(args)))    
-    // c(args) becomes the first functions's args
-    (...args) => a(b(c(args))) ==> c(args) => a(b(c(args))) ===> compose(a, b, c): (...args) => a(b(c(args)))
+    const enhanceA = compose(A) = A // a is an HOC
+    enhanceA(MyComponent) = compose(A)(MyComponent) = A(MyComponent) 
+
+    const enhanceAB = compose(A, B) = [A, B].reduce(...) = A(B(WrappedComponent, ...restArgs))
+    enhanceAB(MyComponent) = compose(A, B)(MyComponent) = A(B(MyComponent))
+
+    const enhanceABC = compose(A, B, C) = [A, B, C].reduce(...)
+    // iteration 1
+    (WrappedComponent, ...restArgs) => A(B(WrappedComponent, ...restArgs))) // a for iteration 2
+    // iteration 2, C(WrappedComponent, ...restArgs) becomes the accumulator's parameter and single parameter
+    // this parameter is not a component too
+
+    (WrappedComponent, ...restArgs) => A(B(C(WrappedComponent, ...restArgs))) // final result
+
+    enhanceABC = compose(A, B, C)(WrappedComponent, ...restArgs) = (WrappedComponent, ...restArgs) => A(B(C(WrappedComponent, ...restArgs)))
     ```
 
     - `compose` 把高阶组件的嵌套写法打平
-    - `compose(f, g, h)` 等价于 `(...args) => f(g(h(args)))`
 - 属性代理：高阶组件处理通用逻辑，再将相关属性传递给被包装组件
 - 继承方式实现 hoc
     - 通过继承被包装组件实现逻辑复用
