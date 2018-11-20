@@ -426,5 +426,98 @@
     ```
 
     - Another method is to export the static method separately from the component itself
+# Render Props
+- **A render prop is a function prop that a component uses to know what to render**
+- Render prop refers to a technique for **sharing code between React component using a prop** whose value is a **function**
+- A component with a render prop **takes a function that returns a React element** and calls it **instead of implementing its own render logic**
 
-continues here https://reactjs.org/docs/reconciliation.html https://reactjs.org/docs/render-props.html
+    ```jsx
+    <DataProvider render={data => <h1>hello {data.target}</h1>} />
+    ```
+
+- It's not obvious how to share the state or behavior that one component encapsulates to other components that need that same state
+- Instead of hard-coding a `<Cat>` inside a `<Mouse>` component, and effectively changing its rendered output, we can provide `<Mouse>` with a **function prop** that it uses to **dynamically determine what to render** – a render prop
+
+    ```jsx
+    class Cat extends React.Component {
+        render() {
+            const mouse = this.pros.mouse
+            return (
+                <img src="/cat.jpg" style={{ position: 'absolute', left: mouse.x, top: mouse.y }}
+            )
+        }
+    }
+    class Mouse extends React.component {
+        state = { x: 0, y: 0 }
+        handleMouse = e => {
+            this.setState({
+                x: e.clientX,
+                y: e.clientY
+            })
+        }
+        render() {
+            return (
+                <div style={{ height: '100%' }} onMouseMove={this.handleMouseMove}>
+                    {/*
+                        Instead of providing a static representation of what <Mouse> renders,
+                        use the `render` prop to dynamically determine what to render.
+                    */}
+                    {this.props.render(this.state)} // 实参 this.state
+                </div>
+            )
+        }
+    }
+    class MouseTracker extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>Move the mouse around</h1>
+                    <Mouse render={mouse => (
+                        <Cat mouse={mouse} />
+                    )} />
+                </div>
+            )
+        }
+    }
+    ```
+
+    - Instead of effectively cloning the `<Mouse>` component and hard-coding something else in its `render` method to solve for a specific use case, we provide a `render` prop that `<Mouse>` can use to dynamically determine what it renders
+    - The main concept to understand here is that the `<Mouse>` component essentially exposes its state to the `<MouseTracker>` component by calling its (`<Mouse>`'s) render prop. Therefore, `<MouseTracker>` can render whatever it wants with that state
+    - Additionally, **the composition model here is dynamic**! Everything happens inside of render, so we get to take full advantage of the React **lifecycle** and the natural flow of **props & state**
+- Just because the pattern is called "render props" you don't have to use a prop named ***render*** to use this pattern. In fact, any prop that is a function that ***a component uses to know what to render*** is technically a "render prop"
+
+    ```jsx
+    <Mouse children={mouse => (
+        <p>The mouse position is {mouse.x}, {mouse.y}</p>
+    )} />
+    // the children props doesn't need to be named in the list of 
+    // attributes in the JSX element, you can put it directly inside 
+    // the element
+    <Mouse>
+        {mouse => (
+            <p>The mouse position is {mouse.x}, {mouse.y}</p>
+        )}
+    </Mouse>
+    ```
+
+- Using a render prop can **negate** the advantage that comes from using [ ] `React.PureComponent` if you **create a function** inside a `render` method
+    - This is because the shallow prop comparison will always return `false` for new props, and each `render` in this case will generate a new value for the render prop
+    - To get around this problem, you can sometimes define the prop as an **instance method**
+        - > Defined as an instance method, `this.renderTheCat` always refers to *same* function when we use it in render
+    - In cases where you cannot define the prop statically (e.g. because you need to close over the component’s props and/or state) `<Mouse>` should extend `React.Component` instead
+- [ ] render props 实现路由保护
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+continues here https://reactjs.org/docs/reconciliation.html
