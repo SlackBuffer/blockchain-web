@@ -1,0 +1,5 @@
+- Words in a variable name are better concated with `_`
+- `7.5 % 5 = 2.5`
+- idle
+    - cursor + enter = repeat that command
+- `\` always generates a float 
