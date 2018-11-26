@@ -3,3 +3,5 @@
 - idle
     - cursor + enter = repeat that command
 - `\` always generates a float 
+- `2 ** 3` integer, `math.pow(2, 3)` float
+- `""""""`, `''''''`
