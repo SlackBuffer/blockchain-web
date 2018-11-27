@@ -166,6 +166,13 @@
 - Normal practice in Go is to deal with the error in the `if` block and then return, so that the successful execution path is not indented
 - By convention, formatting functions whose names end in `f` use the formatting rules of `fmt.Printf`, whereas those whose names ends in `ln` follow `Println`, formatting their arguments as if by `%v`, followed by a newline (P.10)
 ---
+# APIs
+- `fmt`
+    - `fmt.Fprintf` - `func Fprintf(w io.Writer, format string, a ...interface{}) (n int, err error)`
+        - Formats according to a format specifier and writes to `w`
+        - Returns the number of bytes written and any write error encountered
+    - `Sprintf` - `func Sprintf(format string, a ...interface{}) string`
+        - Formats according to a format specifier and returns the resulting string
 # 1. Tutorial
 - > [Go Blog](https://blog.golang.org)
 - > [Go Playground](https://play.golang.org)
@@ -1256,7 +1263,7 @@
         - Searching, replacing, comparing, trimming, splitting, and joining strings
     2. `bytes`
         - Similar functions for manipulating slices of bytes, of type `[]byte`
-        - Because strings are immutable, building up strings incrementally can involve a lot of allocation and copying. In such cases, it's more efficient to use the `bytes.Buffer` type
+        - Because strings are immutable, building up strings **incrementally** can involve a lot of allocation and copying. In such cases, it's more efficient to use the `bytes.Buffer` type
     3. `strconv`
         - Converting boolean, integer, and floating-point values to and from their string representations, and functions for quoting and unquoting strings
     5. `unicode`
@@ -1264,3 +1271,37 @@
             - All these functions use the Unicode standard categories for letters, digits, and so on
             - The `strings` package has similar functions, also called `ToUpper` and `ToLower`, that return a new string with the specified transformation applied to each character of the original string
 - The `path` package works with slash-delimited paths on any platform. `path/filepath`
+- Strings can be converted to byte slices and back again
+
+    ```go
+    s := "abc"
+    b := []byte(s)
+    s2 := string(b)
+    ```
+
+    - `[]bytes(s)` allocates a new byte array holding a copy of the bytes `s`, and yields a slice that references the entirety of that array
+        - An optimizing compiler may be able to avoid the allocation and copying in some cases, but in general copying is required to ensure that the bytes of `s` remain unchanged even if those of `b` are subsequently modified
+    - `string(b)` also makes a copy, to ensure immutability of the resulting `s2`
+- To avoid conversions and unnecessary memory allocation, many of the utility functions in the `bytes` package directly parallel their counterparts in the `strings` package
+- The `bytes` package provides the `Buffer` type for efficient manipulation of byte slices
+    - A `Buffer` starts out empty but grows as data of types like `string`, `byte`, and `[]byte` are written to it
+    - When appending the UTF-8 encoding of an arbitrary rune to `bytes.Buffer`, it's best to use `bytes.Buffer`'s `WriteRune` method, but `WriteByte` is fine for ASCII characters
+    - The `bytes.Buffer` type is extremely versatile. It may be used as **a replacement for a file** whenever an an I/O function requires **a sink for bytes** (`io.Writer`), or **a source of bytes** (`io.Reader`)
+### Conversions between strings and numbers
+- `fmt.Sprintf`; `strconv.Itoa` (integer to ASCII)
+    - `fmt.Println(fmt.Sprintf("%d", 123), strconv.Itoa(123)) // 123 123`
+- `FormatInt` and `FormatUint` can be used to format numbers in a different base
+    - `fmt.Println(strconv.FormatInt(int64(123), 2)) // 1111011`
+    - The `fmt.Printf` verbs `%b`, `%d` `%o`, and `%x` are often more convenient than `Format` functions, especially when we want to include additional information besides the number
+    - `s := fmt.Sprintf("x=%b", 123)`
+- To parse a string representing an integer, use the `strconv` functions `Atoi` or `ParseInt`, or `ParseUint` for unsigned integers
+
+    ```go
+    x, err := strconv.Atoi("123")
+    y, err := strconv.ParseInt("123", 10, 64) // base 10, up to 64 bits
+    ```
+
+    - The third argument of `ParseInt` gives the size of the integer type that the result must fit into. 16 implies `int16`, `0` implies `int`. In any case, the type of the result `y` is always `int64`, which you can then convert to a smaller type
+    - Sometimes `fmt.Scanf` if useful for parsing input that consists of orderly mixtures fo strings and numbers all on a single line, but it can be inflexible, especially when handing incomplete or irregular input
+## Constants
+continues at 95/400

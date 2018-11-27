@@ -506,12 +506,76 @@
         - > Defined as an instance method, `this.renderTheCat` always refers to *same* function when we use it in render
     - In cases where you cannot define the prop statically (e.g. because you need to close over the component’s props and/or state) `<Mouse>` should extend `React.Component` instead
 - [ ] render props 实现路由保护
+# Context
+- Context provides a way to pass data through the component tree without having to pas props manually at every level
+- Context is designed to share data that can be considered "global" for a tree of React components
+    - Such as the current authenticated user, theme, or preferred language
 
+    ```jsx
+    // create a context for the current theme (with 'light' )
+    const ThemeContext = React.createContext('light')
+    class App extends React.Component {
+        render() {
+            return (
+                <ThemeContext.Provider value="dark">
+                    <Toolbar />
+                </ThemeContext.Provider>
+            )
+        }
+    }
+    function Toolbar(props) {
+        return <div><ThemeButton /></div>
+    }
+    class ThemeButton extends React.Component {
+        // assign a contextType to read the current theme context
+        // React will find the closest theme Provider above an use its value
+        static contextType = ThemeContext
+        render() {
+            return <Button theme={this.context} />
+        }
+    }
+    ```
 
-
-
-
-
+- Applying context makes component reuse more difficult
+- If you only want to passing some props through many levels, [component composition](https://reactjs.org/docs/context.html#before-you-use-context) is often a simpler solution than context
+- `React.createContext`
+    - `const MyContext = React.createContext(defaultValue)`
+    - Creates a **Context object**
+    - When React renders a component that subscribes to this Context it will read the current context value from the closest **matching `Provider`** above it in the tree
+    - The `defaultValue` argument is **only** used when a component does not have a matching Provider (`<MyContext.Provider></MyContext.Provider>`) above it in the tree. This can be helpful for testing components in isolation without **wrapping** them
+    - Passing `undefined` as a Provider value does not cause consuming components to use `defaultValue`
+- `Context.Provider`
+    - `<MyContext.Provider value={/* some value */}>`
+    - Every Context object comes with a **Provider React Component** that allows consuming components to subscribe to context changes
+    - Accept a `value` prop to be passed to consuming components that are descendants of this Provider
+    - One Provider can be connected to man consumers
+    - Providers can be nested to override values deeper within the tree
+    - All consumers that are descendants of a Provider will re-render **whenever the Provider's `value` prop changes**
+        - The propagation from Provider to its descendant consumer is **not subject to the `shouldComponentUpdate` method**, so the consumer is updated even when an ancestor component bails out of the update
+        - Changes are determined by comparing the new and old values using the same algorithm as `Object.is`
+- `Class.contextType`
+    - `MyClass.contextType = MyContext`, `static contextType = MyContext ` (public class fields syntax)
+    - The `contextType` property on a ***class*** can be assigned a Context object created by `React.createContext()`. This lets you consume the nearest current value of that Context type using `this.context`
+        - `this.context` can be referenced in any of the lifecycle methods including the render function
+    - You can only subscribe to a single context using this API
+- `Context.Consumer`
+    - `<MyContext.Consumer>{value => /* render sth based on the context value /*}</MyContext.Consumer>`
+    - A React component that subscribes to context changes
+    - Allows you to subscribe to a context within a ***function component***
+    - Requires a function as a child
+        - The function receives the current context value and returns a React node
+        - The `value` argument passed to the function will be equal to the `value` prop of **the closest Provider for this context** above
+        - If there is no Provider for this context above, the `value` argument will be equal to the `defaultValue` that was passed to `createContext()`
+        - 有 `MyProvider` 被创建，但 `MyProvider` 不是某个消费 `MyProvider` 的组件的上层组件中的一个，此时消费的组件会读到 `defaultValue`
+- [Dynamic context](https://reactjs.org/docs/context.html#dynamic-context)
+- It's often necessary to update the context from a component that is nested somewhere deeply in the component tree. In this case you can **pass a function down through the context** to allow consumers to update the context
+    - [Updating Context from a nested component](https://reactjs.org/docs/context.html#updating-context-from-a-nested-component)
+- To keep context re-rendering fast, React needs to make each context consumer a separate node in the tree
+    - If two of more context values are often used together, you might want ot consider creating your own render prop component that provides both
+    - [Consuming multiple contexts](https://reactjs.org/docs/context.html#consuming-multiple-contexts)
+- Context use **reference identity** to determine when to re-render
+# Reconciliation
+- React provides a **declarative API** so that you don't have to worry about exactly what changes on every update
 
 
 
