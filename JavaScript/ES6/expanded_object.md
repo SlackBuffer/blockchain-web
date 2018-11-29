@@ -112,3 +112,4 @@
 - 定义在对象里的方法有一个内部属性 `[[HomeObect]]`，值是拥有该方法的对象
     - 一个函数创建时若不是一个对象的方法，则没有 `[[HomeObject]]` 属性
     - `super` 第一步会去调用 `Object.getPrototypeOf([[HomeObject]])` 获得 prototype 的引用；在 prototype 上查找指定的方法；`this` 绑定后调用该方法
+- https://medium.com/@pyrolistical/destructuring-nested-objects-9dabdd01a3b8
