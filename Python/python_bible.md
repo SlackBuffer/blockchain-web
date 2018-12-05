@@ -30,3 +30,6 @@
 - `string[start:end:step]`, `'abc'[::-1]`
 - Logical operator
     - `not`, `and`, `or`
+- List (array)
+    - `[]` can slice directly
+    - `remove()`(only the first one), `del list[0]` (can delete slice too)
