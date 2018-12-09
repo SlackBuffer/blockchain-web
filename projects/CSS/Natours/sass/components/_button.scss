@@ -11,6 +11,7 @@
         position: relative;
     }
     &:hover {
+        // 相对于 initial state
         transform: translateY(-3px);
         /* x offset y offset blur color */
         box-shadow: 0 1rem 2rem rgba($color-black, .2);
@@ -22,6 +23,7 @@
         }
     }
     &:active {
+        // 相对于 initial state
         transform: translateY(-1px);
         box-shadow: 0 .5rem 1rem rgba($color-black, .2);
     }

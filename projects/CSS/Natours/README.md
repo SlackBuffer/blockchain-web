@@ -129,3 +129,10 @@
             - sass 保持 DRY 而不是编译后生成的 css 保持 DRY
             - 将选择器加到 extends 的 css rule 上
             - 存在内在或主题关联性时才使用
+- extends 拷的是选择器，`%extendedPlaceholder {}` 被使用 `extends` 的选择器替代（提上去）；mixin 拷的是代码（025）
+# Natours
+- `.btn:link, btn:visited {}`
+- animations
+    - `backface-visibility: hidden;`
+    - transition; `@keyframe`
+    - 008
