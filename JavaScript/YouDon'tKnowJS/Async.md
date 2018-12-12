@@ -26,4 +26,74 @@ processed in call order
   - Before the next tick
 - Processes can cooperate by breaking themselves into smaller chunks and to allow other "process" interleaving
 # Callback
-- 
+- Cons
+  - 不直观，代码之间跳来跳去，每个回调的同步、异步会使执行顺序不同
+  - 连续的回调链的错误处理等（recovery/retry/forking）不能复用
+  - The brittle nature of manually hardcoded callbacks (even with hardcoded error handling) is not graceful. Once you end up **specifying (aka pre-planning) *all* the various eventualities/paths**, the code becomes so convoluted that it's hard to ever maintain or update it
+  - Inversion of control: 代码控制权交给第三方库
+    - 第三方库可能执行多次调用回调函数等不受控的操作
+    - You have to invent an awful lot of ad hoc logic in each and every single callback that's passed to a utility you're not positive you can trust
+  - 每个回调都要手写参数校验等校验工作
+- Trying to save callbacks
+  1. Split callbacks (one for the success, on for the error)
+  2. Error-first style (node style)
+     - The first argument of a single callback is reserved for an error object (if any)
+     - If success, this argument will be empty/falsy and any subsequent arguments will be the success data
+     - If an error result is being signaled, the first argument is set/truthy and usually noting else is passed
+   - Set up a timeout that cancels the event (address the issue of never being called)
+
+        ```js
+        function timeoutify(fn, delay) {
+            var intv = setTimeout(function() {
+                intv = null
+                fn(new Error("Timeout"))
+            }, delay)
+            return function() {
+                // timeout hasn't happened yet
+                if (intv) {
+                    clearTimeout(intv) 
+                    fn.apply(this, arguments)
+                }
+            }
+        }
+        ```
+
+- Advice
+  - Always invoke callbacks asynchronously, even if that's "right away" on the next turn of the event loop, so that all callbacks are predictably async
+  - 同步的回调会使执行结果无法预料
+  - Determine whether the API in question will execute async
+
+    ```js
+    function asyncify(fn) {
+        var orig_fn = fn
+        var intv = setTimeout(function() {
+            intv = null
+            if (fn) fn()
+        }, 0)
+        fn = null
+        return function() {
+            // firing too quickly, before intv timer has fired to indicate async turn has passed
+            if (inv) {
+                fn = orig_fn.bind.apply(
+                    orig_fn,
+                    // add the wrapper's `this` to the `bind` call parameters,
+                    // as well as currying any passed in parameters
+                    [this].concat([].slice.call(arguments))
+                )
+            }
+            // already async 
+            else {
+                // invoke the original function
+                orig_fn.apply(this, arguments)
+            }
+        }
+    }
+    function result(data) {
+        console.log(a);
+    }
+    var a = 0;
+    ajax( "..pre-cached-url..", asyncify(result) );
+    a++;
+    ```
+
+    - Whether the AJAX request is in the cache and resolves to call the callback right away, or must be fetched over the wire and thus complete later asynchronously, this code will always output `1`. `result()` cannot help but be invoked asynchronously
