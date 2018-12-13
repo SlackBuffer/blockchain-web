@@ -20,6 +20,7 @@
     ```
 
 - String methods
+    - `in`
     - `count()`
     - `lower()`, `upper()`, `capitalize()`, `title()`, `isupper()`, `islower()`, `istitle()`, `isalpha()`, `isdigit()`, `isalnum()`
     - `index()`, `find()`
@@ -31,5 +32,8 @@
 - Logical operator
     - `not`, `and`, `or`
 - List (array)
+    - `in`
     - `[]` can slice directly
     - `remove()`(only the first one), `del list[0]` (can delete slice too)
+    - `append()`, `a = a + [1]`, `a = a + list("abc")`, `list("abc") => ["a", "b", "c"]`, `insert(index, value)`
+      - > `append()`, `remove()`, `insert()` returns an empty value (`<class 'NoneType>`)
