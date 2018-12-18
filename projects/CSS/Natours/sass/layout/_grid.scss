@@ -1,6 +1,6 @@
 .row {
     max-width: $grid-width;
-    background-color: #eee;
+    // background-color: #eee;
     margin: 0 auto;
     
     // 选 last-child 外的所有 row
@@ -8,10 +8,11 @@
         margin-bottom: $gutter-vertical;
     }
 
+    // .row::after {}
     @include clearfix;
 
     [class^="col-"] {
-        background-color: orangered;
+        // background-color: orangered;
         // row 由于所有子元素都浮动了，使得 row 的高度坍缩为 0，要用 clearfix 修复
         float: left;
 

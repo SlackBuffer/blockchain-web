@@ -107,6 +107,7 @@
     3. media queries
 - **`transition` 要放在 initial state 上**
 # Float
+- _grid.scss
 # SASS
 - 两种 SASS 语法：SCSS 写法更类似 CSS；SASS 用缩进
 - Main SASS features
@@ -130,9 +131,13 @@
             - 将选择器加到 extends 的 css rule 上
             - 存在内在或主题关联性时才使用
 - extends 拷的是选择器，`%extendedPlaceholder {}` 被使用 `extends` 的选择器替代（提上去）；mixin 拷的是代码（025）
+# Emmet
+- `.composition>(img.composition__photo.composition__photo--p1)*3`
 # Natours
 - `.btn:link, btn:visited {}`
 - animations
     - `backface-visibility: hidden;`
     - transition; `@keyframe`
     - 008
+# Icon fonts
+- Doesn't matter use what element tag, so use `<i>` as a convention
