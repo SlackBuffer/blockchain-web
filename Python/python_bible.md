@@ -37,3 +37,18 @@
     - `remove()`(only the first one), `del list[0]` (can delete slice too)
     - `append()`, `a = a + [1]`, `a = a + list("abc")`, `list("abc") => ["a", "b", "c"]`, `insert(index, value)`
       - > `append()`, `remove()`, `insert()` returns an empty value (`<class 'NoneType>`)
+- Tuple
+  - Immutable
+  - `tp = (1,2,3,'a')`，括号可省略，但不要省
+  - **Multiple assignment**
+
+    ```python
+    (a, b, c) = 1,2,3
+    (a, b, c) = [1,2,3]
+    (a, b, c) = "123"
+    ```
+
+- Dictionary (JS object)
+  - key, value, `[]`
+  - `del dic[key]`
+  - `list(dic.keys())`, `value()`, `items()`
