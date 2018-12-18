@@ -1,3 +1,6 @@
+- SVG defines the graphics in XML format
+- Every element and every attribute in SVG files can be animated
+- SVG files are pure XML
 - `d` attribute of `<path>`
   - M - move to
   - L - line to
