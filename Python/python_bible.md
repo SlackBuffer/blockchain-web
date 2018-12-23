@@ -52,3 +52,8 @@
   - key, value, `[]`
   - `del dic[key]`
   - `list(dic.keys())`, `value()`, `items()`
+- `from random import choice`
+- `for i in range(1, 11)` 
+- `pass` (`continue`)
+- list comprehension
+  - `even_numbers = [x for x in range(1, 101) if x % 2 == 0]`
