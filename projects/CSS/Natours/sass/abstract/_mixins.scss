@@ -6,3 +6,8 @@
         clear: both;
     }
 }
+
+@mixin respond($breakpoint) {
+    @media #{$breakpoint} { @content };
+    // @media (max-width: $breakpoint) { @content };
+}

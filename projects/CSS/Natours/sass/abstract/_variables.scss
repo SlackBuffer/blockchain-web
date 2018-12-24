@@ -8,6 +8,11 @@ $color-black: #000;
 
 $color-grey-light-1: #f7f7f7;
 
+$color-secondary-light: #ffb900;
+$color-secondary-dark: #ff7730;
+$color-tertiary-light: #2998ff;
+$color-tertiary-dark: #5643fa;
+
 // FONT
 $default-font-size: 1.6rem;
 
@@ -15,3 +20,12 @@ $default-font-size: 1.6rem;
 $grid-width: 114rem;
 $gutter-vertical: 8rem;
 $gutter-horizontal: 6rem;
+
+// breakpoint, desktop first strategy
+// 1em = 16px
+
+$bp-phone: "(max-width: 37.5em)"; // 600px
+$bp-tab-port: "(max-width: 56.25em)"; // 900px
+$bp-tab-land: "(max-width: 75em)"; // 1200px
+$bp-big-desktop: "(min-width: 112.5em)"; // 1800px
+// $bp-tab-land: 75em; // 1200px

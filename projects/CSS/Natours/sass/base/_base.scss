@@ -8,7 +8,28 @@
 
 html {
     /* font-size: 10px; 这样写用户修改浏览器的默认字体大小将失效，不好*/
+
+    /*
+        默认 1rem = root font size
+        by default, root font size = 100% (browser font size (default 16px))
+        html { font-size: 62.5% } makes root font size equals to (62.5% * browser font size (default 16px))
+        => 1rem = 16px (default) * 62.5%
+    */
+
     font-size: 62.5%;
+
+    @include respond($bp-tab-land) {
+        font-size: 56.25%;
+    }
+    @include respond($bp-tab-port) {
+        font-size: 50%;
+    }
+    @include respond($bp-phone) {
+        font-size: 30%;
+    }
+    @include respond($bp-big-desktop) {
+        font-size: 75%;
+    }
 }
 
 /* font 相关的都放 body 里，利用到继承的特性 */

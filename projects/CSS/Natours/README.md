@@ -131,6 +131,7 @@
             - 将选择器加到 extends 的 css rule 上
             - 存在内在或主题关联性时才使用
 - extends 拷的是选择器，`%extendedPlaceholder {}` 被使用 `extends` 的选择器替代（提上去）；mixin 拷的是代码（025）
+- > https://scotch.io/tutorials/how-to-use-sass-mixins
 # Emmet
 - `.composition>(img.composition__photo.composition__photo--p1)*3`
 # Natours
@@ -139,5 +140,51 @@
     - `backface-visibility: hidden;`
     - transition; `@keyframe`
     - 008
+- `::selection`
 # Icon fonts
 - Doesn't matter use what element tag, so use `<i>` as a convention
+- continues at 40
+# Media queries
+- `@media only screen and ()`
+- SASS 的 media query 可嵌套写
+- Media queries don't add any importance or specificity to selectors, so code order matter - keep media queries at the end
+- Desktop first: `max-width`
+  - 先设计 PC 端，宽度小于某个 width 的，设个 `max-width` 断点，应用其他样式
+- Mobile first: `min-width`
+- Selecting breakpoints
+  1. Based on multiple devices
+    - < 600, phone only
+    - [600, 900], tablet portrait
+    - [900, 1200], tablet landscape
+    - [1200, 1800], desktop (normal)
+    - > 1800, big desktop
+  2. Content based
+- In media queries, em and rem are **not affected by the root font size setting** (`html { font-size: 625%; }`). 1em or 1rem is always equal to the font size coming from the browser (by default 16px)
+- [ ] `em` are the best option for media queries
+  - `rem` does not work as intended in some browsers
+- Base + typography > general layout + grid > page layout > components
+## Responsive images
+- Use `em`
+- Resolution switching
+  - Decrease image resolution on smaller screen
+  - `<img srcset="logo-1x.png 300w, logo-2x.png 2x 1000w" sizes="(max-width: 900px) 20vw, (max-width: 600px) 30vw, 300px" src="logo.png" />`
+    - `w` - width of the image
+    - `sizes` informs the browser about the approximate width of the image at different viewport width
+    - `src` as a fallback
+- Density switching
+  - 1x, 2x (same image)
+  - 2x resolution screens use two physical pixels (actual image) to display one pixel on the page
+  - `<img srcset="logo-1x.png 1x, logo-2x.png 2x" />`
+- Art direction
+  - Serve completely different images on different screens
+  - `<source srcset="logo-1x.png 1x, logo-2x.png 2x" media="(max-width: 37.5em)" />`
+- In CSS
+  - `@media (min-resolution: 192dpi) and (min-width: 600px), (max-width: 2000) {}`
+  - `,` means or
+- `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
+    - Without it, the browser will basically zoom out the page, so that the largest version of the page fits the screen (widest element)
+- `@media only screen and (hover: none) {}`
+  - For devices that cannot hover
+## Graceful degradation
+- `@supports(css rule)`
+- https://css-tricks.com/ordering-css3-properties/#article-header-id-0

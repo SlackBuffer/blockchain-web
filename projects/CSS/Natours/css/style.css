@@ -39,7 +39,25 @@
 
 html {
   /* font-size: 10px; 这样写用户修改浏览器的默认字体大小将失效，不好*/
+  /*
+        默认 1rem = root font size
+        by default, root font size = 100% (browser font size (default 16px))
+        html { font-size: 62.5% } makes root font size equals to (62.5% * browser font size (default 16px))
+        => 1rem = 16px (default) * 62.5%
+    */
   font-size: 62.5%; }
+  @media (max-width: 75em) {
+    html {
+      font-size: 56.25%; } }
+  @media (max-width: 56.25em) {
+    html {
+      font-size: 50%; } }
+  @media (max-width: 37.5em) {
+    html {
+      font-size: 30%; } }
+  @media (min-width: 112.5em) {
+    html {
+      font-size: 75%; } }
 
 /* font 相关的都放 body 里，利用到继承的特性 */
 body {
@@ -222,6 +240,54 @@ body {
   .feature-box:hover {
     transform: translateY(-1.5rem) scale(1.03); }
 
+.card {
+  perspective: 150rem;
+  -moz-perspective: 150rem;
+  position: relative;
+  height: 50rem; }
+  .card__side {
+    height: 50rem;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.15);
+    transition: all .8s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    backface-visibility: hidden; }
+    .card__side--front {
+      background-color: #fff; }
+    .card__side--back {
+      transform: rotateY(180deg); }
+      .card__side--back-1 {
+        background-image: linear-gradient(to right bottom, #ffb900, #ff7730); }
+  .card:hover .card__side--front {
+    transform: rotateY(-180deg); }
+  .card:hover .card__side--back {
+    transform: rotate(0); }
+  .card__picture {
+    background-size: cover;
+    height: 23rem;
+    background-blend-mode: screen;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
+    .card__picture--1 {
+      background-image: linear-gradient(to right bottom, #ffb900, #ff7730), url(../img/nat-5.jpg); }
+    .card__picture--2 {
+      background-image: url(../img/nat-5.jpg); }
+    .card__picture--3 {
+      background-image: url(../img/nat-5.jpg); }
+  .card__heading {
+    font-size: 2.8rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    color: #fff;
+    text-align: right;
+    position: absolute;
+    top: 12rem;
+    right: 2rem; }
+
 .row {
   max-width: 114rem;
   margin: 0 auto; }
@@ -294,6 +360,11 @@ body {
   margin-top: -10rem; }
   .section-features > * {
     transform: skewY(7deg); }
+
+.section-tours {
+  background-color: #f7f7f7;
+  padding: 25rem 0 50rem 0;
+  margin-top: -10rem; }
 
 /* The :link CSS pseudo-class represents an element that has not yet been visited. It matches every unvisited <a>, <area>, or <link> element that has an href attribute */
 /* transition proprety needs to be on the initial property */
