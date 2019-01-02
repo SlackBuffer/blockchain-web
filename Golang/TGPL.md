@@ -101,8 +101,8 @@
             - The declarations of built-in types, functions, and constants like `int`, `len`, `true` are in the universe block and can be referred throughout the entire program        
         - There's a lexical block for each package; for each file; for each `for`, `if`, and `switch` statement; for each case in a `switch` or `select` statement; for each explicit syntactic block
         -  `for` loops, `if` statements, and `switch` statements create implicit blocks **in addition to their body blocks**
-            - The `for` loop creates 2 lexical blocks the explicit block `for` the loop body, and an implicit block that additionally encloses the variables declared by the initialization clause the scope of a variable declared in the implicit block is the condition, post-statement(`i++`), and body of the for statement
-            - [ ] The second `if` statement is **nested** within the first, so variables declared within the first statement's initializer are visible within the second
+            - The `for` loop creates 2 lexical blocks: the explicit block `for` the loop body, and an implicit block that additionally encloses the variables declared by the initialization clause.  The scope of a variable declared in the implicit block is the condition, post-statement(`i++`), and body of the for statement
+            - [ ] The second `if` statement is **nested** within the first, so variables declared within the first statement's **initializer** are visible within the second
             - For a `switch` statement, there's a block for the condition and a block for each case body
     - The scope of a control-flow label, as used by `break`, `continue`, and `goto` statements, is the entire enclosing function
     - At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions
@@ -157,7 +157,7 @@
         - A function call implicitly assigns the values to the corresponding parameter variables
         - A `return` statement implicitly assigns the `return` operands to the corresponding result variables
         - A literal expression for a composite type: `medals := []string{"gold", "silver", "bronze"}`, as if it had been written like `medals[0] = "gold"; medals[1] = "silver"; medals[2] = "bronze"`
-            - The elements of maps and channels, though not ordinary variables, are also subject or implicit assignments
+            - The elements of maps and channels, though not ordinary variables, are also subject to implicit assignments
     - An assignments is always legal if the left-hand side (the variable) and the right-hand side (the value) have the same type. More generally, the assignment is legal only if the value is *assignable* to the type of the variable
         - The rule for assignability
             - For the types we've discussed so far, the types must exactly match
