@@ -1154,15 +1154,16 @@
     - Within a rao string literal, no escape sequences are processed; the contents are taken literally, including backslashes and newlines, so a raw string may spread over several lines in the program source
     - The only processing is that carriage returns are deleted so that the value of the string is the same on all platforms, including those conventionally put carriage return in text files
 ### Unicode
+- > https://blog.golang.org/strings
 - US-ASCII uses 7 bits to represent 128 characters
 - Unicode collects all of the characters in all of the world's writing systems, plus accents and other diacritical marks, control codes like tab and carriage return, and plenty of esoterica, and assigns each one of a standard number called a *Unicode code point*, in Go terminology, a `rune`
     - Unicode version 8 defines code points for over 120000 characters in well over 100 languages and scripts
-- The natural data type to hold a single rune is `int32`, and that's what Go uses; it has the synonym `rune` for precisely this purpose
+- The natural data type to hold a single rune is `int32`, and that's what Go uses; it has the synonym **`rune`** for precisely this purpose
     - We could represent a sequence of runes as a sequence of `int32` values. In this representation, which is called UTF-32 or UCS-4, the encoding of each Unicode code point has the same size, 32 bits. This is simple and uniform, but it uses munch more than necessary since most computer-readable text in ASCII, which require only 8 bits or 1 byte per character
     - All the characters in widespread use still number fewer than 65536, which would fit in 16 bits
 ### UTF-8
 - UTF-8 is a **variable-length** encoding of Unicode code points as bytes
-    - It uses between 1 and 4 bytes to represent each , but only 1 byte for ASCII characters, and only 2 or 3 bytes for most runes in common use
+    - It uses between 1 and 4 bytes to represent each, but only 1 byte for ASCII characters, and only 2 or 3 bytes for most runes in common use
     - The high-order bits of the first byte of the encoding for a rune indicate how many bytes follow
         - A high-order `0` indicates 7-bit ASCII, where each rune takes only 1 byte, so it's identical to conventional ASCII
         - A high-order `110` indicates that the rune takes 2 bytes; the second byte begins with `10`
@@ -1304,4 +1305,381 @@
     - The third argument of `ParseInt` gives the size of the integer type that the result must fit into. 16 implies `int16`, `0` implies `int`. In any case, the type of the result `y` is always `int64`, which you can then convert to a smaller type
     - Sometimes `fmt.Scanf` if useful for parsing input that consists of orderly mixtures fo strings and numbers all on a single line, but it can be inflexible, especially when handing incomplete or irregular input
 ## Constants
+- Constants are expressions whose value is known to the compiler and whose evaluation is guaranteed to occ ur at comp ile time, not at run time
+- The underlying typ e of every constant is a basic type: boolean, string, or number
+- A constant declaration may specify a type as well as a value, but in the absence of an explicit type, the type is **inferred** from the expression on the right-hand side
+- When a sequence of constants is declared as a group, the right-hand side expression may be omitted for all but the first of the group, implying that the previous expression and its type should be used again
+
+    ```go
+    const (
+        a = 1
+        b
+        c = 2
+        d
+    )
+    fmt.Println(a, b, c, d) // 1 1 2 2 
+    ```
+
+### `iota`
+- Constant generator `iota`
+  - The value of `iota` begins at zero and increments by one for each item in the sequence
+
+    ```go
+    type Weekday int
+    const (
+        Sunday Weekday = iota
+        Monday
+        Tuesday
+        Wednesday
+        Thursday
+        Friday
+        Saturday
+    )
+    const (
+        _ = 1 << (10 * iota)
+        KiB // 1024
+        MiB // 1048576
+        GiB // 1073741824
+        TiB // 1099511627776 (exceeds 1 << 32)
+        PiB // 1125899906842624
+        EiB // 1152921504606846976
+        ZiB // 1180591620717411303424 (exceeds 1 << 64)
+        YiB // 1208925819614629174706176
+    )
+    ```
+
+### Untyped Constants
+- A constant can have any of the basic types like `int` or `float64`, including named basic types like `time.Duration`, many constants are not committed to a particular type
+- The compiler represents these uncommitted constants with more precise than machine arithmetic; you may assume at least 256 bits of precision
+  - By deferring this commitment, untyped constants not only retain their higher precision until later, but they can participate in many more expressions than committed constants without conversions
+
+    ```go
+    // The values ZiB and YiB are too big to store in any integer, but the following expression is legitimate
+    fmt.Println(YiB/ZiB) // 1024
+
+    // The floating-point constant math.Pi may be used wherever any floating point or complex value is needed
+    // If math.Pi had been committed to a specific type such as float64, the result would not be as precise, and type 
+    // conversion would be required to use it when a float32 or complex128 value is wanted
+    ```
+
+- There are 6 flavors of these uncommitted constants, called untyped boolean, untyped integer, untyped rune, untyped floating-point, untyped complex, untyped string
+  - For literals, syntax determines flavor
+    - 0: untyped integer; 0.0: untyped floating-point; 0i: untyped complex; \u0000: untyped rune; true, false: untyped boolean
+    - String literals are untyped strings
+- Only constants can be untyped. When an untyped constant is assigned to a variable or appears on the right-hand side of a variable declaration with an explicit type, the constants is implicitly converted to the type of that variable if possible
+  - Whether implicit or explicit, converting a constant from one type to another requires the target type can represent the original value. Rounding is allowed for real and complex floating-point numbers
+
+    ```go
+    const (
+        deadbeef = oxdeadbeef   // untyped int with value 3735928559
+        a = uint32(deadbeef)    // uint32 with value 3735928559
+        b = float32(deadbeef)   // float32 with value 3735928576 (rounded up)
+        c = float64(deadbeef)   // float64 with value 3735928559 (exact)
+        d = int32(deadbeef)     // compile error: constant overflows int32
+    )
+    ```
+
+  - In a variable declaration without an explicit type (including short variable declarations), the flavor of the untyped constant implicitly determines the default type of the variable
+    - Untyped integers are converted to `int`, whose size is not guaranteed, but untyped floating-point and complex numbers are converted to the explicitly size d types `float64` and `complex128`
+    - The language has no unsized `float` and `complex` types analogous to unsized `int`, because it is very difficult to write correct numerical algorithms without knowing the size of one’s floating-point dat a types
+  - To give the variable a different type, we must explicitly convert the untyped constant to the desired type or state the desired type in the variable declaration
+    - These defaults are particularly important when converting an untyped constant to an interface value since they determine its dynamic type
+
+    ```go
+    var i = int8(0)
+    var i int8 = 0
+    ```
+
+# Composite Types
+- Arrays and structs are **aggregate types**; their values are **concatenations of other values in memory**
+- Arrays are homogeneous—their elements all have **the same type**—whereas structs are heterogeneous
+- Both arrays and structs are **fixed size**
+- Slices and maps are dynamic dat a structures that grow as values are added
+## Arrays
+- The elements of a new array variable are initially set to the zero value for the element type
+
+    ```go
+    var a [3]int
+    // Print the indices and elements
+    for i, v := range a {
+        fmt.Printf("%d %d\n", i, v)
+    }
+
+    var q [3]int = [3]int{1, 2, 3}
+    var r [3]int = [3]int{1, 2}
+
+    // ellipsis
+    q := [...]int{1, 2, 3}
+    fmt.Printf("%T\n", q) // "[3]int"
+    ```
+
+- **The size of an array is part of its type**, so `[3]int` and `[4]int` are different types
+- The size must be a constant expression, that is, an expression whose value can be computed as the program is being **compiled**
+- It's possible to specify a list of index and value pairs. In these form, indices can appear in any order and some may be omitted
+
+    ```go
+    type Currency int
+    const (
+        USD Currency = iota
+        EUR
+        GBP
+        RMB
+    )
+    symbol := [...]string{USD: "$", EUR: "9", GBP: "!", RMB: """}
+    
+    r := [...]int{99: -1}
+    ```
+
+- If an array’s element type is comparable then the array type is comparable too, so we may **directly compare two arrays** of that type using the `==` operator, which reports whether all corresponding elements are equal. The `!=` operator is its negation
+
+    ```go
+    import "crypto/sha256"
+    func main() {
+        c1 := sha256.Sum256([]byte("x"))
+        c2 := sha256.Sum256([]byte("X"))
+        fmt.Printf("%x\n%x\n%t\n%T\n", c1, c2, c1 == c2, c1)
+        // Output:
+        // 2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881
+        // 4b68ab3847feda7d6c62c1fbcbeebfa35eab7351ed5e78f4ddadea5df64b8015
+        // false
+        // [32]uint8
+    }
+    ```
+
+    - `%x` to print all the elements of an array or slice of bytes in hexadecimal, `%t` to show a boolean, and `%T` to display the type of a value
+- When a function is called, a copy of each argument value is assigned to the corresponding parameter variable, so the function receives a copy, not the original. Passing large arrays in this way can be inefficient, and any changes that the function makes to array elements affect only the copy, not the original. In this regard, Go treats arrays like any other type, but this behavior is different from languages that implicitly pass arrays by reference
+  - We can explicitly pass a pointer to an array
+
+    ```go
+    // zeroes the contents of a[32]byte array
+    func zero(ptr *[32]byte) {
+        for i := range ptr {
+            ptr[i] = 0
+        }
+    }
+    // version 2
+    func zero(ptr *[32]byte) {
+        *ptr = [32]byte{}
+    }
+    ```
+
+## Slices
+- [ ] indirect how
+- A slice type is written `[]T` (looks like an array type without a size)
+  - The implicitly creates an array variable of the right size and yields a slice that points to it
+- A slice is a lightweight dat a structure that gives access to a subsequence (or perhaps all) of the elements of an array, which is known as the **slice’s underlying array**
+- A slice has three components: a pointer, a length, and a capacity
+  - The pointer points to the first element of the array that is reachable through the slice, which is not necessarily the array’s first element
+  - The length is the number of slice elements; it can’t exceed the capacity, which is usually the number of elements between the start of the slice and the end of the underlying array
+    - The built-in functions `len` and `cap` return those values
+- Multiple slices can share the same underlying array and may refer to overlapping parts of that array
+- The slice operator `s[i:j]`, where `0 ≤ i ≤ j ≤ cap(s)`, creates a new slice that refers to elements `i` through `j-1` of the sequence `s`, which may be an array variable, a pointer to an array, or another slice
+  - The resulting slice has `j-i` elements. If `i` is omitted, it’s 0, and if `j` is omitted, it’s `len(s)`. Thus the slice `months[1:13]` refers to the whole range of valid months, as does the slice `months[1:]`; the slice `months[:]` refers to the whole array
+- Slicing beyond `cap(s)` causes a panic, but slicing beyond `len(s)` **extends** the slice
+- Similarity of the substring operation on strings to the slice operator on `[]byte` slices
+  - Both are written `x[m:n]`, and both return a subsequence of the original bytes, sharing the underlying representation so that both operations take **constant time**
+  - The expression `x[m:n]` yields a string if `x` is a string , or a `[]byte` if `x` is a `[]byte`
+- Since a slice contains a pointer to an element of an array, passing a slice to a function permits the function to modify the underlying array elements. In other words, copying a slice creates an alias (§2.3.2) for the underlying array
+
+    ```go
+    // reverses a slice of ints in place
+    func reverse(s []int) {
+        for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+            s[i], s[j] = s[j], s[i]
+        }
+    }
+    ```
+
+    - A simple way to rotate a slice left by `n` elements is to apply the `reverse` function three times
+- Slices are not comparable, so we cannot use `==` to test whether 2 slices contain the same elements
+  - Two reasons
+    1. The elements of a slice are indirect, making it possible for a slice to **[ ] contain itself**. This makes deep equivalence problematic: not simple, not efficient, not obvious
+    2. Because slice elements are indirect, a fixed slice value may contain different elements
+       - Because a hash table such as Go’s **`map` type makes only shallow copies of its keys**, it requires that equality for each key remain the same throughout the lifetime of the hash table. Deep equivalence would thus make slices unsuitable for use as map keys
+       - For reference types like pointers and channels, the `==` operator tests reference identity, that is, whether the two entities refer to the same thing. An analogous "shallow" equality test for slices could be useful, and it would solve the problem with maps, but the inconsistent treatment of slices and arrays by the `==` operator would be confusing. The safest choice is to disallow slice comparisons altogether
+  - The only legal slice comparison is against `nil`
+  - The standard library provides the highly optimized `bytes.Equal` function for comparing two slices of bytes (`[]byte`)
+
+    ```go
+    func equal(x, y []string) bool {
+        if len(x) != len(y) {
+            return false
+        }
+        for i := range x {
+            if x[i] != y[i] {
+                return false
+            }
+        }
+        return true
+    }
+    ```
+
+- The zero value of a slice type is `nil`
+  - A `nil` slice has no underlying array and has length and capacity zero
+  - There are also non-nil slices of length and capacity zero, such as `[]int{}` or `make([]int, 3)[3:]`
+  - As with any type that can have `nil` values, the `nil` value of a particular slice type can be written using a conversion expression such as `[]int(nil)`
+
+    ```go
+    var s []int // len(s) == 0, s == nil
+    s = nil // len(s) == 0, s == nil
+    s = []int(nil) // len(s) == 0, s == nil
+    s = []int{} // len(s) == 0, s != nil
+    ```
+
+    - Use `len(s) == 0`, not `s == nil` to test whether a slice is empty
+    - Other than comparing equal to `nil`, a `nil` slice behaves like any other zero-length slice; `reverse(nil)` is perfectly safe, for example
+    - Unless clearly documented to the contrary, Go functions should treat all zero-length slices the same way, whether `nil` or non-nil
+- The built-in function `make` creates a slice of a specified element type, length, and capacity. The capacity argument may be omitted, in which case the capacity equals the length
+  - Under the hood, `make` creates an unnamed array variable and returns a slice of it; the array is accessible only through the returned slice
+
+    ```go
+    make([]T, len)
+    make([]T, len, cap) // same as make([]T, cap)[:len]
+    ```
+
+### `append`
+- The built-in `append` appends items to slices
+
+    ```go
+    var runes []rune
+    for _, r := range "hello, 世界" {
+        runes = append(runes, r)
+    }
+    fmt.Printf("%q\n", runes) // ['h' 'e' 'l' 'l' 'o' ',' ' ' '世' '界']
+    // approach 2 - built-in conversion
+    []rune("hello, 世界")
+    ```
+
+    ```go
+    func appendInt(x []int, y ...int) []int {
+        var z []int
+        zlen := len(x) + len(y)
+        if zlen <= cap(x) {
+            // there's to grow, extend the slice
+            z = x[:zlen]
+        } else {
+            // There is insufficient space. Allocate a new array
+            // Grow by doubling, for amortized linear complexity
+            zcap := zlen // 0 to 1
+            if zcap < 2*len(x) {
+                zcap = 2 * len(x)
+            }
+            z = make([]int, zlen, zcap)
+            copy(z, x)
+        }
+        // z[len(x)] = y
+        copy(z[len(x):], y)
+        return z
+    }
+    func main() {
+        var x, y []int
+        for i := 0; i < 10; i++ {
+            y = appendInt(x, i)
+            fmt.Printf("%d  cap=%d\t%v\n", i, cap(y), y)
+            x = y
+        }
+    }
+    ```
+
+    - Built-in function `copy` copies elements from one slice to another of the same type
+      - Its first argument is the destination and its second is the source, resembling the order of operands in an assignment like dst = src
+      - The slices may refer to the same underlying array; they may even overlap
+      - `copy` returns the number of elements actually copied, which is the **smaller** of the two slice lengths, so there is no danger of running off the end or overwriting something out of range
+    - Expanding the array by doubling its size at each expansion avoids an excessive number of allocations and ensures that appending a single element takes constant time on average
+- The built-in append function may use a more sophisticated growth strategy than `appendInt`'s simplistic one
+  - Usually we don’t know whether a given call to append will cause a reallocation, so we can’t assume that the original slice refers to the same array as the resulting slice, nor that it refers to a different one
+  - Similarly, we must not assume that operations on elements of the old slice will (or will not) be reflected in the new slice
+  - As a result, it’s usual to assign the result of a call to append to the same slice variable whose value we passed to `append` (`runes = append(runes, r)`)
+  - The built-in append lets us add more than one new element, or even a whole slice of them
+
+    ```go
+    var x []int
+	x = append(x, 2, 3)
+	x = append(x, x...) // append the slice x
+	fmt.Println(x)
+    ```
+
+- **Updating the slice variable** is required not just when calling `append`, but for any function that may change the length or capacity of a slice or make it refer to a different underlying array
+- To use slices correctly, it’s important to bear in mind that although the elements of the underlying array are indirect, the slice’s pointer, length, and capacity are not. To update them requires an assignment. In this respect, slices are not "pure" reference types but resemble an aggregate type such as this struct:
+
+    ```go
+    type IntSlice struct {
+        ptr *int
+        len, cap int
+    }
+    ```
+
+### In-Place Slice Techniques
+
+```go
+// returns the non-empty ones of a list of strings
+func nonempty(strings []string) []string {
+    i := 0
+    for _, s := range strings {
+        if s != "" {
+            strings[i] = s
+            i++
+        }
+    }
+    return strings[:i]
+}
+func nonempty2(strings []string) []string {
+    out := strings[:0]
+    for _, s := range strings {
+        if s != "" {
+            out = append(out, s)
+        }
+    }
+    return out
+}
+```
+
+```go
+// implement a stack
+// given an initially empty slice stack
+stack = append(stack, v) // push v
+top := stack[len(stack)-1] // top of stack
+stack = stack[:len(stack)-1] // pop
+```
+
+```go
+// remove an element (using index) from the middle of a slice
+// preserving the remaining order
+func remove(slice []int, i int) []int {
+    copy(slice[i:], slice[i+1,:])
+    return slice[:len(slice)-1]
+}
+// not preserving order
+func remove1(slice []int, i int) []int {
+    slice[i] = slice[len(slice)-1]
+    return slice[:len(slice)-1]
+}
+```
+
+## Map
+- A hash table an unordered collection of key/value pairs in which all the **keys are distinct**, and the value associated with a given key can be retrieved, updated, or removed using a **constant number of key comparison** on the average, no matter how large the hash table
+- In Go, a `map` (`map[K]V`) is a reference to a hash table
+  - All of the keys in a given map are of the same type, and all of the values are of the same type, but the keys need not be of the same type as the values
+  - The key type `K` must be comparable using `==`, so that the map can test whether a given key is equal to one already within it
+    - Though floating-point numbers are comparable, it’s a bad idea to compare floats for equality and, especially bad if `NaN` is a possible value
+  - There are no restrictions on the value type `V`
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 continues at 95/400
