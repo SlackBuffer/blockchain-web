@@ -21,8 +21,16 @@
 # terminal
 - `zsh`, `bash`, `echo $SHELL`
 - zsh
-    - ctrl+u
-    - ctrl+w，ctrl+k
+    - ctrl+e: auto complete
+    - ctrl+a, ctrl+e; ctrl+f, ctrl+b
+    - ctrl+u: clear to beginning of line
+    - ctrl+k: clear to end of line
+    - ctrl+w: delete one word backwards
+    - alt + left arrow / right arrow
+      - > https://stackoverflow.com/a/31328973/6902525
+- iTerm2
+  - cmd+[, cmd+]: switch between tabs
+  - cmd+w: close current tab
 - `vi ~/.oh-my-zsh/plugins/git/git.plugin.zsh`
     - >  https://github.com/robbyrussell/oh-my-zsh#custom-plugins-and-themes
 # git
@@ -178,4 +186,20 @@
         return 301 https://nodejsblog.hofungkoeng.com$request_uri;
     }
     vim /etc/nginx/nginx.conf
+    ```
+
+# ssh
+- VPS 保持连接
+
+    ```bash
+    # 本机 ~/.ssh/config 文件
+    Host IP_Address
+        Hostname IP_Address
+        User user_name
+        ServerAliveInterval 50 # 发心跳间隔
+        ServerAliveCountMax 60 # 失败重发次数
+    
+    # https://blog.phpgao.com/keep_connect_ssh.html
+    # 查看是否生效 - 每隔 30s 后返回一组结果
+    ssh -o ServerAliveInterval=30 -vvv user@host
     ```
