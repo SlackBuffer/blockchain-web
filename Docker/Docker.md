@@ -309,3 +309,37 @@
     docker logout
     docker container run --rm -p 1123:3000 slackbuffer/test-node
     ```
+
+# Container lifetime & persistent data
+- Containers are usually immutable and ephemeral
+- Immutable infrastructure: only re-deploy containers, never change
+- Changes in containers were kept across restarts and reboots until the container is removed
+- Two methods
+    1. Data volumes
+        - A configuration option for a container that creates a special location **outside that container's union file system** (on host) to store unique data. This preserves it across container removals and allows us to attach it to whatever container we want. The container just sees it like a local file path
+        - `VOLUME`: Directory in the container. Files inside that directory will outlive the container until we **manually delete the volume**
+
+            ```bash
+            # Remove all unused local volumes
+            docker volume prune
+            docker pull mysql
+            docker image inspect mysql # config - volumes
+
+            docker container run -d --name sb-mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True mysql
+            docker container inspect sb-mysql # Mounts - Source: host, where data actually lives; Destination: container
+            docker volume ls # 69d306d78021ccd9aaaa9522070d92b824f5213f8c732fa7e068e093f7d28141
+            docker inspect 69d306d78021ccd9aaaa9522070d92b824f5213f8c732fa7e068e093f7d28141
+
+            # name volume
+            docker container run -d --name sb-mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v sb-mysql-db:/var/lib/mysql mysql
+            docker volume ls
+            docker volume inspect sb-mysql-db
+            ```
+
+            - Use `docker volume create` to create Docker volume ahead of time (to specify different driver, etc.)
+
+    2. Bind mounts
+       - Maps a host file or directory to a container file or directory
+       - Basically just two locations pointing to the same physical location on disk
+       - Cannot use in Dockerfile, must be at `container run`
+       - `-v absolute-path-on-host:absolute-path-in-container`
