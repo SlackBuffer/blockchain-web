@@ -343,3 +343,135 @@
        - Basically just two locations pointing to the same physical location on disk
        - Cannot use in Dockerfile, must be at `container run`
        - `-v absolute-path-on-host:absolute-path-in-container`
+         - 操作容器内的目录时实际操作的是 host 映射进容器的目录
+
+        ```bash
+        docker container run -d --name sb-nginx -p 1357:80 -v $(pwd):/usr/share/nginx/html nginx
+        curl http://localhost:1357
+        # host
+        touch a.txt
+        echo "looking for me?" > a.txt
+        curl http://localhost:1357/a.txt
+        ```
+
+- <u>Assignment: named volume</u>
+
+    ```bash
+    docker container run -d --name sb-psql -v psql-data:/var/lib/postgresql/data postgres:9.6.1
+    # -f: Follow log output
+    docker container logs -f sb-psql
+    docker volume ls
+    docker volume inspect psql-data
+
+    docker container run -d --name sb-psql-2 -v psql-data:/var/lib/postgresql/data postgres:9.6.2  
+    ```
+
+- <u>Assignment: bind mounts</u>
+
+    ```bash
+    # jekyll ssg
+    # https://jekyllrb.com/
+    docker run -p 1244:4000 -v $(pwd):/site bretfisher/jekyll-serve
+    ```
+
+# Docker Compose
+- Configure relationships between containers
+- Comprised of 2 separate but related things
+    1. YAML
+       - Containers, networks, volumes
+    2. CLI tool `docker-compose`
+- `docker-compose.yml`
+  - Versioned
+  - Can be used with `docker-compose` command for local docker automation
+  - Can be used with `docker` directly in production with Swarm
+  - `docker-compose.yml` is the default name, use `docker-compose -f custom-name.yml`
+
+    ```yml
+    version: '3.1'  # if no version is specificed then v1 is assumed. Recommend v2 minimum
+
+    services:  # containers. same as docker run
+    servicename: # a friendly name. this is also DNS name inside network
+        image: # Optional if you use build:
+        command: # Optional, replace the default CMD specified by the image
+        environment: # Optional, same as -e in docker run
+        volumes: # Optional, same as -v in docker run
+    servicename2:
+
+    volumes: # Optional, same as docker volume create
+
+    networks: # Optional, same as docker network create
+
+    version: '2'
+
+    # same as
+    # docker run -p 1244:4000 -v $(pwd):/site bretfisher/jekyll-serve
+
+    services:
+    jekyll:
+        image: bretfisher/jekyll-serve
+        volumes:
+        - .:/site
+        ports:
+        - '1244:4000'
+    ``` 
+
+    - `-` represents list (array)
+- > https://docs.docker.com/compose/compose-file/
+## docker-compose CLI
+- Comes with Docker for Windows/Mac; separate download for Linux
+- Not a production-grade tool but ideal for local development and test
+
+    ```bash
+    docker-compose up # setup volumes/networks and start all containers
+    docker-compose down # stop all containers and remove containers/volumes/networks
+    ```
+
+- Containers in a compose file use the service name as the DNS name to communicate with each other
+- <u>Assignment: writing a compose file</u>
+
+    ```yml
+    # Drupal CMS
+
+    version: '3'
+
+    services:
+        cms-drupal:
+            image: drupal
+            ports:
+                - 8080:80
+            volumes:
+                # - /Users/slackbuffer/db:/var/lib/postgresql/data # bind mounts approach
+                - drupal-modules:/var/www/html/modules \
+                - drupal-profiles:/var/www/html/profiles \
+                - drupal-sites:/var/www/html/sites \
+                - drupal-themes:/var/www/html/themes \
+        db:
+            image: postgres
+            environment:
+                POSTGRES_USER: sb # default is postgres, database name will default to POSTGRES_USER
+                POSTGRES_PASSWORD: sb
+    volumes:
+        drupal-modules:
+        drupal-profiles:
+        drupal-sites:
+        drupal-themes:
+
+    # inspect container's exposed port: docker image inspect drupal - ExposedPorts
+    # set up database - advanced - host: should be the db service name (db in this case)
+    # docker-compose up
+    # docker-compose down -v
+    ```
+
+## Add image building to compose file
+- Compose can build custom images at runtime
+    - Will build with `docker-compose up` if not found in cache
+    - Will rebuild with `docker-compose build` or `docker-compose --build`
+
+- <u>Assignment: build and run compose</u>
+
+    ```
+    # download the latest copy and only the specified branch; saves time
+    # command here is run as root
+    RUN git clone --branch 8.x-3.x --single-branch --depth 1 https://git.drupal.org/project/bootstrap.git \
+        && chown -R www-data:www-data bootstrap
+    ```
