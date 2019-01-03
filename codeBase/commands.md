@@ -33,6 +33,17 @@
   - cmd+w: close current tab
 - `vi ~/.oh-my-zsh/plugins/git/git.plugin.zsh`
     - >  https://github.com/robbyrussell/oh-my-zsh#custom-plugins-and-themes
+- [bat](https://github.com/sharkdp/bat)
+
+    ```bash
+    # Mac
+    brew install bat
+    # Ubuntu
+    dpkg --print-architecture
+    wget "https://github.com/sharkdp/bat/releases/download/v0.9.0/bat_0.9.0_amd64.deb"
+    sudo dpkg -i bat_0.9.0_amd64.deb
+    ```
+
 # git
 - `git --no-pager log`
 - stash
