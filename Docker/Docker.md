@@ -462,6 +462,7 @@
     # docker-compose down -v
     ```
 
+    - Inspect container's exposed port via commands
 ## Add image building to compose file
 - Compose can build custom images at runtime
     - Will build with `docker-compose up` if not found in cache
@@ -475,3 +476,99 @@
     RUN git clone --branch 8.x-3.x --single-branch --depth 1 https://git.drupal.org/project/bootstrap.git \
         && chown -R www-data:www-data bootstrap
     ```
+
+# Swarm
+- Manager node, worker node
+  - Raft consensus
+  - Service, task
+- `docker info` - Swarm: inactive
+- `docker swarm init`
+  - PIK and security automation
+    - Root signing certificate created for the Swarm 
+    - Certificate is issued for first Manager node
+    - Join token created
+  - Raft consensus database created to store root CA, configs, and secrets
+    - Encrypted by default
+    - No need for another key/value system to hold orchestration/secrets
+    - Replicates logs amongst Managers via mutual TLS
+- `docker node ls`
+
+```bash
+docker service create alpine ping 8.8.8.8
+docker service ls
+docker service ps brave_mclean
+docker container ls
+
+docker service update brave_mclean --replicas 3
+docker service ls
+docker service ps brave_mclean
+
+docker container rm -f brave_mclean.1.xsfag5wiuusu6cghwq1gj5hg6
+docker service ls # do this real quick or it will recover
+
+docker service rm brave_mclean
+docker container ls
+```
+
+- `docker-machine ssh node1`, `docker-machine env node1` + `eval $(docker-machine env node1)`
+- https://labs.play-with-docker.com/
+
+    ```bash
+    # 3-node swarm cluster
+    docker swarm init --advertise-addr 192.168.0.18
+    docker node ls
+    # add a work
+    docker swarm join --token SWMTKN-1-2gni3eaxuwtsar3dhnc55dp7kveme6zcf6irfaox8i0bcoe1zl-4ap4ipg8pfky4uo46m4g5sahy 192.168.0.18:2377
+    docker node ls
+    docker node update --role manager node2
+    # add a manager
+    docker swarm join-token manager # on leader node
+    # docker swarm join --token SWMTKN-1-2gni3eaxuwtsar3dhnc55dp7kveme6zcf6irfaox8i0bcoe1zl-cmkagrhv4ufc8cuzy8syku5k3 192.168.0.18:2377
+    # on node3
+    docker swarm join --token SWMTKN-1-2gni3eaxuwtsar3dhnc55dp7kveme6zcf6irfaox8i0bcoe1zl-cmkagrhv4ufc8cuzy8syku5k3 192.168.0.18:2377
+
+    docker service create --replicas 3 alpine ping 8.8.8.8
+    docker service ls
+    docker node ps
+    docker node ps node2
+    docker service ps ecstatic_kalam
+    ```
+
+- Overlay network
+  - Choose `--driver overlay` when creating network
+  - Creates a swarm-wide bridge network, for container-to-container traffic inside a single swarm
+  - Optional IPSec (AES) encryption on network creation
+  - Each service can be connected to multiple networks
+
+    ```bash
+    docker network create --driver overlay mydrupal
+    docker network ls
+
+    docker service create --name sb-psql --network mydrupal -e POSTGRES_PASSWORD=sb postgres
+    docker service create --name sb-drupal --network mydrupal -p 80:80 drupal
+    watch docker service ls
+
+    # 会随机分布在 leader 广播 ip 出去后加入进 swarm 的节点上
+    docker service ps sb-drupal # node3
+    docker service ps sb-psql   # node1
+    # node1 and node3 use the service name to talk to each other
+    ```
+
+- Routing mesh
+    - A network routes incoming packets to target service
+    - Uses IPVS from Linux kernel
+    - Load balances swarm services across their tasks
+    - 2 way it works
+        1. Container-to-container in a overlay network (uses Virtual IP)
+        2. External traffic incoming to published ports (all nodes listen)
+     - Stateless load balancing; this LB is at OSI layer 3 (TCP), not layer 4 (DNS)
+         1. Nginx or HAProxy LB proxy, or:
+         2. Docker enterprise comes with built-int lay 4 web proxy
+
+        ```bash
+        docker service create --name sb-elasearch  --replicas 3 -p 9200:9200 elasticsearch:2
+        docker service ps sb-elasearch
+        curl 192.168.0.18:9200
+        ```
+
+- <u>Assignment: creating multi-service app</u>
