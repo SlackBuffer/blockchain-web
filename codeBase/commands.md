@@ -1,3 +1,5 @@
+# vim
+- [vim syntax highlighting](https://alvinalexander.com/linux/vi-vim-editor-syntax-highlighting)
 # docker
 - 版本
     - `docker --version`
