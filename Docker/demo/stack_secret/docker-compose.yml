@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  
+  cms-drupal:
+    image: drupal:8.2
+    ports:
+      - 8080:80
+    volumes:
+      - drupal-modules:/var/www/html/modules
+      - drupal-profiles:/var/www/html/profiles
+      - drupal-sites:/var/www/html/sites
+      - drupal-themes:/var/www/html/themes
+
+  db:
+    image: postgres
+    secrets:
+      - psql_password
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/psql_password
+    volumes:
+      - drupal-data:/var/lib/postgresql/data
+
+volumes:
+  drupal-modules:
+  drupal-profiles:
+  drupal-sites:
+  drupal-themes:
+  drupal-data:
+
+secrets:
+  psql_password:
+    external: true 
+
+# add secret via cli before deploy the stack
+# echo "<pw>" | docker secret create psql_password -
+# docker stack deploy -c docker-compose.yml stack-drupal 

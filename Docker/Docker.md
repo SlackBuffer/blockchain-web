@@ -547,6 +547,7 @@ docker container ls
     docker service create --name sb-psql --network mydrupal -e POSTGRES_PASSWORD=sb postgres
     docker service create --name sb-drupal --network mydrupal -p 80:80 drupal
     watch docker service ls
+    docker container logs sb-psql.1.s7ejcxiuuvlhpbam8voenacck
 
     # 会随机分布在 leader 广播 ip 出去后加入进 swarm 的节点上
     docker service ps sb-drupal # node3
@@ -572,3 +573,70 @@ docker container ls
         ```
 
 - <u>Assignment: creating multi-service app</u>
+- Stack - production grade compose
+    - Stack accept compose files as declarative definition for services, networks, volumes
+    - `docker stack deploy`
+    - New `deploy:` key in compose file, cannot do `build:`; compose ignores `deploy:`, swarm ignores `build:`
+
+    ```bash
+    docker stack deploy -c vote.yml voteapp
+    docker service ls
+    docker stack ps voteapp
+    docker stack services voteapp
+    # update .yml and run deploy again will apply changes to the original swarm (identified by name voteapp)
+    ```
+
+- Secrets storage
+    - swarm-only thing
+    - Supports generic strings or binary content up to 500kb in size
+    - Only stored on disk on Manager nodes
+    - Docker 1.13.0 swarm raft db is encrypted on disk
+    - Keys passed from manager to worker: TLS + mutual auth
+    - Secrets are first stored in swarm, then assigned to services. Only containers in assigned services can see them
+    - Secrets look like files but are in-memory fs (`/run/secrets/<secret_name>` or `/run/secrets/<secret_alias>` directory)
+    - Local docker-compose can use file-based secrets (mounted into containers), but not secure
+
+    ```bash
+    #### secrets with services
+    echo abcd > a.txt
+    docker secret create psql_user a.txt # one way
+    echo "dbPassword" | docker secret create psql_password - # another
+    docker secret ls
+
+    docker service create --name sb-psql --secret psql_user --secret psql_password -e POSTGRES_PASSWORD_FILE=/run/secrets/psql_password -e POSTGRES_USER_FILE=/run/secrets/psql_user postgres
+
+    docker exec -it sb-psql.1.zjvhrsvoxft7qzsalvz9utbbo bash 
+    ls /run/secrets
+    cat /run/secrets/psql_password
+    docker service update --secret-rm # this would re-deploy the container
+    ```
+
+    ```yml
+    #### secrets with stack
+    version: "3.1"
+
+    services:
+    psql:
+        image: postgres
+        secrets:
+            - psql_user
+            - psql_password
+        environment:
+            POSTGRES_PASSWORD_FILE: /run/secrets/psql_password
+            POSTGRES_USER_FILE: /run/secrets/psql_user
+
+    secrets:
+        psql_user:
+            file: ./psql_user.txt
+        psql_password:
+            file: ./psql_password.txt
+    ```
+
+    ```bash
+    # secret with compose
+    # same yml as above
+    docker-compose up -d
+    docker-compose exec psql cat /run/secrets/psql_user
+    # bind mounts at runtime that secret file into the container
+    # only work with file-base secrets, not with the external
+    ```
