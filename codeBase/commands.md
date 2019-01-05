@@ -1,5 +1,7 @@
 # vim
 - [vim syntax highlighting](https://alvinalexander.com/linux/vi-vim-editor-syntax-highlighting)
+- ctrl+c: change to normal mode
+  - http://vim.wikia.com/wiki/Avoid_the_escape_key
 # docker
 - 版本
     - `docker --version`
