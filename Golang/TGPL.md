@@ -105,7 +105,7 @@
             - [ ] The second `if` statement is **nested** within the first, so variables declared within the first statement's **initializer** are visible within the second
             - For a `switch` statement, there's a block for the condition and a block for each case body
     - The scope of a control-flow label, as used by `break`, `continue`, and `goto` statements, is the entire enclosing function
-    - At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to itself or to another that follows it, letting us declare recursive or mutually recursive types and functions
+    - At the package level, the order in which declarations appear has no effect on their scope, so a declaration may refer to [ ] itself or to another that follows it, letting us declare recursive or mutually recursive types and functions
     - Package-level names like the types and constants declared in one file of a package are visible to all the other files **of the same package**
     - **"exported" 对 packages 之间而言的**
     - Imported packages are declared at the **file level**, so they can be referred to from the same file, but not from another file in the same package without another `import`
@@ -1657,13 +1657,64 @@ func remove1(slice []int, i int) []int {
 ```
 
 ## Map
-- A hash table an unordered collection of key/value pairs in which all the **keys are distinct**, and the value associated with a given key can be retrieved, updated, or removed using a **constant number of key comparison** on the average, no matter how large the hash table
+- A hash table an **unordered** collection of key/value pairs in which all the **keys are distinct**, and the value associated with a given key can be retrieved, updated, or removed using a **constant number of key comparison** on the average, no matter how large the hash table
 - In Go, a `map` (`map[K]V`) is a reference to a hash table
   - All of the keys in a given map are of the same type, and all of the values are of the same type, but the keys need not be of the same type as the values
   - The key type `K` must be comparable using `==`, so that the map can test whether a given key is equal to one already within it
     - Though floating-point numbers are comparable, it’s a bad idea to compare floats for equality and, especially bad if `NaN` is a possible value
   - There are no restrictions on the value type `V`
-- 
+
+    ```go
+    age := make(map[string]int)
+    age["a"] = 1
+
+    ages := map[string]int{
+        "a": 1,
+        "b": 2
+    }
+    delete(ages, "a")
+    ages["bob"] = ages["bob"] + 1
+    
+    for name, age := range ages {
+        fmt.Printf("%s\t%d\n", name, age)
+    }
+    ```
+
+    - A map lookup using a key that isn’t present returns the zero value for **the value type**
+    - Cannot take a map element's address
+        - One reason is that growing a map might cause rehashing of exist ing elements into new storage locations, thus potentially invalidating the address
+    - Unordered
+        - The order of map iteration is unspecified, and different implementations might use a different hash function, leading to a different ordering
+            - [ ] 根据生成的 hash 随机分配内存地址？
+        - In practice, the order is random, varying from one execution to the next. This is intentional, making the sequence vary helps force programs to be robust across implementations
+        - Must sort the keys explicitly
+
+        ```go
+        // if keys are strings
+        import "sort"
+        var name []string
+        // or
+        // names := make([]string, 0, len(ages))
+        for name := range ages {
+            names = append(names, name)
+        }
+        sort.Strings(name)
+        for _, name := range names {
+            fmt.Println("%s\t%d\n", name, ages[name])
+        }
+        ```
+
+    - The zero value for a map is `nil`, a reference to no hash table at all
+
+        ```go
+        var ages map[string]int
+        ages == nil // true
+        len(ages) // 0
+        ```
+
+        - Most operations on maps, including lookup, `delete`, `len`, and `range` loops, are safe to perform on a `nil` map reference, since it behaves like an empty map
+        - Storing to a `nil` map causes a panic. Must **allocate** the map before you can store into it (use `make` or map literal on declaration)
+    - Accessing a map element by subscripting always yields a value
 
 
 
@@ -1681,5 +1732,3 @@ func remove1(slice []int, i int) []int {
 
 
 
-
-continues at 95/400
