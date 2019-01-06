@@ -1494,9 +1494,9 @@
 - Slices are not comparable, so we cannot use `==` to test whether 2 slices contain the same elements
   - Two reasons
     1. The elements of a slice are indirect, making it possible for a slice to **[ ] contain itself**. This makes deep equivalence problematic: not simple, not efficient, not obvious
-    2. Because slice elements are indirect, a fixed slice value may contain different elements
-       - Because a hash table such as Go’s **`map` type makes only shallow copies of its keys**, it requires that equality for each key remain the same throughout the lifetime of the hash table. Deep equivalence would thus make slices unsuitable for use as map keys
-       - For reference types like pointers and channels, the `==` operator tests reference identity, that is, whether the two entities refer to the same thing. An analogous "shallow" equality test for slices could be useful, and it would solve the problem with maps, but the inconsistent treatment of slices and arrays by the `==` operator would be confusing. The safest choice is to disallow slice comparisons altogether
+    2. Because slice elements are indirect, **a fixed slice value may contain different elements**
+       - Because a hash table such as Go’s **`map` type makes only shallow copies of its keys**, it requires that equality for each key remains the **same** throughout the lifetime of the hash table. Deep equivalence would thus make slices unsuitable for use as map keys
+       - For reference types like pointers and channels, the `==` operator tests reference identity, that is, whether the two entities refer to the same thing. An analogous "shallow" equality test for slices could be useful, and it would solve the problem with maps, but the **inconsistent** treatment of slices and arrays by the `==` operator would be confusing. The safest choice is to disallow slice comparisons altogether
   - The only legal slice comparison is against `nil`
   - The standard library provides the highly optimized `bytes.Equal` function for comparing two slices of bytes (`[]byte`)
 
@@ -1714,9 +1714,117 @@ func remove1(slice []int, i int) []int {
 
         - Most operations on maps, including lookup, `delete`, `len`, and `range` loops, are safe to perform on a `nil` map reference, since it behaves like an empty map
         - Storing to a `nil` map causes a panic. Must **allocate** the map before you can store into it (use `make` or map literal on declaration)
-    - Accessing a map element by subscripting always yields a value
+    - Accessing a map element by subscripting always yields a value (corresponding value or zero value for the value type)
 
+        ```go
+        // detect non-existence value
+        age, ok := ages["bob"]
+        if !ok { /* "bob" not a key in map */}
+        // combined
+        if age, ok := ages["bob"]; !ok {}
+        ```
 
+- Maps cannot be compared to each other; the only legal comparison is with `nil`
+
+    ```go
+    // compare map
+    func equal(x, y map[string]int) bool {
+        if (len(x) != len(y)) {
+            return false
+        }
+        for k, xv := range x {
+            if yv, ok := y[k]; !ok || yv != xv {
+                return false
+            }
+        }
+        return true
+    }
+    ```
+
+- Map serves `set` purpose
+
+    ```go
+    func main() {
+        seen := make(map[string]bool)
+        input := bufio.NewScanner(os.Stdin)
+        for input.Scan() {
+            line := input.Text()
+            if !seen[line] {
+                seen[line] = true
+                fmt.Println(line)
+            }
+        }
+        if err := input.Err(); err != nil {
+            fmt.Fprintf(os.Stderr, "dedup: %v\n", err)
+            os.Exit(1)
+        }
+    }
+    ```
+
+- Use slices as map key
+    1. Define a helper function `k` that maps each key to a string
+    2. Create a map whose keys are strings, applying the helper function to each key before accessing the map
+
+    ```go
+    // record the number of times Add has been called with a given list of strings
+    var m = make(map[string]int)
+    // convert a slice of strings into a single string
+    func k(list []string) string { return fmt.Sprintf("%q", list) }
+
+    func Add(list []string) { m[k(list)]++ }
+    func Count(list []string) int { return m[k(list)] }
+    ```
+
+- Computes counts of Unicode characters
+
+    ```go
+    package main
+    import (
+        "bufio"
+        "fmt"
+        "io"
+        "os"
+        "unicode"
+        "unicode/utf8"
+    )
+    func main() {
+        counts := make(map[rune]int)
+        var utflen = [utf8.UTFMax + 1]int // count of lengths of UTF-8 encodings
+        invalid := 0 // count of invalid UTF-8 characters
+        in := bufio.NewReader(os.Stdin)
+        for {
+            r, n, err := in.ReadRune() // returns rune, nbytes (the length in bytes of its UTF-8 encoding), error
+            if err == io.EOF {
+                break
+            }
+            if err != nil {
+                fmt.Fprintf(os.Stderr, "charcount: %v\n", err)
+                os.Exit(1)
+            }
+            if r == unicode.ReplacementChar && n == 1 {
+                invalid++
+                continue
+            }
+            counts[r]++
+            utflen[n]++
+        }
+        fmt.Printf("rune\tcount\n")
+        for c, n := range counts {
+            fmt.Printf("%q\t%d\n", c, n)
+        }
+        fmt.Print("\nlen\tcount\n")
+        for i, n := range utflen {
+            if i > 0 {
+                fmt.Printf("%d\t%d\n", i, n)
+            }
+        }
+        if invalid > 0 {
+            fmt.Printf("\n%d invalid UTF-8 characters\n", invalid)
+        }
+    }
+    ```
+
+# Struct
 
 
 
