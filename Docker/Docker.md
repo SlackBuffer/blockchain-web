@@ -640,3 +640,5 @@ docker container ls
     # bind mounts at runtime that secret file into the container
     # only work with file-base secrets, not with the external
     ```
+
+- continues at 070
