@@ -79,7 +79,8 @@
     make install
     ```
 
-# Ubuntu
+# Linux
+## Ubuntu
 - Ubuntu 16.04
 
     ```bash
@@ -144,6 +145,9 @@
     #### https://superuser.com/questions/395356/scp-doesnt-work-but-ssh-does
     ```
 
+## Alpine
+- shell - `/bin/ash`
+- pm - `apk`
 ## deploy
 - mac install telnet: `brew install telnet`
 - 查看进程：`ps -ef | grep node`
