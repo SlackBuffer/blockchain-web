@@ -1,0 +1,5 @@
+- `app.METHOD(PATH, HANDLER)`
+- The characters `?`, `+`, `*`, and `()` are subsets of their regular expression counterparts. The hyphen (`-`) and the dot (`.`) are interpreted literally by string-based paths
+    - If you need to use the dollar character (`$`) in a path string, enclose it escaped within (`[` and `]`)
+- Middleware functions are functions that have access to the request object (`req`), the response object (`res`), and the next middleware function in the application’s request-response cycle
+    - The next middleware function is commonly denoted by a variable named `next`
