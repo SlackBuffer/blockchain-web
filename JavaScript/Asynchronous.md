@@ -644,6 +644,7 @@ try {
 - Timers enable us to delay the execution of a piece of code by **at least** a certain number of milliseconds
     - A timer’s delay isn’t guaranteed
     - We’ll use this capability to break long-running tasks into smaller tasks that won’t clog the event loop, thereby stopping the browser from rendering, and in the process making our web applications slow and unresponsive
+- Because of the single-threaded nature of JavaScript, we can control only when the timer task is added to the queue, and not when it’s finally executed
 - Similarly to the event loop, **timers aren’t defined within JavaScript itself**; instead they’re provided by the **host environment**
 ### Timer execution within the event loop
 
@@ -682,3 +683,26 @@ try {
         - The timeout task is processed
     - Macrotask queue @ 30 ms
         - An interval fires, but a new task is not created, because there’s already a matching task in the event queue
+    - Macrotask queue @ 34 ms
+        - An interval task is processed
+    - Macrotask queue @ 40 ms
+        - This time, the interval task is added to the queue, because there isn’t a matching task already waiting
+        - Last interval task is not finished
+    - After 50 ms our intervals stabilize and are executed every 10 ms
+- The event loop can process only one task at a time, and we can never be certain that timer handlers will execute exactly when we expect them to. This is especially true of interval handlers
+    - In this example we scheduled an interval expected to fire at 10, 20, 30, 40, 50, 60, and 70 ms marks, the callbacks were executed at 34, 42, 50, 60, and 70 ms marks. We completely lost two of them along the way, and some weren’t executed at the expected time
+#### Differences between time-outs and intervals
+
+```js
+setTimeout(function repeatMe(){
+    /* Some long block of code... */
+    setTimeout(repeatMe, 10)
+}, 10)
+setInterval(() => {
+    /* Some long block of code... */
+}, 10)
+```
+
+- The `setTimeout` variant of the code will always have at least a 10 ms delay after the previous callback execution (depending on the state of the event queue, it may end up being more, but never less)
+    - It will reschedule itself for 10 ms after it gets around to executing
+- `setInterval` will attempt to execute a callback every 10 ms regardless of when the last callback was executed
