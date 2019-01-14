@@ -1496,7 +1496,9 @@
     1. The elements of a slice are indirect, making it possible for a slice to **[ ] contain itself**. This makes deep equivalence problematic: not simple, not efficient, not obvious
     2. Because slice elements are indirect, **a fixed slice value may contain different elements**
        - Because a hash table such as Go’s **`map` type makes only shallow copies of its keys**, it requires that equality for each key remains the **same** throughout the lifetime of the hash table. Deep equivalence would thus make slices unsuitable for use as map keys
-       - For reference types like pointers and channels, the `==` operator tests reference identity, that is, whether the two entities refer to the same thing. An analogous "shallow" equality test for slices could be useful, and it would solve the problem with maps, but the **inconsistent** treatment of slices and arrays by the `==` operator would be confusing. The safest choice is to disallow slice comparisons altogether
+       - 同一个切片在不同阶段可能包含不同元素；哈希表只对 key 做浅拷贝，需要保持 key 在哈希表的整个生命周期都保持不变，对于切片而言，除非用深比较才能确定是否是同一个切片，所以切片不适合作哈希表的 key
+           - For reference types like pointers and channels, the `==` operator tests reference identity, that is, whether the two entities refer to the same thing. An analogous "shallow" equality test for slices could be useful, and it would solve the problem with maps, but the **inconsistent** treatment of slices and arrays by the `==` operator would be confusing. The safest choice is to disallow slice comparisons altogether
+           - 若切片的相等比较实现的引用的比较，可以解决切片不能作为哈希表 key 的问题，但会造成和数组的相等比较逻辑不一致的问题，我已干脆不允许切片之间的相互比较
   - The only legal slice comparison is against `nil`
   - The standard library provides the highly optimized `bytes.Equal` function for comparing two slices of bytes (`[]byte`)
 
@@ -1586,11 +1588,11 @@
       - The slices may refer to the same underlying array; they may even overlap
       - `copy` returns the number of elements actually copied, which is the **smaller** of the two slice lengths, so there is no danger of running off the end or overwriting something out of range
     - Expanding the array by doubling its size at each expansion avoids an excessive number of allocations and ensures that appending a single element takes constant time on average
-- The built-in append function may use a more sophisticated growth strategy than `appendInt`'s simplistic one
+- The built-in `append` function may use a more sophisticated growth strategy than `appendInt`'s simplistic one
   - Usually we don’t know whether a given call to append will cause a reallocation, so we can’t assume that the original slice refers to the same array as the resulting slice, nor that it refers to a different one
   - Similarly, we must not assume that operations on elements of the old slice will (or will not) be reflected in the new slice
-  - As a result, it’s usual to assign the result of a call to append to the same slice variable whose value we passed to `append` (`runes = append(runes, r)`)
-  - The built-in append lets us add more than one new element, or even a whole slice of them
+  - As a result, it’s usual to assign the result of a call to `append` to the same slice variable whose value we passed to `append` (`runes = append(runes, r)`)
+  - The built-in `append` lets us add more than one new element, or even a whole slice of them
 
     ```go
     var x []int
@@ -1685,7 +1687,7 @@ func remove1(slice []int, i int) []int {
         - One reason is that growing a map might cause rehashing of exist ing elements into new storage locations, thus potentially invalidating the address
     - Unordered
         - The order of map iteration is unspecified, and different implementations might use a different hash function, leading to a different ordering
-            - [ ] 根据生成的 hash 随机分配内存地址？
+            - [ ] 根据不同算法生成的 hash 随机分配内存地址？
         - In practice, the order is random, varying from one execution to the next. This is intentional, making the sequence vary helps force programs to be robust across implementations
         - Must sort the keys explicitly
 
@@ -1825,6 +1827,125 @@ func remove1(slice []int, i int) []int {
     ```
 
 # Struct
+- A struct is an aggregate dat a type that groups together zero or more named values of arbitrary types as a single entity
+    - Each value is called a filed
+    - Fields are variables too
+    - The individual field is accessed using **dot notation** or through a pointer
+        - Dot notation also works with a pointer to a struct
+
+    ```go
+    type Employee struct {
+        ID              int
+        Name, Address   string
+        DoB             time.time
+        Salary          int
+        Position        string
+    }
+    var sb Employee
+
+    sb.Salary += 1000
+    position := &sb.Position
+    *position = "Senior " + *position
+
+    var employeeOfMonth *Employee = &sb
+    // the following two statements are equivalent
+    employeeOfTheMonth.Position += " (proactive team player)"
+    (*employeeOfTheMonth).Position += " (proactive team player)"
+    ```
+
+    - [ ] the assignment statement would not compile since its left-hand side would not identify a variable (tested and not true)
+- Consecutive fields of the same type may be combined
+- Field order is significant to type identity, different order means different struct type
+- The name of a struct filed is exported if it begins with a capital letter
+- A named struct type `S` cant declare a field with the same type `S`: an aggregate value cannot contain itself (an analogous restriction applies to array)
+    - `S` may declare a filed of the type `*S`
+
+    ```go
+    // tree-sort 二叉树
+    type tree struct {
+        value       int
+        left, right *tree
+    }
+    // sorts values in place
+    func Sort(values []int) {
+        var root *tree
+        for _, v := range values {
+            root = add(root, v)
+        }
+        appendValues(values[:0], root)
+    }
+    // appends the elements of t to values in order and returns the resulting slice
+    func appendValues(values []int, t *tree) []int {
+        if t != nil {
+            values = appendValues(values, t.left)
+            values = append(values, t.value)
+            values = appendValues(values, t.right)
+        }
+        return values
+    }
+    func add(t *tree, value int) *tree {
+        if t == nil {
+            t = new(tree)
+            t.value = value
+            return t
+        }
+        if value < t.value {
+            t.left = add(t.left, value) // 递归更新一侧叶子节点
+        } else {
+            t.right = add(t.right, value)
+        }
+        return t
+    }
+    ```
+
+- The zero value for a struct is composed of the zero values of each of its fields
+    - In `bytes.Buffer`, the initial values of the struct is a ready-to-use empty buffer
+    - The zero value of `sync.Mutex` is a ready-to-use unlocked mutex
+- The struct type with no fields is called the empty struct, written `struct{}`
+    - Some use it instead of `bool` as the value type of a map that represents a set, to emphasize that only the keys are significant, but the space saving is marginal and the syntax more cumbersome
+## Struct literals
+- Two forms
+
+    ```go
+    type Point struct{ X, Y int }
+    p := Point{1, 2} // requires a value for every field, in the right order
+    ```
+
+    - Second form is initializing a struct by listing some or all of the field name and their corresponding values
+
+    ```go
+    // unexported identifiers can not be referred to from another package
+    package p
+    type T struct{ a, b int }
+    package q
+    import "p"
+    var _ = p.T{a: 1, b: 2} // compile error: can't reference a, b
+    var _ = p.T{1, 2} // compile error: can't reference a, b
+    ```
+
+- Struct values can be passed as arguments to functions and returned from them
+- For efficiency, larger struct types are usually passed to or returned from functions indirectly using a pointer
+
+    ```go
+    func Scale(p Point, factor int) Point {
+        return Point{p.X * factor, p.Y * factor}
+    }
+    func Bonus(e *Employee, percent int) int {
+        return e.Salary * percent / 100
+    }
+    ```
+
+- Go is a call-by-value language, the called function receives only a copy of an argument, not a reference to the original argument
+- Shorthand notation to create and initialize a `struct` and obtain its address
+
+    ```go
+    pp := &Point{1, 2}
+    // equivalent to 
+    pp := new(Point)
+    *pp = Point{1, 2}
+    ```
+
+    - `&Point{1, 2}` can be used directly within an expression
 
 
 
@@ -1840,3 +1961,9 @@ func remove1(slice []int, i int) []int {
 
 
 
+
+
+
+
+
+100-110 2019年01月14日
