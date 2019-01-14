@@ -143,7 +143,6 @@
 - `::selection`
 # Icon fonts
 - Doesn't matter use what element tag, so use `<i>` as a convention
-- continues at 40
 # Media queries
 - `@media only screen and ()`
 - SASS 的 media query 可嵌套写
@@ -188,3 +187,5 @@
 ## Graceful degradation
 - `@supports(css rule)`
 - https://css-tricks.com/ordering-css3-properties/#article-header-id-0
+
+continues at 42
