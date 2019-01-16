@@ -141,6 +141,13 @@
     - transition; `@keyframe`
     - 008
 - `::selection`
+- clip-path effect
+    1. `clip-path`
+    2. `skewX`
+    3. `background-image: linear-gradient(105deg, rgba($color-white, .9) 0%, rgba($color-white, .9) 50%, transparent 50%),  url('../img/nat-10.jpg');`
+- Cannot style default radio button
+    - Trick: define our own; hide the default one (the default one will still get selected)
+- Use `<button>` to submit instead of a `<a>`
 # Icon fonts
 - Doesn't matter use what element tag, so use `<i>` as a convention
 # Media queries
@@ -188,4 +195,4 @@
 - `@supports(css rule)`
 - https://css-tricks.com/ordering-css3-properties/#article-header-id-0
 
-continues at 42
+continues at 48
