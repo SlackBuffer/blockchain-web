@@ -2150,8 +2150,64 @@ func remove1(slice []int, i int) []int {
     - [ ] The dot initially refers to the template's parameter
     - `{{range .Items}}` and `{{end}}` actions create a loop
     - Within an action, the `|` notation makes the result of one operation the argument of another, analogous to a Unix shell pipeline
-    - `printf` function is a built-in synonym for `fmt.Sprintf` in all templates; `daysAgo`
+    - `printf` function is a built-in synonym for `fmt.Sprintf` in all templates
+- A type may control its string formatting by defining certain methods, it may also define methods to control its JSON marshaling and unmarshaling behavior
+    - The JSON-marshaled value of a `time.Time` is a string in a standard format
+- Producing output with a template requires two steps
+    1. Parse the template into a suitable internal representation
+        - Parsing needs be done only once
+    2. Execute it on specific inputs
 
+    ```go
+    report, err := template.New("report").
+        Funcs(template.FuncMap{"daysAgo", daysAgo}).
+        Parse(templ)
+    if err != nil {
+        log.Fatal(err)
+    }
+    ```
+
+    - `template.New` creates and returns a template; `Func` adds `daysAgo` to the set of functions accessible within this template, then returns that template; `Parse` is called on the result
+- Templates are usually fixed at compile time, failure to parse a template indicates a fatal bug
+    - The `template.Must` helper function makes error handling more convenient: it accepts a template and an error, checks that the error is `nil` (and panics otherwise), and then returns the template
+
+    ```go
+    var report = template.Must(template.New("issuelist").
+        Funcs(template.FuncMap{"daysAgo": daysAgo}).
+        Parse(templ))
+    func main() {
+        result, err := github.SearchIssues(os.Args[1:])
+        if err != nil {
+            log.Fatal(err)
+        }
+        if err := report.Execute(os.Stdout, result); err != nil {
+            log.Fatal(err)
+        }
+    }
+    // go build gopl.io/ch4/issues
+    // ./issues repo:golang/go is:open json decoder
+    ```
+
+- Had we used the `text/template` instead of `html/template`, the four-character string `"&lt;"` would have been rendered as a less-than character, and the string `"<link>"` would have become a link element
+- We can suppress this **auto-escaping** behavior for fields that contain trusted HTML data by using the named string type `template.HTML` instead of `string`
+    - Similar named types exist for trusted JavaScript, CSS, and URLs
+
+    ```go
+    func main() {
+        const templ = `<p>A: {{.A}}</p><p>B: {{.B}}</p>`
+        t := template.Must(template.New("escape").Parse(templ))
+        var data struct {
+            A string            // untrusted plain text
+            B template.HTML     // trusted HTML
+        }
+        data.A = "<b>hello!</b>"
+        daba.B = "<b>Hello!</b>"
+        if err := t.Execute(os.Stdout. data); err != nil {
+            log.Fatal(nil)
+        }
+    }
+    // go doc html/template
+    ```
 
 
 
