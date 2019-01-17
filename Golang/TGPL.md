@@ -1856,6 +1856,7 @@ func remove1(slice []int, i int) []int {
     - [ ] the assignment statement would not compile since its left-hand side would not identify a variable (tested and not true)
 - Consecutive fields of the same type may be combined
 - Field order is significant to type identity, different order means different struct type
+    - 顺序不同，底层分配的空间不同，不同的 field 占据不同的连续空间
 - The name of a struct filed is exported if it begins with a capital letter
 - A named struct type `S` cant declare a field with the same type `S`: an aggregate value cannot contain itself (an analogous restriction applies to array)
     - `S` may declare a filed of the type `*S`
@@ -1945,7 +1946,216 @@ func remove1(slice []int, i int) []int {
     *pp = Point{1, 2}
     ```
 
-    - `&Point{1, 2}` can be used directly within an expression
+    - `&Point{1, 2}` can be used directly within an expression, such as function calls
+## Comparing structs
+- If all the fields of a struct are comparable, the struct itself is comparable
+- The `==` operation compares the corresponding fields of structs in order
+- Comparable struct types (like other comparable types) can be used as the key type of a map
+
+    ```go
+    type address struct {
+        hostname    string
+        port        int
+    }
+    hits := make(map[address]int)
+    hits[address{"golang.org", 443}]++
+    ```
+
+## Struct embedding and anonymous fields
+- Use one named struct type as an **anonymous field** of another struct (syntactic shortcut)
+    - Go let us declare a field with a type but no names (embedding). The type of the field must be a named type or a pointer to a named type
+    - No corresponding shorthand for the struct literal syntax
+
+    ```go
+    type Point struct {
+        X, Y int
+    }
+    type Circle struct {
+        Point
+        Radius int
+    }
+    type Wheel struct {
+        Circle
+        Spokes int
+    }
+    var w Wheel
+    w.X = 8 // equivalent to w.Circle.Point.X = 8
+
+    w = Wheel{8, 8, 5, 20} // compile error
+    w = Wheel{X: 8， Y: 8， Radius: 5, Spokes: 20} // compile error
+    
+    w = Wheel{Circle{Point{8, 8}, 5}, 20}
+    // trailing comma necessary
+    w = Wheel{
+        Circle: Circle {
+            Point: Point{X: 8, Y: 8},
+            Radius: 5,
+        }
+        Spokes: 20,
+    }
+    fmt.Printf("%#v\n", w)
+    // the # adverb causes Printf's %v verb to display values in a form similar to Go syntax
+    ```
+
+- Because anonymous fields have implicit names, you can't have two anonymous fields of the same types since their names would conflict
+- Because the name of the field is implicitly determined by its type, so is the visibility of the field
+
+    ```go
+    // point and circle being unexported
+    w.X = 8 // still valid
+    // the explicit long form would be forbidden outside the declaring package `w.circle.point.X = 8`
+    ```
+
+- Anonymous fields can be any named type or pointer to a named type
+    - The shorthand notation used for selecting the fields of an embedded type works for selecting its methods as well
+    - The outer struct type gains not just the fields of the embedded type but its methods too
+    - This mechanism is the main way that complex object behaviors are composed from simpler ones
+# JSON
+- `encoding/json` package
+- JSON is an encoding of JavaScript values as Unicode text
+- JSON type strings are sequences of Unicode points enclosed in double quotes, with backslash escapes using a similar notation to Go, though JSON's `\uhhhh` numeric escapes denote UTF-16 codes, not runes
+- Converting a Go data structure to JSON is called marshaling done by `json.Marshal`
+    - Marshal produces a byte slice containing a very long string with no extraneous white space (hard to read)
+- `json.MarshalIndent` produces neatly indented output
+    - Two additional arguments define a prefix for each line of output and a string for each level of indentation
+- Marshaling uses the Go struct field names as the filed names for the JSON objects(through reflection)
+- Only exported fields are marshaled
+- A field tag is a string of metadata associated at compile time with the field of a struct
+    - It can be any literal string, but it's conventionally interpreted as a space-separated list of `key:"value"` pairs
+    - Since they contain double quotation marks, field tags are usually written with raw string literals
+    - The `json` key controls the behavior of the `encoding/json` package, and other `encoding/...` packages follow this convention
+
+    ```go
+    type Movie struct {
+        Title   string
+        Year    int     `json:"released"`
+        Color   bool    `json:"color, omitempty"`
+    }
+    ```
+
+    - The first part of the `json` field tag specifies an alternative JSON name for the Go field
+        - Often used to specify an idiomatic JSON name like `total_count` for a Go field named `TotalCount`
+        - `omitempty` indicates no JSON output should be produced if the field has the **zero value** for its type or is otherwise empty
+- The inverse operation to marshaling, decoding JSON and populating a Go data structure, is called unmarshaling (`json.Unmarshal`)
+
+    ```go
+    var titles []struct{ Title string }
+    if err := json.Unmarshal(data, &titles); err != nil {
+        log.Fatalf("JSON unmarshaling failed: %s", err")
+    }
+    fmt.Println(titles)
+    ```
+
+    - By defining suitable Go data structures in this way, we can select which parts of the JSON input to decode and which to discard
+- The query terms presented by a user could contain characters like `?` and `&` that have special meaning in a URL, use `url.QueryEscape` to ensure they are taken **literally**
+
+    ```go
+    // Package github provides a Go API for the GitHub issue tracker.
+    // See https://developer.github.com/v3/search/#search-issues.
+    package github
+
+    import "time"
+    const IssuesURL = "https://api.github.com/search/issues"
+    type IssuesSearchResult struct {
+        TotalCount int `json:"total_count"`
+        Items []*Issue
+    }
+    type Issue struct {
+        Number int
+        HTMLURL string `json:"html_url"`
+        Title string
+        State string
+        User *User
+        CreatedAt time.Time `json:"created_at"`
+        Body string // in Markdown format
+    }
+    type User struct {
+        Login string
+        HTMLURL string `json:"html_url"`
+    }
+    /* --- */
+    package github
+
+    import (
+        "encoding/json"
+        "fmt"
+        "net/http"
+        "net/url"
+        "strings"
+    )
+    func SearchIssues(terms []string) (*IssueSearchResult, error) {
+        q := url.QueryEscape(string.Join(terms, " "))
+        resp, err := http.Get(IssuesURL + "?q=" + q)
+        if (err != nil) {
+            return nil, err
+        }
+        // must close resp.Body on all execution paths (`defer` could make this simpler)
+        if resp.StatusCode != http.StatusOK {
+            resp.Body.Close()
+            return nil, fmt.Errorf("search query failed: %s", resp.Status)
+        }
+        var result IssuesSearchResult
+        if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+            resp.Body.Close()
+            return nil, err
+        }
+        resp.Body.Close()
+        return &result, nil
+    }
+    /* Issues prints a table of GitHub issues matching the search terms */
+    package main
+
+    import (
+        "fmt"
+        "log"
+        "os"
+        "gopl.io/ch4/github"
+    )
+    func main() {
+        result, err := github.SearchIssues(os.Args[1:])
+        if err != nil {
+            log.Fatal(err)
+        }
+        fmt.Printf("%d issues:\n", result.TotalCount)
+        for _, item := result.Items {
+            fmt.Printf("#%-5d %9.9s %.55s\n", item.Number, item.User.Login, item.Title)
+        }
+    }
+    // go build gopl.io/ch4/issues
+    // ./issues repo:golang/go is:open json decoder
+    ```
+
+    - The streaming decoder, `json.Decoder`, allows several JSON entities to be decoded in sequence from the same stream
+# Text and HTML templates
+- `text/template` and `html/template` provide a mechanism for substituting the values of variables into a text or HTML template
+    - Separate the format from the code more completely
+- A template is a string or file containing one or more portions enclosed in double braces, `{{...}}`, called actions
+    - Most of the string is printed literally, but the actions trigger other behaviors
+    - Each action contains an expression in the template language, a simple but powerful natation for printing values, selecting struct fields, calling functions and methods, expressing control flow such as `if-else` and `range` loops, and instantiating other templates
+
+    ```go
+    const templ = `{{.TotalCount}} issues:
+    {{range .Items}}-----------------------------------
+    Number: {{.Number}}
+    User:   {{.User.Login}}
+    Title:  {{.Title | pritf "%.64s"}}
+    Age:    {{.CreateAt | daysAgo}} days
+    {{end}}`
+    func daysAgo(t time.Time) int {
+        return int(time.Since(t).Hours() / 24)
+    }
+    ```
+
+    - Within an action, there's a notion of the current value, referred to as "dot"
+    - [ ] The dot initially refers to the template's parameter
+    - `{{range .Items}}` and `{{end}}` actions create a loop
+    - Within an action, the `|` notation makes the result of one operation the argument of another, analogous to a Unix shell pipeline
+    - `printf` function is a built-in synonym for `fmt.Sprintf` in all templates; `daysAgo`
+
+
+
+
+
 
 
 
