@@ -1,4 +1,50 @@
 <!-- The Go Programming Language -->
+- [Tips](#tips)
+- [APIs](#apis)
+- [1. Tutorial](#1-tutorial)
+  - [Demos](#demos)
+- [Program structure](#program-structure)
+  - [Names](#names)
+  - [Declarations](#declarations)
+  - [Variables](#variables)
+    - [Short Variable Declarations](#short-variable-declarations)
+    - [Pointers](#pointers)
+    - [The `new` function](#the-new-function)
+    - [Lifetime of variables](#lifetime-of-variables)
+  - [Assignments](#assignments)
+    - [Tuple assignment](#tuple-assignment)
+    - [Assignability](#assignability)
+  - [Type Declarations](#type-declarations)
+  - [Packages and Files](#packages-and-files)
+    - [Imports](#imports)
+    - [Package Initialization](#package-initialization)
+  - [Scope](#scope)
+- [Basic Data Types](#basic-data-types)
+  - [Integers](#integers)
+  - [Floating-point Numbers](#floating-point-numbers)
+  - [Complex Numbers](#complex-numbers)
+  - [Booleans](#booleans)
+  - [Strings](#strings)
+    - [String Literals](#string-literals)
+    - [Unicode](#unicode)
+    - [UTF-8](#utf-8)
+    - [Strings and Byte Slices](#strings-and-byte-slices)
+    - [Conversions between strings and numbers](#conversions-between-strings-and-numbers)
+  - [Constants](#constants)
+    - [`iota`](#iota)
+    - [Untyped Constants](#untyped-constants)
+- [Composite Types](#composite-types)
+  - [Arrays](#arrays)
+  - [Slices](#slices)
+    - [`append`](#append)
+    - [In-Place Slice Techniques](#in-place-slice-techniques)
+  - [Map](#map)
+- [Struct](#struct)
+  - [Struct literals](#struct-literals)
+  - [Comparing structs](#comparing-structs)
+  - [Struct embedding and anonymous fields](#struct-embedding-and-anonymous-fields)
+- [JSON](#json)
+- [Text and HTML templates](#text-and-html-templates)
 # Tips
 - Package structure
     - The source code for a package resides in one or more `.go` files, usually in a **directory** whose name ends with the import path
@@ -165,7 +211,6 @@
             - Constants have more flexible rules for assignability that avoid the need for most explicit conversions
 - Normal practice in Go is to deal with the error in the `if` block and then return, so that the successful execution path is not indented
 - By convention, formatting functions whose names end in `f` use the formatting rules of `fmt.Printf`, whereas those whose names ends in `ln` follow `Println`, formatting their arguments as if by `%v`, followed by a newline (P.10)
----
 # APIs
 - `fmt`
     - `fmt.Fprintf` - `func Fprintf(w io.Writer, format string, a ...interface{}) (n int, err error)`
@@ -2208,28 +2253,3 @@ func remove1(slice []int, i int) []int {
     }
     // go doc html/template
     ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-100-110 2019年01月14日
