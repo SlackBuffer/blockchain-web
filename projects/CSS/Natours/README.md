@@ -148,6 +148,10 @@
 - Cannot style default radio button
     - Trick: define our own; hide the default one (the default one will still get selected)
 - Use `<button>` to submit instead of a `<a>`
+- `overflow: hidden`
+- `display: inline-block; float: right;`
+- https://easings.net/
+- http://cubic-bezier.com/#.17,.67,.83,.67
 # Icon fonts
 - Doesn't matter use what element tag, so use `<i>` as a convention
 # Media queries
@@ -195,4 +199,4 @@
 - `@supports(css rule)`
 - https://css-tricks.com/ordering-css3-properties/#article-header-id-0
 
-continues at 49
+continues at 52
