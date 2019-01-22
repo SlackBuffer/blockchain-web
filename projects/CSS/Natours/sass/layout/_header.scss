@@ -8,6 +8,11 @@
     /* 无论 viewport 如何缩放，图片顶部永远保持在它的 container 顶部，不会被裁剪*/
     position: relative;
     clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
+
+    @include respond(phone) {
+        clip-path: polygon(0 0, 100% 0, 100% 85vh, 0 100%);
+    }
+
     /* 逆时针，n 个坐标 */
     &__logo-box {
         /* 相对于 .header */

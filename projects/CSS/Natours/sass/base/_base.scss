@@ -17,8 +17,18 @@ html {
     */
 
     font-size: 62.5%;
+    
+    @include respond(tab-land) {
+        font-size: 56.25%;
+    }
+    @include respond(tab-port) {
+        font-size: 50%;
+    }
+    @include respond(big-desktop) {
+        font-size: 80%;
+    }
 
-    @include respond($bp-tab-land) {
+    /* @include respond($bp-tab-land) {
         font-size: 56.25%;
     }
     @include respond($bp-tab-port) {
@@ -29,7 +39,7 @@ html {
     }
     @include respond($bp-big-desktop) {
         font-size: 75%;
-    }
+    } */
 }
 
 /* font 相关的都放 body 里，利用到继承的特性 */
@@ -37,4 +47,10 @@ html {
 body {
     /* 不继承 */
     box-sizing: border-box;
+
+    padding: 3rem;
+
+    @include respond(tab-port) {
+        padding: 0;
+    }
 }

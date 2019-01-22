@@ -7,7 +7,35 @@
     }
 }
 
-@mixin respond($breakpoint) {
-    @media #{$breakpoint} { @content };
+// media query manager
+/*
+
+0 - 600px: Phone
+600 - 900px: Tablet portrait
+900 - 1200px: Tablet landscape
+[1200 - 1800px] is where the normal styes apply
+1800px + : Big desktop
+
+*/
+
+
+// @mixin respond($breakpoint) {
+    // @media #{$breakpoint} { @content };
     // @media (max-width: $breakpoint) { @content };
+// } 
+
+
+@mixin respond($breakpoint) {
+    @if $breakpoint == phone {
+        @media (max-width: 37.5rem) { @content };     // 600px
+    }
+    @if $breakpoint == tab-port {
+        @media (max-width: 56.25em) { @content };     // 900px
+    }
+    @if $breakpoint == tab-land {
+        @media (max-width: 75em) { @content };    // 1200px
+    }
+    @if $breakpoint == big-desktop {
+        @media (min-width: 112.5em) { @content };    // 1800px
+    }
 }

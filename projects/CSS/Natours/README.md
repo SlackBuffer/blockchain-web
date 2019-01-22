@@ -168,6 +168,7 @@
     - [900, 1200], tablet landscape
     - [1200, 1800], desktop (normal)
     - > 1800, big desktop
+    - > http://gs.statcounter.com/screen-resolution-stats
   2. Content based
 - In media queries, em and rem are **not affected by the root font size setting** (`html { font-size: 625%; }`). 1em or 1rem is always equal to the font size coming from the browser (by default 16px)
 - [ ] `em` are the best option for media queries
@@ -199,4 +200,4 @@
 - `@supports(css rule)`
 - https://css-tricks.com/ordering-css3-properties/#article-header-id-0
 
-continues at 52
+continues at 58
