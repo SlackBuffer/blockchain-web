@@ -174,6 +174,7 @@
 - [ ] `em` are the best option for media queries
   - `rem` does not work as intended in some browsers
 - Base + typography > general layout + grid > page layout > components
+- https://sizzy.co
 ## Responsive images
 - Use `em`
 - Resolution switching
@@ -200,4 +201,4 @@
 - `@supports(css rule)`
 - https://css-tricks.com/ordering-css3-properties/#article-header-id-0
 
-continues at 58
+continues at 61
