@@ -1,13 +1,19 @@
 .header {
     height: 95vh;
     /* 渐变在前，背景图片在后 */
-    background-image: linear-gradient(to right bottom, rgba($color-primary-light, 0.8), rgba($color-primary-dark, 0.8)), url('../img/hero.jpg');
+    background-image: linear-gradient(to right bottom, rgba($color-primary-light, 0.8), rgba($color-primary-dark, 0.8)), url('../img/hero-small.jpg');
     background-size: cover;
     /* 铺满 viewport 下它的 container */
     background-position: top;
     /* 无论 viewport 如何缩放，图片顶部永远保持在它的 container 顶部，不会被裁剪*/
     position: relative;
     clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
+
+    @media (min-resolution: 192dpi) and (min-width: 37.5em), (min-width: 125em) {
+        /* 渐变在前，背景图片在后 */
+        background-image: linear-gradient(to right bottom, rgba($color-second-light, 0.8), rgba($color-second-dark, 0.8)), url('../img/hero.jpg');
+        background-size: cover;
+    }
 
     @include respond(phone) {
         clip-path: polygon(0 0, 100% 0, 100% 85vh, 0 100%);

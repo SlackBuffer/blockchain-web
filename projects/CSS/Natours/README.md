@@ -176,27 +176,44 @@
 - Base + typography > general layout + grid > page layout > components
 - https://sizzy.co
 ## Responsive images
+- https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images
 - Use `em`
 - Resolution switching
-  - Decrease image resolution on smaller screen
-  - `<img srcset="logo-1x.png 300w, logo-2x.png 2x 1000w" sizes="(max-width: 900px) 20vw, (max-width: 600px) 30vw, 300px" src="logo.png" />`
-    - `w` - width of the image
-    - `sizes` informs the browser about the approximate width of the image at different viewport width
-    - `src` as a fallback
+    - Decrease image resolution on smaller screen
+    
+        ```html
+        <img srcset="img/nat-1-large.jpg 1000w, img/nat-1.jpg 300w"
+                                    sizes="(max-width: 56.25em) 20vw, (max-width: 37.5em) 30vw, 300px"
+                                    src="img/nat-1-large.jpg"
+                                    alt="photo fa-rotate-180"
+                                    class="composition__photo composition__photo--p1">
+        ```
+        
+        - https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img
+        - `w` - width of the image
+        - `sizes`
+        - `src` as a fallback
 - Density switching
-  - 1x, 2x (same image)
-  - 2x resolution screens use two physical pixels (actual image) to display one pixel on the page
-  - `<img srcset="logo-1x.png 1x, logo-2x.png 2x" />`
+    - 1x, 2x (same image content, different size)
+    - 2x resolution screens use two physical pixels (actual image) to display one pixel on the page
+    - `<img srcset="logo-1x.png 1x, logo-2x.png 2x" src="img/logo-green-2x.png" />`
 - Art direction
-  - Serve completely different images on different screens
-  - `<source srcset="logo-1x.png 1x, logo-2x.png 2x" media="(max-width: 37.5em)" />`
+    - Serve completely different images for different viewport width
+    
+        ```html
+        <picture class="footer_logo">
+            <source src="img/logo-green-2x.png 2x, img/logo-green-1x.png 1x" media="(max-width:37.5em)">
+            <img srcset="img/logo-green-2x.png 2x, img/logo-green-1x.png 1x" src="img/logo-green-2x.png" class="footer__logo" alt=""> <!-- fallback -->
+        </picture>
+        ```
+
 - In CSS
-  - `@media (min-resolution: 192dpi) and (min-width: 600px), (max-width: 2000) {}`
-  - `,` means or
+    - `@media (min-resolution: 192dpi) and (min-width: 600px), (max-width: 2000) {}`
+    - `,` means or
 - `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
     - Without it, the browser will basically zoom out the page, so that the largest version of the page fits the screen (widest element)
 - `@media only screen and (hover: none) {}`
-  - For devices that cannot hover
+    - For devices that cannot hover
 ## Graceful degradation
 - `@supports(css rule)`
 - https://css-tricks.com/ordering-css3-properties/#article-header-id-0
