@@ -156,6 +156,7 @@
 - Doesn't matter use what element tag, so use `<i>` as a convention
 # Media queries
 - `@media only screen and ()`
+- https://zellwk.com/blog/media-query-units/
 - SASS 的 media query 可嵌套写
 - Media queries don't add any importance or specificity to selectors, so code order matter - keep media queries at the end
 - Desktop first: `max-width`
@@ -215,7 +216,5 @@
 - `@media only screen and (hover: none) {}`
     - For devices that cannot hover
 ## Graceful degradation
-- `@supports(css rule)`
+- `@supports (css rule)`
 - https://css-tricks.com/ordering-css3-properties/#article-header-id-0
-
-continues at 61
