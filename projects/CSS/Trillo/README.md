@@ -1,3 +1,5 @@
+continue at 76
+
 - [x] media query 要用 em，why
     - [ ] 用 em 后 rem 不再参照根元素的 font-size
 - z-index 只在设定了 position 后才有效
@@ -12,7 +14,20 @@
 - 图片默认 inline，不设成 block 下方会有小间隙 
 - svg icons
     - https://iconmoon.io
-- css custom property
+- css custom property (css variable)
+    - Manipulated by JS
+    - Edited in dev tools
+    - Cascaded and inherited
+    - Defined in a scope
+
+        ```css
+        :root {
+            --property-name: ...;
+        }
+        ```
+
+- sprite file
+- Using svg with `xlink:href` only works on a server
 - `fill: currentColor`
 - http://cubic-bezier.com/
 # flexbox
