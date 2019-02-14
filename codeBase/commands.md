@@ -48,7 +48,7 @@
     sudo dpkg -i bat_0.9.0_amd64.deb
     ```
 
-- [w3m](http://w3m.sourceforge.net/)
+- [w3m](http://w3m.sourceforge.net/): a pager and/or text-based browser
     - ubuntu: https://www.howtoinstall.co/en/ubuntu/xenial/w3m
     - alpine: `apk add w3m`
     - `q` to exit
