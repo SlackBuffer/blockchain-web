@@ -1,8 +1,8 @@
-continue at 76
+continue at 80
 
 - [x] media query 要用 em，why
     - [ ] 用 em 后 rem 不再参照根元素的 font-size
-- z-index 只在设定了 position 后才有效
+- `z-index` 只在设定了 position 后才有效
 - select
 
     ```css
@@ -12,9 +12,9 @@ continue at 76
     ```
 
 - 图片默认 inline，不设成 block 下方会有小间隙 
-- svg icons
+- SVG icons
     - https://iconmoon.io
-- css custom property (css variable)
+- CSS custom property (CSS variable)
     - Manipulated by JS
     - Edited in dev tools
     - Cascaded and inherited
@@ -26,10 +26,14 @@ continue at 76
         }
         ```
 
-- sprite file
+- Sprite file
 - Using svg with `xlink:href` only works on a server
 - `fill: currentColor`
 - http://cubic-bezier.com/
+- An input element doesn't inherit the font family, font size automatically
+- `align-self: stretch;`
+- `transform-origin`
+- Side navigation style: 079
 # flexbox
 - 无需知道盒子尺寸
 - 适用于一维布局
