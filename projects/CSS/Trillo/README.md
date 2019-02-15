@@ -1,4 +1,4 @@
-continue at 80
+continue at 84
 
 - [x] media query 要用 em，why
     - [ ] 用 em 后 rem 不再参照根元素的 font-size
@@ -31,9 +31,11 @@ continue at 80
 - `fill: currentColor`
 - http://cubic-bezier.com/
 - An input element doesn't inherit the font family, font size automatically
-- `align-self: stretch;`
+- **`align-self: stretch;`**
 - `transform-origin`
 - Side navigation style: 079
+- Remove small white space of SVG by setting the line height and font size to zero
+- Using `background-image` in CSS disallow change of color. Use masks in such case
 # flexbox
 - 无需知道盒子尺寸
 - 适用于一维布局
