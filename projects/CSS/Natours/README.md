@@ -217,4 +217,5 @@
     - For devices that cannot hover
 ## Graceful degradation
 - `@supports (css rule)`
-- https://css-tricks.com/ordering-css3-properties/#article-header-id-0
+- Vendor prefix order
+    - https://css-tricks.com/ordering-css3-properties/#article-header-id-0

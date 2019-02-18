@@ -1,8 +1,6 @@
-continue at 84
-
 - [x] media query 要用 em，why
     - [ ] 用 em 后 rem 不再参照根元素的 font-size
-- `z-index` 只在设定了 position 后才有效
+- **`z-index` 只在设定了 position 后才有效**
 - select
 
     ```css
