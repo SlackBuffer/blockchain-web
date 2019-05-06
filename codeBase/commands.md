@@ -11,6 +11,8 @@
 - `docker image rm`
 - `docker run -it ubuntu:16.04 /bin/bash`
 - `docker exec -it 0caaedfba92e bash`
+- Disable auto-restart on a container - `docker update --restart=no containerID`
+- `docker rmi`, `docker rm`
 # go
 - 版本
     - `go version`

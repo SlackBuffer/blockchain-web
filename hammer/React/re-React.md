@@ -1,6 +1,6 @@
-# Digesting
-- React DOM: React way of representation of the web page
-# JSX
+<!-- # Digesting
+- React DOM: React way of representation of the web page -->
+<!-- # JSX
 - JSX
   - `<h1>Hello, world!</h1>`
   - A Syntax extension to JavaScript
@@ -37,7 +37,7 @@
 - By default, React DOM [escapes](https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html) any values embedded in JSX before rendering them
     - **Everything is converted to a string before being rendered**
     - Thus it ensures that you can never inject anything that’s not explicitly written in your application
-    - This helps prevent XSS (cross-site-scripting) attacks
+    - This helps prevent XSS (cross-site-scripting) attacks -->
 # Rendering elements
 - `<div id="root"></div>` is a root DOM node
     - **Everything inside it will be managed by React DOM**
@@ -332,7 +332,7 @@
     }
     ```
 
-# Higher-order components
+<!-- # Higher-order components
 - An HOC is a **function** that takes a component and returns a new component
 - HOCs are a pattern that emerges from React's compositional nature
 - Don’t mutate the original component. Use composition
@@ -425,7 +425,7 @@
     }
     ```
 
-    - Another method is to export the static method separately from the component itself
+    - Another method is to export the static method separately from the component itself -->
 # Render Props
 - **A render prop is a function prop that a component uses to know what to render**
 - Render prop refers to a technique for **sharing code between React component using a prop** whose value is a **function**
@@ -506,7 +506,7 @@
         - > Defined as an instance method, `this.renderTheCat` always refers to *same* function when we use it in render
     - In cases where you cannot define the prop statically (e.g. because you need to close over the component’s props and/or state) `<Mouse>` should extend `React.Component` instead
 - [ ] render props 实现路由保护
-# Context
+<!-- # Context
 - Context provides a way to pass data through the component tree without having to pas props manually at every level
 - Context is designed to share data that can be considered "global" for a tree of React components
     - Such as the current authenticated user, theme, or preferred language
@@ -573,7 +573,7 @@
 - To keep context re-rendering fast, React needs to make each context consumer a separate node in the tree
     - If two of more context values are often used together, you might want ot consider creating your own render prop component that provides both
     - [Consuming multiple contexts](https://reactjs.org/docs/context.html#consuming-multiple-contexts)
-- Context use **reference identity** to determine when to re-render
+- Context use **reference identity** to determine when to re-render -->
 # Reconciliation
 - React provides a **declarative API** so that you don't have to worry about exactly what changes on every update
 
